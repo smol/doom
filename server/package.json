@@ -1,0 +1,14 @@
+{
+  "name": "life-server",
+  "version": "1.0.0",
+  "description": "",
+  "main": "main.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "smol",
+  "license": "LGPL-3.0",
+  "dependencies": {
+    "express": "^4.14.1"
+  }
+}
