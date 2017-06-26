@@ -1,6 +1,7 @@
 import WadParser from './Wad';
 
 import Lump from './lumps/Lump';
+import Endoom from './lumps/Endoom';
 import ColorMap from './lumps/ColorMap';
 import Playpal from './lumps/Playpal';
 
@@ -39,6 +40,8 @@ export default class Builder {
 			return new Playpal(lump, data);
 		} else if (lump.name === 'COLORMAP'){
 			return new ColorMap(this.lumps['PLAYPAL'] as Playpal, lump, data);
+		} else if (lump.name === 'ENDOOM'){
+			return new Endoom(lump, data);
 		}
 
 		return new Lump(lump, data);

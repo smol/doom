@@ -73,6 +73,19 @@ body {
 	height: 8px;
 }
 
+/*ENDOOM*/
+#debug .debug-container.endoom { height: auto; }
+
+#debug .debug-container.endoom .item {
+	float: left;
+	width: 8px;
+	height: 8px;
+}
+
+#debug .debug-container.endoom .item:nth-child(25n) {
+	float: none;
+}
+
 canvas {
 	display: none;
 	position: absolute;

@@ -46,8 +46,6 @@ export default class ColorMap extends Lump {
 
 			this.sets.push({ index: 0, brightness: temp });
 		}
-
-		console.warn(this.sets[1].brightness);
 	}
 
 	protected onclick() {
