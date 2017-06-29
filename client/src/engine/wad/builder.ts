@@ -12,47 +12,49 @@ import Playpal from './lumps/Playpal';
 export default class Builder {
 	private parser: WadParser;
 
-	private lumps: { [name: string]: Lump; };
+	private data: { [name: string]: Lump; };
+	private lumps : any[];
+	
 
 	constructor(parser: WadParser) {
 		this.parser = parser;
 	}
 
 	go() {
-		this.lumps = {};
+		this.data = {};
 
-		var lumps: any[] = this.parser.getLumps();
+		this.lumps = this.parser.getLumps();
 
-		for (var i = 0; i < lumps.length; i++) {
-			var data = this.parser.getDataByLump(lumps[i]);
-			var temp: Lump = this.create(lumps[i], data);
+		for (var i = 0; i < this.lumps.length; i++) {
+			var data = this.parser.getDataByLump(this.lumps[i]);
+			var temp: Lump = this.create(this.lumps[i], data, i);
 
-			this.lumps[lumps[i].name] = temp;
+			this.data[this.lumps[i].name] = temp;
 		}
 	}
 
 	debug() {
 		var debug = document.getElementById('debug') as HTMLDivElement;
 
-		for (var key in this.lumps) {
-			this.lumps[key].debug(debug);
+		for (var key in this.data) {
+			this.data[key].debug(debug);
 		}
 	}
 
-	private create(lump: any, data: any): Lump {
-		var type : string = Type.get(lump, data);
+	private create(lump: any, data: any, index: number): Lump {
+		var type : string = Type.get(lump, data, this.lumps, index);
 		// console.warn(type);
 
 		if (lump.name === 'PLAYPAL') {
 			return new Playpal(lump, data);
 		} else if (lump.name === 'COLORMAP') {
-			return new ColorMap(this.lumps['PLAYPAL'] as Playpal, lump, data);
+			return new ColorMap(this.data['PLAYPAL'] as Playpal, lump, data);
 		} else if (lump.name === 'ENDOOM') {
 			return new Endoom(lump, data);
 		} else if (lump.name === 'THINGS') {
 			return new Things(lump, data);
 		} else if (type === 'GRAPHIC') {
-			return new Graphics(this.lumps['PLAYPAL'] as Playpal, lump, data);
+			return new Graphics(this.data['PLAYPAL'] as Playpal, lump, data);
 		}
 
 		return new Lump(lump, data);

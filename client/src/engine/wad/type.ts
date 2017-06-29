@@ -1,5 +1,5 @@
 export default class Type {
-	static get(lump: any, data: any): string {
+	static get(lump: any, data: any, lumps: any[], index: number): string {
 		function headerCheck(dataView, header) {
 			var chrs = header.split("");
 			for (var i = 0; i < header.length; i++) {
@@ -29,14 +29,14 @@ export default class Type {
 		if (lump.size == 0) return "MARKER";
 
 		//between markers
-		// for (var i = index; i >= 0; i--) {
-		// 	if (/_END$/.test(this.lumps[i].name)) break;
-		// 	if (/_START$/.test(this.lumps[i].name)) {
-		// 		pre = this.lumps[i].name.substr(0, this.lumps[i].name.indexOf("_") + 1);
-		// 		if (GRAPHIC_MARKERS.indexOf(pre) >= 0) return GRAPHIC;
-		// 		if (FLAT_MARKERS.indexOf(pre) >= 0) return FLAT;
-		// 	}
-		// }
+		for (var i = index; i >= 0; i--) {
+			if (/_END$/.test(lumps[i].name)) break;
+			if (/_START$/.test(lumps[i].name)) {
+				var pre = lumps[i].name.substr(0, lumps[i].name.indexOf("_") + 1);
+				if ("GRAPHIC_MARKER".indexOf(pre) >= 0) return "GRAPHIC";
+				if ("FLAT_MARKERS".indexOf(pre) >= 0) return "FLAT";
+			}
+		}
 
 		//shitty name-based detection
 		if (/^D_/.test(name)) return "MUSIC";
