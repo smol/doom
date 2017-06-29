@@ -132,8 +132,6 @@ export default class Endoom extends Lump {
 		var startX : number = Math.round(code % 32) * 8;
 		var startY : number = Math.floor(code / 32) * 16;
 
-		
-
 		for (var x = 0; x < 8; x++){
 			for (var y = 0; y < 16; y++){
 				var pox : number = startX + x;

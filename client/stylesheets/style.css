@@ -27,8 +27,13 @@ body {
 	cursor: pointer;
 }
 
-#debug .lumps li:hover {
+#debug .lumps li:not(.group):hover {
+	
 	background:lawngreen;
+}
+
+#debug .lumps li.group ul {
+	display: none;
 }
 
 #debug .debug-container {
@@ -84,6 +89,12 @@ body {
 
 #debug .debug-container.endoom .item:nth-child(25n) {
 	float: none;
+}
+
+#debug  canvas {
+	position: static;
+	margin: auto;
+	background: black;
 }
 
 canvas {
