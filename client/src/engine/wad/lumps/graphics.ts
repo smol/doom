@@ -31,7 +31,7 @@ export default class Graphics extends Lump {
 		this.buffer = new Uint8ClampedArray(this.width * this.height);
 
 		// if (lump.name === "END0"){
-		console.warn(lump.name, this.width, this.height, columns, this.dataView.byteLength);
+		// console.warn(lump.name, this.width, this.height, columns, this.dataView.byteLength);
 		// }
 
 		for (var i = 0; i < (this.width * this.height); i++) {
@@ -44,10 +44,6 @@ export default class Graphics extends Lump {
 			position = columns[i];
 			var rowStart = 0;
 
-			if (lump.name == "END2") {
-				console.warn('for', rowStart, position, columns[i], this.dataView.byteLength);
-			}
-
 			while (rowStart != 255) {
 				rowStart = this.dataView.getUint8(position);
 				position += 1;
@@ -58,10 +54,6 @@ export default class Graphics extends Lump {
 
 				var pixelsNumber = this.dataView.getUint8(position);
 				position += 1;
-
-				if (lump.name == "END2") {
-					console.warn('while', 'rowStart : ',rowStart, 'position : ',position, columns[i], pixelsNumber);
-				}
 
 				var dummyValue = this.dataView.getUint8(position); // dummy value
 				position++;
