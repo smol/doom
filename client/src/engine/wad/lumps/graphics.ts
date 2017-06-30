@@ -23,15 +23,15 @@ export default class Graphics extends Lump {
 
 		// console.warn(lump.name);
 
-		var columns: Uint8ClampedArray = new Uint8ClampedArray(this.width);
+		var columns: number[] = [];
 		for (var i = 0; i < this.width; i++) {
-			columns[i] = this.dataView.getUint32(8 + (i * 4), true);
+			columns.push(this.dataView.getUint32(8 + (i * 4), true));
 		}
 
 		this.buffer = new Uint8ClampedArray(this.width * this.height);
 
 		// if (lump.name === "END0"){
-		console.warn(this.width, this.height, columns, lump.name, this.dataView.byteLength);
+		console.warn(lump.name, this.width, this.height, columns, this.dataView.byteLength);
 		// }
 
 		for (var i = 0; i < (this.width * this.height); i++) {
@@ -44,15 +44,13 @@ export default class Graphics extends Lump {
 			position = columns[i];
 			var rowStart = 0;
 
-			if (lump.name == "PFUB2") {
+			if (lump.name == "END2") {
 				console.warn('for', rowStart, position, columns[i], this.dataView.byteLength);
 			}
 
 			while (rowStart != 255) {
 				rowStart = this.dataView.getUint8(position);
 				position += 1;
-
-
 
 				if (rowStart == 255) {
 					break;
@@ -61,14 +59,14 @@ export default class Graphics extends Lump {
 				var pixelsNumber = this.dataView.getUint8(position);
 				position += 1;
 
-				if (lump.name == "PFUB2") {
+				if (lump.name == "END2") {
 					console.warn('while', 'rowStart : ',rowStart, 'position : ',position, columns[i], pixelsNumber);
 				}
 
-				this.dataView.getUint8(position); // dummy value
+				var dummyValue = this.dataView.getUint8(position); // dummy value
 				position++;
 
-				for (var j = 0; j < pixelsNumber - 1; j++) {
+				for (var j = 0; j < pixelsNumber; j++) {
 					this.buffer[((rowStart + j) * this.width) + i] = this.dataView.getUint8(position);
 					position++;
 				}

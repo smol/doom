@@ -53,6 +53,7 @@ export default class Builder {
 			return new Endoom(lump, data);
 		} else if (lump.name === 'THINGS') {
 			return new Things(lump, data);
+		} else if (lump.name === 'VERTEXES' || lump.name === 'LINEDEFS') {
 		} else if (type === 'GRAPHIC') {
 			return new Graphics(this.data['PLAYPAL'] as Playpal, lump, data);
 		}
