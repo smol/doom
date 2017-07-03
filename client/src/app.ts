@@ -1,6 +1,8 @@
-import WadParser from './engine/wad/Wad';
+import WadParser from './engine/wad/Parser';
 import WadBuilder from './engine/wad/Builder';
 import Core from './engine/Core';
+
+import Debug from './debug/Debug';
 
 class App extends Core {
 	private socket: any;
@@ -9,12 +11,10 @@ class App extends Core {
 		super('canvas', 1);
 
 		var parser: WadParser = new WadParser();
-		var builder : WadBuilder = new WadBuilder(parser);
+		var builder: WadBuilder = new WadBuilder(parser);
 
 		parser.onLoad = () => {
 			builder.go();
-			
-			builder.debug();
 			// var temp = parser.getLumpByName("TEXTURE1");
 			// console.warn(temp);
 			// var dv = new DataView(temp);
@@ -58,6 +58,20 @@ class App extends Core {
 
 	// Example
 	ready(function () {
-		new App();
+		if (window.location.href.indexOf('debug') !== -1) {
+			var parser: WadParser = new WadParser();
+			var builder: WadBuilder = new WadBuilder(parser);
+
+			parser.onLoad = () => {
+				builder.go();
+
+				new Debug(builder.getWad(), builder);
+			};
+
+			parser.loadFile('/client/assets/doom.wad');
+		} else {
+			new App();
+		}
+
 	});
 })();;

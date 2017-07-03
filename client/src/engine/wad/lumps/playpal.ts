@@ -50,30 +50,4 @@ export default class Playpal extends Lump {
 	getColors() : any[][] {
 		return this.colors;
 	}
-
-	protected onclick() {
-		super.onclick();
-
-		var div: HTMLDivElement = document.createElement('div');
-		div.className = 'debug-container playpal';
-
-		this.debugContainer.appendChild(div);
-
-		this.colors.forEach(element => {
-			var wrapper = document.createElement('div');
-			wrapper.className = 'swatch';
-
-			element.forEach(color => {
-				var colorDiv = document.createElement('div');
-				colorDiv.className = 'item';
-
-				colorDiv.style.backgroundColor = 'rgba(' + color.r + ',' + color.g + ',' + color.b + ', 1)';
-
-				wrapper.appendChild(colorDiv);
-			});
-
-			div.appendChild(wrapper);
-		});
-
-	}
 }

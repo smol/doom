@@ -122,7 +122,7 @@ export default class Graphics extends Lump {
 	}
 
 	protected onclick() {
-		super.onclick();
+		// super.onclick();
 
 		var canvas: HTMLCanvasElement = document.createElement('canvas');
 		canvas.height = this.height;

@@ -92,12 +92,8 @@ export default class Endoom extends Lump {
 		this.ascii = imageData.data;
 	}
 
-	debug(element: HTMLElement) {
-		super.debug(element);
-	}
-
 	protected onclick() {
-		super.onclick();
+		// super.onclick();
 
 		var canvas: HTMLCanvasElement = document.createElement('canvas');
 		canvas.height = 25 * 16;

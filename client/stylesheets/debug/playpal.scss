@@ -1,0 +1,18 @@
+#details {
+	#preview {
+		#playpal {
+			.swatch {
+				margin: 10px;
+				width: calc(50% - 20px);
+				display: inline-block;
+
+				.item {
+					display: inline-block;
+					vertical-align: top;
+					width: calc(100% / 16);
+					height: 16px;
+				}
+			}
+		}		
+	}
+}

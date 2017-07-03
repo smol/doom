@@ -34,12 +34,6 @@ export default class Things extends Lump {
 		// });
 
 	}
-
-	protected onclick() {
-		super.onclick();
-
-
-	}
 }
 
 

@@ -50,11 +50,14 @@ module.exports = function (grunt) {
 				expand: false,
 				src: './client/assets/*',
 				dest: './client/build/',
-			},
-			stylesheets: {
-				expand: false,
-				src: './client/stylesheets/*',
-				dest: './client/build/',
+			}
+		},
+
+		sass: {
+			dist: {
+				files: {
+					'./client/build/style.css' : './client/stylesheets/style.scss'
+				}
 			}
 		},
 
@@ -74,8 +77,8 @@ module.exports = function (grunt) {
 				}
 			},
 			stylesheets: {
-				files: ['client/stylesheets/*.css'],
-				tasks: ['copy:stylesheets'],
+				files: ['client/stylesheets/**/*.scss'],
+				tasks: ['sass'],
 				options: {
 					atBegin: true
 				}
@@ -94,6 +97,7 @@ module.exports = function (grunt) {
 
 	grunt.loadNpmTasks('grunt-contrib-copy');
 	grunt.loadNpmTasks('grunt-contrib-watch');
+	grunt.loadNpmTasks('grunt-contrib-sass');
 	grunt.loadNpmTasks('grunt-contrib-concat');
 	grunt.loadNpmTasks('grunt-nodemon');
 	grunt.loadNpmTasks('grunt-concurrent');

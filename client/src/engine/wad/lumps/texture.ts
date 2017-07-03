@@ -185,10 +185,4 @@ export default class Texture extends Lump {
 
 		console.warn(this.count, offset, test);
 	}
-
-	protected onclick(){
-		super.onclick();
-
-
-	}
 }

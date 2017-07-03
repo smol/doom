@@ -49,7 +49,7 @@ export default class ColorMap extends Lump {
 	}
 
 	protected onclick() {
-		super.onclick();
+		// super.onclick();
 
 		var div: HTMLDivElement = document.createElement('div');
 		div.className = 'debug-container colormap';
