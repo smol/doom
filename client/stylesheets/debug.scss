@@ -29,7 +29,8 @@
 			float: left;
 
 			canvas {
-				height: 90%;
+				max-height: 90%;
+				max-width: 100%;
 				background: transparent;
 				display: block;
 				margin: auto;
