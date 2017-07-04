@@ -26,4 +26,8 @@ export default class Lump {
 
 		this.dataView = new DataView(this.data);
 	}
+
+	getName() : string {
+		return this.lump.name;
+	}
 }

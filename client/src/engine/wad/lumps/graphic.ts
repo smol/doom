@@ -10,6 +10,7 @@ export default class Graphics extends Lump {
 	private yOffset: number;
 
 	private buffer: Uint8ClampedArray;
+	private imageData : Uint8ClampedArray;
 
 	constructor(playpal: Playpal, lump: any, data: any) {
 		super(lump, data);
@@ -29,6 +30,7 @@ export default class Graphics extends Lump {
 		}
 
 		this.buffer = new Uint8ClampedArray(this.width * this.height);
+		this.imageData = new Uint8ClampedArray(this.width * this.height * 4);
 
 		// if (lump.name === "END0"){
 		// console.warn(lump.name, this.width, this.height, columns, this.dataView.byteLength);
@@ -69,94 +71,28 @@ export default class Graphics extends Lump {
 
 		}
 
-
-		// var position = 0;
-		// var pixelCount = 0;
-		// var dummyValue = 0;
-
-		// for (var i = 0; i < this.width; i++) {
-		// 	for (var j = 0; j < this.height; j++) {
-		// 		//-1 for transparency
-		// 		this.buffer.push(-1);
-		// 	}
-		// }
-
-
-
-		// for (var i = 0; i < this.width; i++) {
-
-		// 	position = columns[i];
-		// 	var rowStart = 0;
-
-		// 	while (rowStart != 255) {
-
-		// 		if (position >= this.dataView.byteLength) {
-		// 			return;
-		// 		}
-
-		// 		rowStart = this.dataView.getUint8(position);
-		// 		position += 1;
-
-		// 		if (rowStart == 255) break;
-
-		// 		if (position >= this.dataView.byteLength) {
-		// 			return;
-		// 		}
-
-		// 		var pixelCount = this.dataView.getUint8(position);
-		// 		position += 2;
-
-		// 		for (var j = 0; j < pixelCount; j++) {
-		// 			if (position >= this.dataView.byteLength) {
-		// 				return;
-		// 			}
-
-		// 			this.buffer[((rowStart + j) * this.width) + i] = this.dataView.getUint8(position);
-		// 			position += 1;
-		// 		}
-		// 		position += 1;
-		// 	}
-		// }
-
-
-	}
-
-	protected onclick() {
-		// super.onclick();
-
-		var canvas: HTMLCanvasElement = document.createElement('canvas');
-		canvas.height = this.height;
-		canvas.width = this.width;
-		canvas.className = 'debug-container endoom';
-
-		var ctx: CanvasRenderingContext2D = canvas.getContext('2d');
-		var idata: ImageData = ctx.createImageData(canvas.width, canvas.height);
-
-		var colors: Uint8ClampedArray = new Uint8ClampedArray(this.width * this.height * 4);
-
 		for (var i = 0; i < this.buffer.length; i++) {
 			if (this.buffer[i] !== -1) {
 				var color = this.playpal.getColors()[0][this.buffer[i]];
 
-				colors[i * 4 + 0] = color.r;
-				colors[i * 4 + 1] = color.g;
-				colors[i * 4 + 2] = color.b;
-				colors[i * 4 + 3] = 255;
+				this.imageData[i * 4 + 0] = color.r;
+				this.imageData[i * 4 + 1] = color.g;
+				this.imageData[i * 4 + 2] = color.b;
+				this.imageData[i * 4 + 3] = 255;
 			} else {
-				colors[i * 4 + 0] = 255;
-				colors[i * 4 + 1] = 0;
-				colors[i * 4 + 2] = 0;
-				colors[i * 4 + 3] = 0;
+				this.imageData[i * 4 + 0] = 255;
+				this.imageData[i * 4 + 1] = 0;
+				this.imageData[i * 4 + 2] = 0;
+				this.imageData[i * 4 + 3] = 0;
 			}
 
 		}
-
-		console.warn(colors);
-
-		idata.data.set(colors);
-
-		ctx.putImageData(idata, 0, 0);
-
-		this.debugContainer.appendChild(canvas);
 	}
+
+	getImageData() : Uint8ClampedArray {
+		return this.imageData;
+	}
+
+	getWidth() : number { return this.width; }
+	getHeight() : number { return this.height; }
 }

@@ -10,6 +10,11 @@
 
 		> ul {
 			margin: 0;
+			display: inline-block;
+			vertical-align: top;
+			height: 100%;
+			overflow: auto;
+			width: 33vw;
 		}
 	}
 
@@ -22,6 +27,13 @@
 			height: 100%;
 			overflow: auto;
 			float: left;
+
+			canvas {
+				height: 90%;
+				background: transparent;
+				display: block;
+				margin: auto;
+			}
 		}
 
 		#infos {

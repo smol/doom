@@ -2,6 +2,7 @@ import Wad from '../engine/wad/Wad';
 import WadBuilder from '../engine/wad/Builder';
 
 import PlayPalDebug from './Playpal.debug';
+import GraphicsDebug from './Graphics.debug';
 import ColorMapDebug from './ColorMap.debug';
 
 export default class Debug {
@@ -20,6 +21,7 @@ export default class Debug {
 		
 		new PlayPalDebug(this.wad.getPlaypal(), groups);
 		new ColorMapDebug(this.wad.getColorMap(), groups);
+		new GraphicsDebug(this.wad.getGraphics(), groups);
 
 		document.getElementById('treeview').appendChild(groups);
 	}
