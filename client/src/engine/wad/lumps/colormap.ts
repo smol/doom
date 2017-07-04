@@ -26,11 +26,17 @@ export default class ColorMap extends Lump {
 	private playpal: Playpal;
 	private sets: { index: number, brightness: number[] }[];
 
+	private colors : { r: number, g: number, b: number }[];
+
 	constructor(playpal: Playpal, lump: any, data: any) {
 		super(lump, data);
 
 		this.playpal = playpal;
 		this.sets = [];
+
+		this.colors = [];
+
+		var colors: any[] = this.playpal.getColors()[0];
 
 		for (var i = 0; i < 34; i++) {
 			var temp: number[] = [];
@@ -42,38 +48,39 @@ export default class ColorMap extends Lump {
 				var byte: number = this.dataView.getUint8((i * 256) + b);
 
 				temp.push(byte);
+				this.colors.push(colors[byte]);
 			}
 
 			this.sets.push({ index: 0, brightness: temp });
 		}
+
+		
+	}
+
+	getColors(){
+		return this.colors;
 	}
 
 	protected onclick() {
 		// super.onclick();
 
-		var div: HTMLDivElement = document.createElement('div');
-		div.className = 'debug-container colormap';
+		// var div: HTMLDivElement = document.createElement('div');
+		// div.className = 'debug-container colormap';
 
-		this.debugContainer.appendChild(div);
+		// this.debugContainer.appendChild(div);
 
-		var colors: any[] = this.playpal.getColors()[0];
+		
 
-		for (var i = 0; i < 256; i++) {
-			var wrapper = document.createElement('div');
-			wrapper.className = 'swatch';
+		// for (var i = 0; i < 256; i++) {
+			
 
-			for (var s = 0; s < 34; s++) {
-				var color = colors[this.sets[s].brightness[i]];
+		// 	for (var s = 0; s < 34; s++) {
+		// 		var color = 
 
-				var colorDiv = document.createElement('div');
-				colorDiv.className = 'item';
+				
+		// 	}
 
-				colorDiv.style.backgroundColor = 'rgba(' + color.r + ',' + color.g + ',' + color.b + ', 1)';
-
-				wrapper.appendChild(colorDiv);
-			}
-
-			div.appendChild(wrapper);
-		}
+		// 	div.appendChild(wrapper);
+		// }
 	}
 }

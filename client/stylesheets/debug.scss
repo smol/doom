@@ -21,10 +21,19 @@
 			width: 50vw;
 			height: 100%;
 			overflow: auto;
+			float: left;
+		}
+
+		#infos {
+			background: #333333;
+			height: 100%;
+			width: 50vw;
+			overflow: auto;
 		}
 	}
 
 	@import 'debug/playpal';
+	@import 'debug/colormap';
 }
 
 // #debug {

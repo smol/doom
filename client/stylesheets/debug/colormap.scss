@@ -1,0 +1,15 @@
+.colormap {
+	.swatch {
+		float: left;
+		vertical-align: top;
+		/*margin: 5px;*/
+		/*background:whitesmoke;*/
+		/*padding: 1px;*/
+		/*width: calc(50% - 10px);*/
+		box-sizing: border-box;
+		.item {
+			width: 8px;
+			height: 8px;
+		}
+	}
+}
