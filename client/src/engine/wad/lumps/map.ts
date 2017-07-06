@@ -10,7 +10,9 @@ export default class Map extends Lump {
 		this.things = null;
 	}
 
-	setThings(things: Things){
-		this.things = things;
+	setThings(lump: any, data: any){
+		this.things = new Things(lump, data);
 	}
+
+	getThings() : Things { return this.things; }
 }

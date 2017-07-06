@@ -1,0 +1,4 @@
+{
+    "command": "grunt dev",
+    "isShellCommand": true
+}

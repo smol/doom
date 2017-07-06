@@ -16,6 +16,7 @@ export default class Wad {
 
 	constructor() {
 		this.graphics = [];
+		this.maps = [];
 	}
 
 	setPlaypal(lump: any, data: any) {
@@ -34,8 +35,13 @@ export default class Wad {
 		this.graphics.push(new Graphic(this.playpal, lump, data));
 	}
 
+	setMap(lump: any, data: any){
+		this.maps.push(new Map(lump, data));
+	}
+
 	getPlaypal() : Playpal { return this.playpal; }
 	getColorMap() : ColorMap { return this.colorMap; }
 	getEndoom() : Endoom { return this.endoom; }
 	getGraphics() : Graphic[] { return this.graphics; }
+	getMaps() : Map[] { return this.maps; }
 }

@@ -65,8 +65,11 @@ export default class Builder {
 		} else if (lump.name === 'ENDOOM') {
 			this.wad.setEndoom(lump, data);
 		} else if (/^E\dM\d$/.test(lump.name)) {
-			return new Map(lump, data);
+			this.wad.setMap(lump, data);
 		} else if (lump.name === 'THINGS') {
+			var maps : Map[] = this.wad.getMaps();
+
+			maps[maps.length - 1].setThings(lump, data);
 			return new Things(lump, data);
 		} else if (lump.name === 'VERTEXES' || lump.name === 'LINEDEFS') {
 		} else if (type === 'GRAPHIC') {

@@ -19,20 +19,16 @@ import Lump from './Lump';
 // (4) Type of thing, see next subsection, [4-2-1]
 // (5) Thing options, see [4-2-3]
 export default class Things extends Lump {
+	private things : Thing[] = [];
+
 	constructor(lump: any, data: any) {
 		super(lump, data);
 
-		var test: Thing[] = [];
 
+		console.warn(this.dataView.byteLength);
 		for (var i = 0; i < this.dataView.byteLength / 10; i++) {
-			test.push(new Thing(i, this.dataView));
+			this.things.push(new Thing(i, this.dataView));
 		}
-
-		// test.forEach(element => {
-		// 	if (element.typeId === 9)
-		// 		console.warn(element.toString());
-		// });
-
 	}
 }
 
