@@ -1,5 +1,119 @@
 import Lump from './Lump';
 
+var DoomThingTable = {
+  3004: "zombie",
+  9:"sergeant",
+  65:"commando",
+  3001:"imp",
+  3002:"demon",
+  58:"spectre",
+  3006:"lost soul",
+  3005:"cacodemon",
+  69:"hell knight",
+  3003:"baron of hell",
+  66:"revenant",
+  67:"mancubus",
+  68:"arachnotron",
+  71:"pain elemental",
+  64:"archvile",
+  16:"cyberdemon",
+  7:"spider mastermind",
+  84:"ss guy",
+  87:"spawn target",
+  89:"spawn shooter",
+  88:"romero head",
+  72:"commander keen",
+  2001:"shotgun",
+  82:"super shotgun",
+  2002:"chaingun",
+  2003:"rocket launcher",
+  2004:"plasma gun",
+  2005:"chainsaw",
+  2006:"bfg 9000",
+  2007:"ammo clip",
+  2048:"ammo box",
+  2008:"shells",
+  2049:"shell box",
+  2010:"rocket",
+  2046:"rocket box",
+  2047:"cell charge",
+  17:"cell pack",
+  8:"backpack",
+  2011:"stimpack",
+  2012:"medikit",
+  2013:"supercharge",
+  2014:"health bonus",
+  2015:"armor bonus",
+  2018:"green armor",
+  2019:"blue armor",
+  2022:"invulnerability",
+  2023:"berserk",
+  2024:"invisibility",
+  2025:"radiation suit",
+  2026:"computer map",
+  2045:"goggles",
+  83:"megasphere",
+  13:"red keycard",
+  6:"yellow keycard",
+  5:"blue keycard",
+  38:"red skull key",
+  39:"yellow skull key",
+  40:"blue skull key",
+  1:"player 1 start",
+  2:"player 2 start",
+  3:"player 3 start",
+  4:"player 4 start",
+  11:"deathmatch start",
+  14:"teleport destination",
+  10:"gibs 1",
+  12:"gibs 2",
+  15:"dead marine",
+  18:"dead zombie",
+  19:"dead sergeant",
+  20:"dead imp",
+  21:"dead demon",
+  22:"dead cacodemon",
+  23:"dead lost soul",
+  24:"pool of blood",
+  25:"impaled human 1",
+  26:"impaled human 2",
+  27:"skull on pole",
+  28:"five skulls",
+  29:"skull pile",
+  49:"hangman 1",
+  50:"hangman 2",
+  51:"hangman 3",
+  52:"hangman 4",
+  53:"hangman 5",
+  59:"hangman 2 (passable)",
+  60:"hangman 4 (passable)",
+  61:"hangman 3 (passable)",
+  62:"hangman 5 (passable)",
+  63:"hangman 1 (passable)",
+  30:"green pillar",
+  31:"short green pillar",
+  32:"red pillar",
+  33:"short red pillar",
+  34:"candle",
+  35:"candelabra",
+  36:"green pillar with heart",
+  37:"red pillar with skull",
+  41:"eye",
+  42:"skull rock",
+  43:"gray tree",
+  44:"blue torch",
+  45:"green torch",
+  46:"red torch",
+  47:"scrub",
+  48:"tech column",
+  54:"brown tree",
+  55:"short blue torch",
+  56:"short green torch",
+  57:"short red torch",
+  2028:"floor lamp",
+  2035:"barrel"
+};
+
 // [4-2]: THINGS
 // =============
 
@@ -24,9 +138,7 @@ export default class Things extends Lump {
 	constructor(lump: any, data: any) {
 		super(lump, data);
 
-
-		console.warn(this.dataView.byteLength);
-		for (var i = 0; i < this.dataView.byteLength / 10; i++) {
+		for (var i = 0; i < this.dataView.byteLength; i += 10) {
 			this.things.push(new Thing(i, this.dataView));
 		}
 	}
@@ -38,12 +150,14 @@ class Thing {
 	private y: number;
 	private angle: number;
 	typeId : number;
+	private type : string;
 
 	constructor(index: number, dataView: DataView) {
 		this.x = dataView.getInt16(index, true);
 		this.y = dataView.getInt16(index + 2, true);
 		this.angle = dataView.getInt16(index + 4, true);
 		this.typeId = dataView.getInt16(index + 6, true);
+		this.type = DoomThingTable[this.typeId];
 	}
 
 	toString() : string {

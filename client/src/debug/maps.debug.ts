@@ -1,4 +1,6 @@
-import Map from '../engine/wad/lumps/Map';
+import * as React from 'react';
+
+import Map from 'wad/lumps/Map';
 
 export default class MapsDebug {
 	private maps: Map[];
@@ -30,11 +32,17 @@ export default class MapsDebug {
 			var li = document.createElement('li');
 			li.innerHTML = item.getName();
 			li.onclick = () => {
-				console.warn(item);
+				console.warn(item.getThings());
 			};
 			ul.appendChild(li);
 		});
 
 		document.getElementById('treeview').appendChild(ul);
+	}
+}
+
+class MapDebug {
+	constructor(){
+
 	}
 }

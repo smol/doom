@@ -1,4 +1,4 @@
-import Playpal from '../engine/wad/lumps/Playpal';
+import Playpal from 'wad/lumps/Playpal';
 
 export default class PlaypalDebug {
 	private playpal : Playpal;

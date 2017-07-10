@@ -1,5 +1,5 @@
-import Wad from '../engine/wad/Wad';
-import WadBuilder from '../engine/wad/Builder';
+import Wad from 'wad/Wad';
+import WadBuilder from 'wad/Builder';
 
 import PlayPalDebug from './Playpal.debug';
 import GraphicsDebug from './Graphics.debug';
@@ -20,6 +20,8 @@ export default class Debug {
 	private groups() {
 		var groups : HTMLUListElement = document.createElement('ul') as HTMLUListElement;
 		
+		// console.warn('coucou');
+
 		new PlayPalDebug(this.wad.getPlaypal(), groups);
 		new ColorMapDebug(this.wad.getColorMap(), groups);
 		new GraphicsDebug(this.wad.getGraphics(), groups);

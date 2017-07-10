@@ -1,4 +1,4 @@
-import Graphic from '../engine/wad/lumps/Graphic';
+import Graphic from 'wad/lumps/Graphic';
 
 class GraphicDebug {
 	private graphic: Graphic;

@@ -20,7 +20,14 @@
     "grunt-execute": "^0.2.2",
     "grunt-forever": "^0.4.7",
     "grunt-nodemon": "^0.4.2",
+    "grunt-ts": "^6.0.0-beta.16",
     "tsify": "^3.0.1",
     "typescript": "^2.3.4"
+  },
+  "dependencies": {
+    "@types/react": "^15.0.35",
+    "@types/react-dom": "^15.5.1",
+    "react": "^15.6.1",
+    "react-dom": "^15.6.1"
   }
 }

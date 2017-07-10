@@ -1,4 +1,4 @@
-import ColorMap from '../engine/wad/lumps/ColorMap';
+import ColorMap from 'wad/lumps/ColorMap';
 
 export default class ColorMapDebug {
 	private colorMap: ColorMap;

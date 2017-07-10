@@ -4,7 +4,7 @@ var http = require('http').Server(app);
 
 console.warn('-------\nNODE SERVER START\n\n--------\n');
 
-app.use(express.static(__dirname + '/../client/build/'));
+app.use(express.static(__dirname + '/../client/.build/'));
 
 app.get('/', function (req, res) {
 	res.sendFile(__dirname + '/index.html');
