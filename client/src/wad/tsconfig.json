@@ -1,0 +1,16 @@
+{
+	"compileOnSave": true,
+	"compilerOptions": {
+		"module": "ES6",
+		// "noImplicitAny": true,
+		"removeComments": true,
+		"declaration": true,
+		"preserveConstEnums": true,
+		"sourceMap": true,
+		"rootDir": ".",
+		"outDir": "../../.build/srcs/wad/"
+	},
+	"exclude": [
+		"node_modules"
+	]
+}

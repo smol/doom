@@ -12,55 +12,51 @@ module.exports = function (grunt) {
 			}
 		},
 
-		browserify: {
-			dist: {
+		ts: {
+			wad: {
+				tsconfig: './client/src/wad/tsconfig.json',
 				options: {
-					browserifyOptions: {
-						debug: true,
-						plugin: [['tsify', { target: 'ES6', typeRoots: ["node_modules/@types", "./client/.build/"], types: ["core-js", "node"] }]],
-					},
-					bundleExternal: false,
-					debug: true,
-					watch: true, // use watchify for incremental builds!
-					keepAlive: true, // watchify will exit unless task is kept alive
-					exclude: ['./client/node_modules/**/*'],
-					ignore: ['./client/node_modules/**/*']
+					verbose: true
 				},
-				files: {
-					// if the source file has an extension of es6 then
-					// we change the name of the source file accordingly.
-					// The result file's extension is always .js
-					// "./client/build/app.js": ['./client/src/**/*.ts', '!./client/src/debug/**/*'],
-					"./client/.build/engine.js": ['./client/src/engine/**/*.ts'],
-					"./client/.build/wad.js": ['./client/src/wad/**/*.ts'],
-					"./client/.build/debug.js": ['./client/src/debug/**/*.ts']
-				}
+				watch: './client/src/wad'
 			}
 		},
+
 		copy: {
 			assets: {
 				expand: false,
 				src: './client/assets/*',
-				dest: './client/build/',
+				dest: './client/.build/',
 			}
 		},
 
 		sass: {
 			dist: {
 				files: {
-					'./client/build/style.css': './client/stylesheets/style.scss'
+					'./client/.build/style.css': './client/stylesheets/style.scss'
 				}
 			}
 		},
 
 		concat: {
-			dist: {
+			lib: {
 				src: ['./client/node_modules/socket.io-client/dist/socket.io.min.js'],
-				dest: './client/build/lib.js'
+				dest: './client/.build/lib.js'
+			},
+			wad: {
+				src: ['./client/.build/srcs/wad/**/*.js'],
+				dest: './client/.build/wad.js'
 			}
 		},
 
 		watch: {
+			wad: {
+				files: ['./client/.build/srcs/wad/**/*.js'],
+				tasks: ['concat:wad'],
+				options: {
+					atBegin: true
+				}
+			},
 			// scripts: {
 			// 	files: ['./client/src/**/*.ts'],
 			// 	tasks: ['browserify'],
@@ -80,7 +76,7 @@ module.exports = function (grunt) {
 		concurrent: {
 			dev: {
 				// 'nodemon:server', 
-				tasks: ['watch', 'browserify'],
+				tasks: ['watch', 'ts'],
 				options: {
 					logConcurrentOutput: true
 				}
@@ -98,7 +94,7 @@ module.exports = function (grunt) {
 	grunt.loadNpmTasks('grunt-ts');
 
 	grunt.registerTask('dev', [
-		'concat',
+		'concat:lib',
 		'copy:assets',
 		'concurrent:dev'
 	]);
