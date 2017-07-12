@@ -1,32 +1,40 @@
-import Wad from 'wad/Wad';
-import WadBuilder from 'wad/Builder';
+/// <reference path="../../.build/wad.d.ts" />
+/// <reference path="./playpal.debug.ts" />
+/// <reference path="./graphics.debug.ts" />
+/// <reference path="./colormap.debug.ts" />
+/// <reference path="./maps.debug.ts" />
 
-import PlayPalDebug from './Playpal.debug';
-import GraphicsDebug from './Graphics.debug';
-import ColorMapDebug from './ColorMap.debug';
-import MapsDebug from './Maps.debug';
+// import * as Wad from 'Wad';
+// import { WadBuilder } from 'builder';
 
-export default class Debug {
-	private wad : Wad;
-	private wadBuilder : WadBuilder;
+// import PlayPalDebug from './Playpal.debug';
+// import GraphicsDebug from './Graphics.debug';
+// import ColorMapDebug from './ColorMap.debug';
+// import MapsDebug from './Maps.debug';
 
-	constructor(wad: Wad, wadBuilder: WadBuilder){
-		this.wadBuilder = wadBuilder;
-		this.wad = wad;
+module Debug {
+	export class Debug {
+		private wad: Wad.Wad;
+		private wadBuilder: Wad.Builder;
 
-		this.groups();
-	}
+		constructor(wad: Wad.Wad, wadBuilder: Wad.Builder) {
+			this.wadBuilder = wadBuilder;
+			this.wad = wad;
 
-	private groups() {
-		var groups : HTMLUListElement = document.createElement('ul') as HTMLUListElement;
-		
-		// console.warn('coucou');
+			this.groups();
+		}
 
-		new PlayPalDebug(this.wad.getPlaypal(), groups);
-		new ColorMapDebug(this.wad.getColorMap(), groups);
-		new GraphicsDebug(this.wad.getGraphics(), groups);
-		new MapsDebug(this.wad.getMaps(), groups);
+		private groups() {
+			var groups: HTMLUListElement = document.createElement('ul') as HTMLUListElement;
 
-		document.getElementById('treeview').appendChild(groups);
+			console.warn('coucou');
+
+			new Playpal(this.wad.getPlaypal(), groups);
+			new ColorMap(this.wad.getColorMap(), groups);
+			new Graphics(this.wad.getGraphics(), groups);
+			new Maps(this.wad.getMaps(), groups);
+
+			document.getElementById('treeview').appendChild(groups);
+		}
 	}
 }

@@ -9,8 +9,11 @@
 		"preserveConstEnums": true,
 		"sourceMap": true,
 		// "baseUrl": "./",
-		"outFile": "../../.build/wad.js"
+		"outFile": "../../.build/debug.js",
 		// "outDir": "../../.build/srcs/wad/"
+		"typeRoots": [
+			"../../.build/"
+		]
 	},
 	"include": [
 		"./**/*"

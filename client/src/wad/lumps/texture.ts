@@ -1,4 +1,6 @@
-import Lump from './Lump';
+// import Lump from './Lump';
+/// <reference path="lump.ts" />
+
 
 // [8-4]: TEXTURE1 and TEXTURE2
 // ============================
@@ -165,24 +167,26 @@ import Lump from './Lump';
 // perhaps related to the way that "middle" textures of sidedefs do not
 // animate.
 
-export default class Texture extends Lump {
-	private count : number;
+module Wad {
+	export class Texture extends Lump {
+		private count: number;
 
-	constructor(lump:any, data:any){
-		super(lump, data);
+		constructor(lump: any, data: any) {
+			super(lump, data);
 
-		this.count = this.dataView.getUint32(0, true);
-		var offset = this.dataView.getUint32(4, true);
+			this.count = this.dataView.getUint32(0, true);
+			var offset = this.dataView.getUint32(4, true);
 
-		var test : string = "";
-		for (var i = offset; i < offset + 8; i++){
-			var code : number = this.dataView.getUint8(i);
+			var test: string = "";
+			for (var i = offset; i < offset + 8; i++) {
+				var code: number = this.dataView.getUint8(i);
 
-			test += String.fromCharCode(code);
+				test += String.fromCharCode(code);
+			}
+
+
+
+			console.warn(this.count, offset, test);
 		}
-
-		
-
-		console.warn(this.count, offset, test);
 	}
 }

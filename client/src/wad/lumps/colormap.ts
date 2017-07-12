@@ -1,5 +1,8 @@
-import Lump from './Lump';
-import Playpal from './Playpal';
+/// <reference path="lump.ts" />
+/// <reference path="playpal.ts" />
+
+// import Lump from './Lump';
+// import Playpal from './Playpal';
 
 // [8-2]: COLORMAP
 // ===============
@@ -22,65 +25,67 @@ import Playpal from './Playpal';
 //   Colormap 33 is all black for some reason.
 //   While the light-amplification goggles power-up is in effect, everything
 // in the display uses colormap 0, regardless of sector brightness.
-export default class ColorMap extends Lump {
-	private playpal: Playpal;
-	private sets: { index: number, brightness: number[] }[];
+module Wad {
+	export class ColorMap extends Lump {
+		private playpal: Playpal;
+		private sets: { index: number, brightness: number[] }[];
 
-	private colors : { r: number, g: number, b: number }[];
+		private colors: { r: number, g: number, b: number }[];
 
-	constructor(playpal: Playpal, lump: any, data: any) {
-		super(lump, data);
+		constructor(playpal: Playpal, lump: any, data: any) {
+			super(lump, data);
 
-		this.playpal = playpal;
-		this.sets = [];
+			this.playpal = playpal;
+			this.sets = [];
 
-		this.colors = [];
+			this.colors = [];
 
-		var colors: any[] = this.playpal.getColors()[0];
+			var colors: any[] = this.playpal.getColors()[0];
 
-		for (var i = 0; i < 34; i++) {
-			var temp: number[] = [];
-			// var index : number = this.dataView.getUint8(i * 256);
+			for (var i = 0; i < 34; i++) {
+				var temp: number[] = [];
+				// var index : number = this.dataView.getUint8(i * 256);
 
-			// console.warn('index', index);
+				// console.warn('index', index);
 
-			for (var b = 0; b < 256; b++) {
-				var byte: number = this.dataView.getUint8((i * 256) + b);
+				for (var b = 0; b < 256; b++) {
+					var byte: number = this.dataView.getUint8((i * 256) + b);
 
-				temp.push(byte);
-				this.colors.push(colors[byte]);
+					temp.push(byte);
+					this.colors.push(colors[byte]);
+				}
+
+				this.sets.push({ index: 0, brightness: temp });
 			}
 
-			this.sets.push({ index: 0, brightness: temp });
+
 		}
 
-		
-	}
+		getColors() {
+			return this.colors;
+		}
 
-	getColors(){
-		return this.colors;
-	}
+		protected onclick() {
+			// super.onclick();
 
-	protected onclick() {
-		// super.onclick();
+			// var div: HTMLDivElement = document.createElement('div');
+			// div.className = 'debug-container colormap';
 
-		// var div: HTMLDivElement = document.createElement('div');
-		// div.className = 'debug-container colormap';
+			// this.debugContainer.appendChild(div);
 
-		// this.debugContainer.appendChild(div);
 
-		
 
-		// for (var i = 0; i < 256; i++) {
-			
+			// for (var i = 0; i < 256; i++) {
 
-		// 	for (var s = 0; s < 34; s++) {
-		// 		var color = 
 
-				
-		// 	}
+			// 	for (var s = 0; s < 34; s++) {
+			// 		var color = 
 
-		// 	div.appendChild(wrapper);
-		// }
+
+			// 	}
+
+			// 	div.appendChild(wrapper);
+			// }
+		}
 	}
 }

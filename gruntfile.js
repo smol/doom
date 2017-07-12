@@ -19,6 +19,13 @@ module.exports = function (grunt) {
 					verbose: true
 				},
 				watch: './client/src/wad'
+			},
+			debug: {
+				tsconfig: './client/src/debug/tsconfig.json',
+				options: {
+					verbose: true
+				},
+				watch: './client/src/debug'
 			}
 		},
 
@@ -40,7 +47,7 @@ module.exports = function (grunt) {
 
 		concat: {
 			lib: {
-				src: ['./client/node_modules/socket.io-client/dist/socket.io.min.js'],
+				src: ['./node_modules/systemjs/dist/system-production.js'],
 				dest: './client/.build/lib.js'
 			},
 			wad: {
@@ -50,13 +57,13 @@ module.exports = function (grunt) {
 		},
 
 		watch: {
-			wad: {
-				files: ['./client/.build/srcs/wad/**/*.js'],
-				tasks: ['concat:wad'],
-				options: {
-					atBegin: true
-				}
-			},
+			// wad: {
+			// 	files: ['./client/.build/srcs/wad/**/*.js'],
+			// 	tasks: ['concat:wad'],
+			// 	options: {
+			// 		atBegin: true
+			// 	}
+			// },
 			// scripts: {
 			// 	files: ['./client/src/**/*.ts'],
 			// 	tasks: ['browserify'],
@@ -76,7 +83,7 @@ module.exports = function (grunt) {
 		concurrent: {
 			dev: {
 				// 'nodemon:server', 
-				tasks: ['watch', 'ts'],
+				tasks: ['watch', 'ts:wad', 'ts:debug'],
 				options: {
 					logConcurrentOutput: true
 				}

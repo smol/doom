@@ -1,9 +1,11 @@
-import Graphic from 'wad/lumps/Graphic';
+// import Graphic from 'wad/lumps/Graphic';
+/// <reference path="../../.build/wad.d.ts" />
+
 
 class GraphicDebug {
-	private graphic: Graphic;
+	private graphic: Wad.Graphic;
 
-	constructor(graphic: Graphic, container: HTMLElement) {
+	constructor(graphic: Wad.Graphic, container: HTMLElement) {
 		this.graphic = graphic;
 		var li: HTMLLIElement = document.createElement('li') as HTMLLIElement;
 		var self = this;
@@ -17,12 +19,12 @@ class GraphicDebug {
 		container.appendChild(li);
 	}
 
-	private setPreview(){
+	private setPreview() {
 		var preview = document.getElementById('preview');
 		preview.innerHTML = '';
 
 		var canvas: HTMLCanvasElement = document.createElement('canvas');
-		
+
 		canvas.height = this.graphic.getHeight();
 		canvas.width = this.graphic.getWidth();
 		canvas.className = 'debug-container endoom';
@@ -39,38 +41,40 @@ class GraphicDebug {
 	}
 }
 
-export default class GraphicsDebug {
-	private graphics: Graphic[];
+module Debug {
+	export class Graphics {
+		private graphics: Wad.Graphic[];
 
-	constructor(graphics: Graphic[], container: HTMLElement) {
-		this.graphics = graphics;
-		var self = this;
+		constructor(graphics: Wad.Graphic[], container: HTMLElement) {
+			this.graphics = graphics;
+			var self = this;
 
-		var li: HTMLLIElement = document.createElement('li') as HTMLLIElement;
-		li.innerHTML = 'GRAPHICS';
-		container.appendChild(li);
+			var li: HTMLLIElement = document.createElement('li') as HTMLLIElement;
+			li.innerHTML = 'GRAPHICS';
+			container.appendChild(li);
 
-		li.onclick = () => {
-			self.setList();
-		};
-	}
-
-	private setList() {
-		var subtree = document.getElementsByClassName('subtree');
-
-		if (subtree.length > 0) {
-			subtree[0].remove();
+			li.onclick = () => {
+				self.setList();
+			};
 		}
 
+		private setList() {
+			var subtree = document.getElementsByClassName('subtree');
 
-		var ul: HTMLUListElement = document.createElement('ul') as HTMLUListElement;
-		ul.className = 'subtree';
+			if (subtree.length > 0) {
+				subtree[0].remove();
+			}
 
-		this.graphics.forEach((item) => {
-			new GraphicDebug(item, ul);
 
-		});
+			var ul: HTMLUListElement = document.createElement('ul') as HTMLUListElement;
+			ul.className = 'subtree';
 
-		document.getElementById('treeview').appendChild(ul);
+			this.graphics.forEach((item) => {
+				new GraphicDebug(item, ul);
+
+			});
+
+			document.getElementById('treeview').appendChild(ul);
+		}
 	}
 }

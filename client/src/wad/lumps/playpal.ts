@@ -1,4 +1,6 @@
-import Lump from './Lump';
+// import Lump from './Lump';
+/// <reference path="./lump.ts" />
+
 
 
 // [8-1]: PLAYPAL
@@ -24,30 +26,32 @@ import Lump from './Lump';
 // the exact division points?
 
 //   Unknown: what palettes 1 and 9 are for.
-export default class Playpal extends Lump {
-	private colors: { r: number, g: number, b: number }[][];
+module Wad {
+	export class Playpal extends Lump {
+		private colors: { r: number, g: number, b: number }[][];
 
-	constructor(lump: any, data: any) {
-		super(lump, data);
+		constructor(lump: any, data: any) {
+			super(lump, data);
 
-		this.colors = [];
+			this.colors = [];
 
-		for (var n = 0; n < 14; n++) {
-			var temp: any[] = [];
+			for (var n = 0; n < 14; n++) {
+				var temp: any[] = [];
 
-			for (var i = 0; i < 256; i++) {
-				var r: number = this.dataView.getUint8((n * 768) + (i * 3) + 0);
-				var g: number = this.dataView.getUint8((n * 768) + (i * 3) + 1);
-				var b: number = this.dataView.getUint8((n * 768) + (i * 3) + 2);
+				for (var i = 0; i < 256; i++) {
+					var r: number = this.dataView.getUint8((n * 768) + (i * 3) + 0);
+					var g: number = this.dataView.getUint8((n * 768) + (i * 3) + 1);
+					var b: number = this.dataView.getUint8((n * 768) + (i * 3) + 2);
 
-				temp.push({ r: r, g: g, b: b });
+					temp.push({ r: r, g: g, b: b });
+				}
+
+				this.colors.push(temp);
 			}
-
-			this.colors.push(temp);
 		}
-	}
 
-	getColors() : any[][] {
-		return this.colors;
+		getColors(): any[][] {
+			return this.colors;
+		}
 	}
 }
