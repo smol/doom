@@ -21,16 +21,25 @@ interface DebugProps {
 }
 
 module Debug {
-	export class Debug extends React.Component<DebugProps, {}> {
+	export class Debug extends React.Component<DebugProps, { currentItem: JSX.Element }> {
 		private wad: Wad.Wad;
 		private wadBuilder: Wad.Builder;
 
-		constructor(props : DebugProps) {
-			super(props, {});
+		private items : [{label: string, component: JSX.Element }];
 
+		constructor(props : DebugProps) {
+			super(props, { currentItem: null });
+
+			this.state = { currentItem: null };
+			
 			this.wadBuilder = props.builder;
 			this.wad = props.wad;
-			// console.warn('toto');
+
+			this.items = [
+				{label: "PLAYPAL", component: <Playpal.Playpal playpal={ this.wad.getPlaypal() }/> }
+			];
+
+			this.selectItem = this.selectItem.bind(this);
 		}
 
 		private groups() {
@@ -44,17 +53,26 @@ module Debug {
 			document.getElementById('treeview').appendChild(groups);
 		}
 
+		selectItem(item : JSX.Element) {
+			this.setState(prevState => ({
+				currentItem : item
+			}));
+		}
+
 		render() {
-			console.warn('coucou');
+			
+			var labels = this.items.map((item) => {
+				return <li key={ item.label }  onClick={ () => { this.selectItem(item.component) } }>{ item.label }</li>;
+			});
+
 			return <div>
 				<div id="treeview">
 					<ul className="groups">
-						<Playpal.Playpal playpal={ this.wad.getPlaypal() } />
+						{ labels }
 					</ul>
 				</div>
 				<div id="details">
-					<div id="preview" ref="preview"></div>
-					<div id="infos"></div>
+					{ this.state.currentItem }
 				</div>
 			</div>;
 		}

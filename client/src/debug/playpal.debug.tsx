@@ -4,65 +4,35 @@
 import * as React from "react";
 import * as ReactDOM from "react-dom";
 
+interface PlaypalProps {
+	playpal: Wad.Playpal;
+	// onClick: (e) => void;
+}
+
 export module Debug {
-	export class Playpal extends React.Component<{ playpal : Wad.Playpal }, {}> {
-		// private playpal: Wad.Playpal;
-
-		constructor(props : { playpal: Wad.Playpal }) {
-			super(props, {});
-
-			var self = this;
-
-			// var html: HTMLLIElement = document.createElement('li') as HTMLLIElement;
-			// html.innerHTML = 'PLAYPAL';
-
-			// html.onclick = () => {
-			// 	self.setPreview();
-			// };
-
-			// container.appendChild(html);
-		}
-
-		private setPreview() {
-			var div: HTMLDivElement = document.getElementById('preview') as HTMLDivElement;
-
-			div.innerHTML = '';
-
-			var temp: HTMLDivElement = document.createElement('div');
-			temp.id = 'playpal';
-			div.appendChild(temp);
-
-			// this.playpal.getColors().forEach(element => {
-			// 	var wrapper = document.createElement('div');
-			// 	wrapper.className = 'swatch';
-
-			// 	element.forEach(color => {
-			// 		var colorDiv = document.createElement('div');
-			// 		colorDiv.className = 'item';
-
-			// 		colorDiv.style.backgroundColor = 'rgba(' + color.r + ',' + color.g + ',' + color.b + ', 1)';
-
-			// 		wrapper.appendChild(colorDiv);
-			// 	});
-
-			// 	temp.appendChild(wrapper);
-			// });
-		}
-
-
-		private setInfos() {
-			var div: HTMLDivElement = document.getElementById('infos') as HTMLDivElement;
-			div.innerHTML = '';
-		}
-
+	export class Playpal extends React.Component<PlaypalProps, {}> {
 		render() {
-			return <li>PLAYPAL</li>;
+			var i = 0;
+			var swatches = this.props.playpal.getColors().map(element => {
+				return <Swatch key={'swatch-' + i} swatchId={i++} colors={element as [{ r: number, g: number, b: number }]}></Swatch>
+			});
+
+			return <div id="preview" className="playpal">
+				{swatches}
+			</div>;
 		}
 	}
 }
 
-class Swatch extends React.Component<{}, {}> {
+class Swatch extends React.Component<{ colors: [{ r: number, g: number, b: number }], swatchId: number }, {}> {
 	render() {
-		return <div className="swatch"></div>;
+		var i = 0;
+		var colors = this.props.colors.map(color => {
+			return <div key={'#' + this.props.swatchId + '-' + color.r + ',' + color.g + ',' + color.b + '-' + i++ } className="item" style={{ backgroundColor: 'rgba(' + color.r + ',' + color.g + ',' + color.b + ', 1)' }}></div>
+		});
+
+		return <div className="swatch">
+			{colors}
+		</div>;
 	}
 }

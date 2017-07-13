@@ -1,23 +1,15 @@
 // import ColorMap from 'wad/lumps/ColorMap';
 /// <reference path="../../.build/wad.d.ts" />
 
+import * as React from 'react';
+import * as ReactDOM from 'react-dom';
+
+interface ColorMapProps {
+	colorMap: Wad.ColorMap;
+}
+
 module Debug {
-	export class ColorMap {
-		private colorMap: Wad.ColorMap;
-
-		constructor(colorMap: Wad.ColorMap, container: HTMLElement) {
-			this.colorMap = colorMap;
-			var self = this;
-
-			var li: HTMLLIElement = document.createElement('li') as HTMLLIElement;
-			li.innerHTML = 'COLORMAP';
-			container.appendChild(li);
-
-			li.onclick = () => {
-				self.setPreview();
-			};
-		}
-
+	export class ColorMap extends React.Component<ColorMapProps, {}> {
 		private setPreview() {
 			var div: HTMLDivElement = document.getElementById('preview') as HTMLDivElement;
 
@@ -45,8 +37,24 @@ module Debug {
 			}
 		}
 
-		private setInfos() {
+		render() {
+			var swatches: JSX.Element[] = [];
 
+			for (var i = 0; i < 256; i++) {
+				swatches.push(<ColorMapSwatch className="swatch" colorMap={ this.props.colorMap.getColors() } />);
+			}
+
+			return <div id="preview" className="colormap">
+
+			</div>;
 		}
+	}
+
+
+}
+
+class ColorMapSwatch extends React.Component<ColorMapProps, {}> {
+	render() {
+
 	}
 }
