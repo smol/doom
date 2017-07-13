@@ -63,7 +63,7 @@ module Wad {
 			this.buffer = new Uint8Array(640 * 400 * 4);
 
 			this.dosImage = new Image();
-			this.dosImage.src = 'client/assets/dos.png';
+			this.dosImage.src = '/client/assets/dos.png';
 			this.dosImage.onload = function () {
 
 				self.loadAscii(this as HTMLImageElement);

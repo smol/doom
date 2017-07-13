@@ -1,18 +1,22 @@
 {
 	"compileOnSave": true,
 	"compilerOptions": {
-		// "target": "es5",
-		"module": "system",
-		// "noImplicitAny": true,
+		"jsx": "react",
+		"module": "commonjs",
+		"target": "es5",
 		"removeComments": true,
-		"declaration": true,
+		"declaration": false,
 		"preserveConstEnums": true,
 		"sourceMap": true,
-		// "baseUrl": "./",
-		"outFile": "../../.build/debug.js",
-		// "outDir": "../../.build/srcs/wad/"
+		"outDir": "../../.build/debug/",
+		// "rootDir": "./",
 		"typeRoots": [
-			"../../.build/"
+			"../../.build/",
+			"../../../node_modules/@types/"
+		],
+		"types": [
+			"react",
+			"react-dom"
 		]
 	},
 	"include": [

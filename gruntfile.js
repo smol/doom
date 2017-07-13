@@ -1,4 +1,5 @@
 module.exports = function (grunt) {
+	const webpackConfig = require('./webpack.config');
 
 	grunt.initConfig({
 		pkg: grunt.file.readJSON('package.json'),
@@ -12,20 +13,32 @@ module.exports = function (grunt) {
 			}
 		},
 
+		webpack: {
+			options: {
+				stats: true
+			},
+			debug: Object.assign({
+				failOnError: false,
+				progress: true,
+				watch: false
+			}, webpackConfig)
+		},
+
 		ts: {
 			wad: {
 				tsconfig: './client/src/wad/tsconfig.json',
 				options: {
 					verbose: true
 				},
-				watch: './client/src/wad'
+				// watch: './client/src/wad'
 			},
 			debug: {
 				tsconfig: './client/src/debug/tsconfig.json',
 				options: {
 					verbose: true
 				},
-				watch: './client/src/debug'
+				watch: false
+				// watch: './client/src/debug'
 			}
 		},
 
@@ -47,7 +60,7 @@ module.exports = function (grunt) {
 
 		concat: {
 			lib: {
-				src: ['./node_modules/systemjs/dist/system-production.js'],
+				src: ['./node_modules/systemjs/dist/system-production.js', './node_modules/react/dist/react.js', './node_modules/react-dom/dist/react-dom.js'],
 				dest: './client/.build/lib.js'
 			},
 			wad: {
@@ -57,13 +70,20 @@ module.exports = function (grunt) {
 		},
 
 		watch: {
-			// wad: {
-			// 	files: ['./client/.build/srcs/wad/**/*.js'],
-			// 	tasks: ['concat:wad'],
-			// 	options: {
-			// 		atBegin: true
-			// 	}
-			// },
+			wad: {
+				files: ['./client/src/wad/**/*.ts'],
+				tasks: ['ts:wad'],
+				options: {
+					atBegin: true
+				}
+			},
+			debug: {
+				files: ['./client/src/debug/**/*.tsx', './client/src/debug/**/*.ts'],
+				tasks: ['ts:debug', 'webpack:debug'],
+				options: {
+					atBegin: true
+				}
+			},
 			// scripts: {
 			// 	files: ['./client/src/**/*.ts'],
 			// 	tasks: ['browserify'],
@@ -83,7 +103,7 @@ module.exports = function (grunt) {
 		concurrent: {
 			dev: {
 				// 'nodemon:server', 
-				tasks: ['watch', 'ts:wad', 'ts:debug'],
+				tasks: ['watch:debug', 'watch:stylesheets', 'watch:wad'],
 				options: {
 					logConcurrentOutput: true
 				}
@@ -99,11 +119,20 @@ module.exports = function (grunt) {
 	grunt.loadNpmTasks('grunt-concurrent');
 	grunt.loadNpmTasks('grunt-browserify');
 	grunt.loadNpmTasks('grunt-ts');
+	grunt.loadNpmTasks('grunt-webpack');
 
 	grunt.registerTask('dev', [
+		'ts:wad',
 		'concat:lib',
+		'ts:debug',
+		'webpack:debug',
 		'copy:assets',
 		'concurrent:dev'
 	]);
 
+
+	grunt.registerTask('temp', [
+		// 'ts:debug',
+		'webpack:debug'
+	]);
 };

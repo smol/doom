@@ -4,32 +4,23 @@
 		<meta charset="utf-8">
 		<title>DOOM !!!!</title>
 
-		<link rel="stylesheet" href="style.css">
+		<link rel="stylesheet" href="/style.css">
 
-		<!--<script src="lib.js" charset="utf-8"></script>-->
-		<script src="wad.js" charset="utf-8"></script>
-		<!--<script src="/engine.js" charset="utf-8"></script>-->
-		<script src="debug.js" charset="utf-8"></script>
+		
 	</head>
-	<body id="debug">
-		<div id="treeview"></div>
-		<div id="details">
-			<div id="preview"></div>
-			<div id="infos"></div>
+	<body>
+		<div id="debug">
+			
 		</div>
 	</body>
 
+	<script src="/wad.js" charset="utf-8"></script>
+	<script src="/lib.js" charset="utf-8"></script>
+	
+	<!--<script src="/engine.js" charset="utf-8"></script>-->
+	<script src="/debug.js" charset="utf-8"></script>
 	<script>
-		var parser = new Wad.Parser();
-		var builder = new Wad.Builder(parser);
-
-		parser.onLoad = () => {
-			builder.go();
-
-			new Debug.Debug(builder.getWad(), builder);
-		};
-
-		parser.loadFile('/client/assets/doom.wad');
+		
 
 		// new Wad.Wad();
 		// SystemJS.import('debug.js');
