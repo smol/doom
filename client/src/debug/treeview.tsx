@@ -33,7 +33,7 @@ export module Debug {
 			this.state.items.splice(level + 1, (this.state.items.length - level));
 
 			var items = this.state.items;
-			console.warn('items', this.state.items);
+			// console.warn('items', this.state.items);
 			
 			if (item.children !== null && item.children.length > 0) {
 				items.push(item.children);

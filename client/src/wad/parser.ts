@@ -103,10 +103,10 @@ module Wad {
 					// self.onProgress();
 					// self.onLoad();
 					// self.playpal = Object.create(Playpal);
-					if (self.lumpExists("PLAYPAL")) {
-						console.warn(self.getLumpByName("PLAYPAL"));
-						// self.playpal.load(wad.getLumpByName("PLAYPAL"));
-					}
+					// if (self.lumpExists("PLAYPAL")) {
+					// 	// console.warn(self.getLumpByName("PLAYPAL"));
+					// 	// self.playpal.load(wad.getLumpByName("PLAYPAL"));
+					// }
 
 					return;
 				}

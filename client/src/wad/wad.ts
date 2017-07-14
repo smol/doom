@@ -25,8 +25,6 @@ module Wad {
 		constructor() {
 			this.graphics = [];
 			this.maps = [];
-
-			console.warn('test');
 		}
 
 		setPlaypal(lump: any, data: any) {

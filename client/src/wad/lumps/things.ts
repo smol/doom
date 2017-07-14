@@ -152,11 +152,34 @@ module Wad {
 		}
 	}
 
+//  Short 5 of 5, occupying bytes 8-9 of each thing record, control a
+// few options, according to which bits are set:
 
+// bit 0   the THING is present at skill 1 and 2
+// bit 1   the THING is present at skill 3 (hurt me plenty)
+// bit 2   the THING is present at skill 4 and 5 (ultra-violence, nightmare)
+// bit 3   indicates a deaf guard.
+// bit 4   means the THING only appears in multiplayer mode.
+
+// bits 5-15 have no effect.
+
+//   The skill settings are most used with the monsters, of course...the
+// most common skill level settings are hex 07/0f (on all skills), 06/0e
+// (on skill 3-4-5), and 04/0c (only on skill 4-5). Unusual skill settings
+// are perfectly allowable, e.g. hex 05 for a thing which is present on
+// skill 1, 2, 4, and 5, but not skill 3.
+//   "deaf guard" only has meaning for monsters, who will not attack until
+// they see a player if they are deaf. Otherwise, they will activate when
+// they hear gunshots, etc. (including the punch!). Sound does not travel
+// through solid walls (walls that are solid at the time of the noise).
+// Also, lines can be set so that sound does not pass through them (see
+// [4-3-1] bit 6). This option is also known as the "ambush" option (or
+// flag, or attribute).
 	export class Thing {
 		private x: number;
 		private y: number;
 		private angle: number;
+		private options : number;
 		typeId: number;
 		private type: string;
 
@@ -165,11 +188,13 @@ module Wad {
 			this.y = dataView.getInt16(index + 2, true);
 			this.angle = dataView.getInt16(index + 4, true);
 			this.typeId = dataView.getInt16(index + 6, true);
+			this.options = dataView.getInt16(index + 8, true);
 			this.type = DoomThingTable[this.typeId];
+
 		}
 
 		toString(): string {
-			return 'type: ' + this.typeId + ' x: ' + this.x + ' y: ' + this.y + ' angle: ' + this.angle;
+			return 'type: ' + this.type + ' x: ' + this.x + ' y: ' + this.y + ' angle: ' + this.angle + ' options: ' + this.options;
 		}
 	}
 }

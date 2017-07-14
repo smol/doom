@@ -13,6 +13,7 @@ import { Debug as Graphic } from './Graphic.debug';
 import { Debug as ColorMap } from './ColorMap.debug';
 import { Debug as Endoom } from './Endoom.debug';
 import { Debug as Map } from './Map.debug';
+import { Debug as Vertexes } from './Vertexes.debug';
 
 import * as React from "react";
 import * as ReactDOM from "react-dom";
@@ -52,7 +53,8 @@ module Debug {
 				};
 
 				data.children = [
-					{ label: "THINGS", component: <Map.Things things={map.getThings()}/>, children: [] }
+					{ label: "THINGS", component: <Map.Things things={map.getThings()}/>, children: [] },
+					{ label: "VERTEXES", component: <Vertexes.Vertexes vertexes={map.getVertexes()} linedefs={map.getLinedefs()}/>, children: [] }
 				];
 
 				return data;

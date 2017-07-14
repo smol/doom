@@ -34,10 +34,13 @@ module Wad {
 
 		private wad: Wad;
 
+		private unknownTypes : string[];
+
 		constructor(parser: Parser) {
 			this.parser = parser;
 
 			this.wad = new Wad();
+			this.unknownTypes = [];
 		}
 
 		getWad(): Wad {
@@ -54,6 +57,8 @@ module Wad {
 
 				// this.dispatch(temp, i);
 			}
+
+			console.info('UNKNOWN TYPES', this.unknownTypes);
 		}
 
 		// private dispatch(lump: Lump, index: number) {
@@ -72,6 +77,7 @@ module Wad {
 
 		private create(lump: any, data: any, index: number) {
 			var type: string = Type.get(lump, data, this.lumps, index);
+			// console.warn(lump.name);
 
 			if (lump.name === 'PLAYPAL') {
 				this.wad.setPlaypal(lump, data);
@@ -86,9 +92,18 @@ module Wad {
 
 				maps[maps.length - 1].setThings(lump, data);
 				return new Things(lump, data);
-			} else if (lump.name === 'VERTEXES' || lump.name === 'LINEDEFS') {
+			} else if (lump.name === 'LINEDEFS'){
+				var maps: Map[] = this.wad.getMaps();
+
+				maps[maps.length - 1].setLinedefs(lump, data);
+			} else if (lump.name === 'VERTEXES') {
+				var maps: Map[] = this.wad.getMaps();
+
+				maps[maps.length - 1].setVertexes(lump, data);
 			} else if (type === 'GRAPHIC') {
 				this.wad.setGraphic(lump, data);
+			} else {
+				this.unknownTypes.push(lump.name);
 			}
 		}
 	}
