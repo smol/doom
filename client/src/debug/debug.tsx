@@ -7,10 +7,12 @@
 // import * as Wad from 'Wad';
 // import { WadBuilder } from 'builder';
 
+import { Debug as TreeView } from './treeview';
 import { Debug as Playpal } from './playpal.debug';
-// import GraphicsDebug from './Graphics.debug';
-// import ColorMapDebug from './ColorMap.debug';
-// import MapsDebug from './Maps.debug';
+import { Debug as Graphic } from './Graphic.debug';
+import { Debug as ColorMap } from './ColorMap.debug';
+import { Debug as Endoom } from './Endoom.debug';
+import { Debug as Map } from './Map.debug';
 
 import * as React from "react";
 import * as ReactDOM from "react-dom";
@@ -22,24 +24,52 @@ interface DebugProps {
 
 module Debug {
 	export class Debug extends React.Component<DebugProps, { currentItem: JSX.Element }> {
-		private wad: Wad.Wad;
-		private wadBuilder: Wad.Builder;
+		private items: [TreeView.TreeData];
 
-		private items : [{label: string, component: JSX.Element }];
-
-		constructor(props : DebugProps) {
-			super(props, { currentItem: null });
-
+		constructor(props: DebugProps) {
+			super(props);
 			this.state = { currentItem: null };
-			
-			this.wadBuilder = props.builder;
-			this.wad = props.wad;
 
 			this.items = [
-				{label: "PLAYPAL", component: <Playpal.Playpal playpal={ this.wad.getPlaypal() }/> }
+				{ label: "PLAYPAL", component: <Playpal.Playpal playpal={this.props.wad.getPlaypal()} />, children: [] },
+				{ label: "COLORMAP", component: <ColorMap.ColorMap colorMap={this.props.wad.getColorMap()} />, children: [] },
+				{ label: "ENDOOM", component: <Endoom.Endoom endoom={this.props.wad.getEndoom() } />, children: []},
+				{ label: "GRAPHICS", component: null, children: this.getGraphics() },
+				{ label: "MAPS", component: null, children: this.getMaps() }
 			];
 
 			this.selectItem = this.selectItem.bind(this);
+		}
+
+		private getMaps() : TreeView.TreeData[] {
+			var datas : TreeView.TreeData[] = [];
+
+			datas = this.props.wad.getMaps().map(map => {
+				var data : TreeView.TreeData = {
+					label: map.getName(),
+					component: null,
+					children: []
+				};
+
+				data.children = [
+					{ label: "THINGS", component: <Map.Things things={map.getThings()}/>, children: [] }
+				];
+
+				return data;
+			});
+
+			return datas;
+		}
+
+		private getGraphics() : TreeView.TreeData[] {
+			var datas : TreeView.TreeData[] = [];
+			var graphics : Wad.Graphic[] = this.props.wad.getGraphics();
+
+			for (var i = 0; i < graphics.length; i++){
+				datas.push({ label: graphics[i].getName(), component: <Graphic.Graphic graphic={ graphics[i] } />, children: null });
+			}
+
+			return datas;
 		}
 
 		private groups() {
@@ -53,26 +83,17 @@ module Debug {
 			document.getElementById('treeview').appendChild(groups);
 		}
 
-		selectItem(item : JSX.Element) {
+		selectItem(item: JSX.Element) {
 			this.setState(prevState => ({
-				currentItem : item
+				currentItem: item
 			}));
 		}
 
 		render() {
-			
-			var labels = this.items.map((item) => {
-				return <li key={ item.label }  onClick={ () => { this.selectItem(item.component) } }>{ item.label }</li>;
-			});
-
 			return <div>
-				<div id="treeview">
-					<ul className="groups">
-						{ labels }
-					</ul>
-				</div>
+				<TreeView.TreeView items={ this.items } select={ this.selectItem } />
 				<div id="details">
-					{ this.state.currentItem }
+					{this.state.currentItem}
 				</div>
 			</div>;
 		}
@@ -86,7 +107,7 @@ parser.onLoad = () => {
 	builder.go();
 
 	ReactDOM.render(
-		<Debug.Debug wad={builder.getWad() } builder={ builder }/>,
+		<Debug.Debug wad={builder.getWad()} builder={builder} />,
 		document.getElementById("debug")
 	);
 

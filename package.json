@@ -9,6 +9,7 @@
   "author": "smol",
   "license": "LGPL-3.0",
   "devDependencies": {
+    "awesome-typescript-loader": "^3.2.1",
     "browserify": "^14.4.0",
     "grunt": "^0.4.5",
     "grunt-browserify": "^5.0.0",
@@ -23,7 +24,8 @@
     "grunt-ts": "^6.0.0-beta.16",
     "grunt-webpack": "^3.0.2",
     "tsify": "^3.0.1",
-    "typescript": "^2.3.4"
+    "typescript": "^2.3.4",
+    "webpack": "^3.2.0"
   },
   "dependencies": {
     "@types/react": "^15.0.35",

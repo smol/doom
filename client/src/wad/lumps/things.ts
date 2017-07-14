@@ -146,10 +146,14 @@ module Wad {
 				this.things.push(new Thing(i, this.dataView));
 			}
 		}
+		
+		get() : Thing[] {
+			return this.things;
+		}
 	}
 
 
-	class Thing {
+	export class Thing {
 		private x: number;
 		private y: number;
 		private angle: number;

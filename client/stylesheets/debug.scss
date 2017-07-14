@@ -3,18 +3,34 @@
 	height: 100vh;
 
 	#treeview {
-		background: lightgrey;
+		background: #616161;
 		height: 50vh;
-		padding: 20px;
 		box-sizing: border-box;
 
-		> ul {
+		> .groups {
 			margin: 0;
 			display: inline-block;
 			vertical-align: top;
 			height: 100%;
 			overflow: auto;
-			width: 33vw;
+			width: 15vw;
+			padding: 0 10px;
+			list-style: none;
+			
+
+			> li {
+				padding: 5px;
+				border-bottom: 1px solid #cdcdcd;
+				background: #e7e7e7;
+				margin: 5px 0;
+				border-radius: 2px;
+				transition: transform .2s ease-in-out;
+
+				&:hover {
+					cursor: pointer;
+					transform: scale3d(1.1, 1.1, 1.1);
+				}
+			}
 		}
 	}
 

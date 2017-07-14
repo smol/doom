@@ -95,23 +95,8 @@ module Wad {
 			this.ascii = imageData.data;
 		}
 
-		protected onclick() {
-			// super.onclick();
-
-			var canvas: HTMLCanvasElement = document.createElement('canvas');
-			canvas.height = 25 * 16;
-			canvas.width = 80 * 8;
-			canvas.className = 'debug-container endoom';
-
-			var ctx: CanvasRenderingContext2D = canvas.getContext('2d');
-			var idata: ImageData = ctx.createImageData(canvas.width, canvas.height);
-
-			idata.data.set(this.buffer);
-
-			ctx.putImageData(idata, 0, 0);
-
-			this.debugContainer.appendChild(canvas);
-		}
+		
+		getData() : Uint8Array { return this.buffer; }
 
 		private getColor(color: number): { f: { r: number, b: number, g: number }, b: { r: number, b: number, g: number } } {
 			var foreground = color & parseInt('00001111', 2);
