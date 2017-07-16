@@ -1,0 +1,24 @@
+{
+	"compileOnSave": true,
+	"compilerOptions": {
+		"target": "es5",
+		"module": "system",
+		// "noImplicitAny": true,
+		"removeComments": true,
+		"declaration": true,
+		"preserveConstEnums": true,
+		"sourceMap": true,
+		// "baseUrl": "./",
+		"outFile": "../../.build/engine.js",
+		// "outDir": "../../.build/srcs/wad/"
+		"typeRoots": [
+			"../../../node_modules/@types/"
+		],
+		"types": [
+			"sylvester"
+		]
+	},
+	"include": [
+		"./**/*"
+	]
+}

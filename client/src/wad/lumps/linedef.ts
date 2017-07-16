@@ -22,8 +22,6 @@ module Wad {
 			for (var i = 0; i < this.dataView.byteLength; i += 14){
 				this.linedefs.push(new Linedef(lump, data, i));
 			}
-
-			// console.warn('linedefs', this.linedefs);
 		}
 
 		get() : Linedef[] {
@@ -67,6 +65,10 @@ module Wad {
 
 		getSecond() : number {
 			return this.secondVertexIndex;
+		}
+
+		getFlag() : string {
+			return this.flags;
 		}
 	}
 }

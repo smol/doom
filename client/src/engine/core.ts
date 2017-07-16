@@ -1,57 +1,75 @@
-import GameObject from './GameObject';
+// import GameObject from './GameObject';
+/// <reference path="gameobject.ts" />
 
-export default class Core {
-	protected canvas : HTMLCanvasElement;
-	protected ctx : CanvasRenderingContext2D;
+module Engine {
+	export class Core {
+		protected canvas: HTMLCanvasElement;
+		protected gl: WebGLRenderingContext;
 
-	private gameobjects : GameObject[];
+		private gameobjects: GameObject[];
 
-	static width = 0;
-	static height = 0;
+		static width = 0;
+		static height = 0;
 
-	constructor(idCanvas, fps) {
-		var self = this;
+		constructor(canvas : HTMLCanvasElement, fpsMax : number) {
+			var self : Core = this;
 
-		this.canvas = document.getElementById(idCanvas) as HTMLCanvasElement;
-		this.ctx = this.canvas.getContext('2d');
+			this.update = this.update.bind(this);
+			this.draw = this.draw.bind(this);
 
-		this.ctx.imageSmoothingEnabled = false;
+			this.canvas = canvas;
+			this.gl = this.canvas.getContext('webgl');
 
-		Core.width = this.canvas.width;
-		Core.height = this.canvas.height;
+			Core.width = this.canvas.width;
+			Core.height = this.canvas.height;
 
-		this.gameobjects = [];
+			this.gameobjects = [];
 
-		function loop() {
-			self.update();
-			self.draw();
+			this.gl.clearColor(27.0/255,27.0/255,27.0/255, 1.0); // Clear to the Inovia black
+			this.gl.clearDepth(1.0); // Clear the depth buffer
+			this.gl.enable(this.gl.DEPTH_TEST); // Enable depth testing (objects in the front hide the others)
 
-			setTimeout(loop, 1000 / fps);
+			var cube = new Cube();
+
+			this.addChild(cube);
+
+
+			function loop() {
+				self.update();
+				self.draw();
+
+				setTimeout(loop, 1000 / fpsMax);
+			}
+
+			loop();
 		}
 
-		loop();
-	}
-
-	get getContext() : CanvasRenderingContext2D {
-		return this.ctx;
-	}
-
-	addChild(child) {
-		child.ctx = this.ctx;
-		this.gameobjects.push(child);
-	}
-
-	update() {
-		for (var i = 0; i < this.gameobjects.length; i++) {
-			this.gameobjects[i].update();
+		get getContext(): WebGLRenderingContext {
+			return this.gl;
 		}
-	}
 
-	draw() {
-		this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+		addChild(child : GameObject) {
+			child.addGl(this.gl);
+			this.gameobjects.push(child);
+		}
 
-		for (var i = 0; i < this.gameobjects.length; i++) {
-			this.gameobjects[i].draw();
+		update() {
+			for (var i = 0; i < this.gameobjects.length; i++) {
+				this.gameobjects[i].update();
+			}
+		}
+
+		draw() {
+			this.gl.clear(this.gl.COLOR_BUFFER_BIT | this.gl.DEPTH_BUFFER_BIT);
+
+
+			// this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+
+			// for (var i = 0; i < this.gameobjects.length; i++) {
+			// 	this.gameobjects[i].draw();
+			// }
 		}
 	}
 }
+
+

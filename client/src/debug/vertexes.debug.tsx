@@ -73,9 +73,19 @@ export module Debug {
 				
 				// console.warn("first", firstVertex.x, firstVertex.y);
 				// console.warn("second", secondVertex.x, secondVertex.y);
-
+				ctx.beginPath();
+				if (this.props.linedefs[i].getFlag() === 'Secret'){
+					ctx.strokeStyle = 'red';
+				} else {
+					ctx.strokeStyle = 'white';
+				}
+				
 				ctx.moveTo((start.x - firstVertex.x) * scale, (start.y - firstVertex.y) * scale);
 				ctx.lineTo((start.x - secondVertex.x) * scale, (start.y - secondVertex.y) * scale);
+
+				
+				ctx.stroke();
+				ctx.closePath();
 			}
 
 			// ctx.moveTo((start.x - this.props.vertexes[0].x) * scale, (start.y - this.props.vertexes[0].y) * scale);
@@ -83,8 +93,7 @@ export module Debug {
 			// 	ctx.lineTo((start.x - this.props.vertexes[i].x) * scale, (start.y - this.props.vertexes[i].y) * scale);
 
 			// }
-			ctx.strokeStyle = 'white';
-			ctx.stroke();
+			
 
 			// ctx.scale(scale, scale);
 		}

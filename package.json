@@ -9,6 +9,7 @@
   "author": "smol",
   "license": "LGPL-3.0",
   "devDependencies": {
+    "@types/sylvester": "^0.1.5",
     "awesome-typescript-loader": "^3.2.1",
     "browserify": "^14.4.0",
     "grunt": "^0.4.5",
@@ -32,6 +33,7 @@
     "@types/react-dom": "^15.5.1",
     "react": "^15.6.1",
     "react-dom": "^15.6.1",
+    "sylvester": "0.0.21",
     "systemjs": "^0.20.15"
   }
 }

@@ -48,7 +48,7 @@ module Debug {
 			datas = this.props.wad.getMaps().map(map => {
 				var data : TreeView.TreeData = {
 					label: map.getName(),
-					component: null,
+					component: <Map.Map map={map} />,
 					children: []
 				};
 

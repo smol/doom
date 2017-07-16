@@ -3,12 +3,17 @@
 // import Map from 'wad/lumps/Map';
 
 /// <reference path="../../.build/wad.d.ts" />
+/// <reference path="../../.build/engine.d.ts" />
 
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
 
 interface ThingsProps {
 	things : Wad.Things;
+}
+
+interface MapProps {
+	map : Wad.Map;
 }
 
 export module Debug {
@@ -25,6 +30,22 @@ export module Debug {
 					{ things }
 				</ul>
 			</div>;
+		}
+	}
+
+	export class Map extends React.Component<MapProps> {
+		private core : Engine.Core;
+
+		private rendering(){
+			this.core = new Engine.Core(this.refs.canvas as HTMLCanvasElement, 2);
+		}
+
+		componentDidMount(){
+			this.rendering();
+		}
+
+		render(){
+			return <canvas ref="canvas" width={ window.innerWidth } height={ window.innerHeight / 2 } style={{ backgroundColor: 'black' }} />;
 		}
 	}
 

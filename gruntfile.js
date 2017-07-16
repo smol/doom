@@ -32,6 +32,13 @@ module.exports = function (grunt) {
 				},
 				// watch: './client/src/wad'
 			},
+			engine: {
+				tsconfig: './client/src/engine/tsconfig.json',
+				options: {
+					verbose: true
+				},
+				// watch: './client/src/wad'
+			},
 			debug: {
 				tsconfig: './client/src/debug/tsconfig.json',
 				options: {
@@ -60,7 +67,7 @@ module.exports = function (grunt) {
 
 		concat: {
 			lib: {
-				src: ['./node_modules/systemjs/dist/system-production.js', './node_modules/react/dist/react.js', './node_modules/react-dom/dist/react-dom.js'],
+				src: ['./node_modules/react/dist/react.js', './node_modules/react-dom/dist/react-dom.js', './client/sylvester.js'],
 				dest: './client/.build/lib.js'
 			},
 			wad: {
@@ -73,6 +80,13 @@ module.exports = function (grunt) {
 			wad: {
 				files: ['./client/src/wad/**/*.ts'],
 				tasks: ['ts:wad'],
+				options: {
+					atBegin: true
+				}
+			},
+			engine: {
+				files: ['./client/src/engine/**/*.ts'],
+				tasks: ['ts:engine'],
 				options: {
 					atBegin: true
 				}
@@ -103,7 +117,7 @@ module.exports = function (grunt) {
 		concurrent: {
 			dev: {
 				// 'nodemon:server', 
-				tasks: ['watch:debug', 'watch:stylesheets', 'watch:wad'],
+				tasks: ['watch:engine', 'watch:debug', 'watch:stylesheets', 'watch:wad'],
 				options: {
 					logConcurrentOutput: true
 				}
@@ -123,6 +137,7 @@ module.exports = function (grunt) {
 
 	grunt.registerTask('dev', [
 		'ts:wad',
+		'ts:engine',
 		'concat:lib',
 		'ts:debug',
 		'webpack:debug',
