@@ -37,7 +37,7 @@ export module Debug {
 		private core : Engine.Core;
 
 		private rendering(){
-			this.core = new Engine.Core(this.refs.canvas as HTMLCanvasElement, 2);
+			this.core = new Engine.Core(this.refs.canvas as HTMLCanvasElement);
 		}
 
 		componentDidMount(){

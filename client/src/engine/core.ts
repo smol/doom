@@ -1,73 +1,63 @@
 // import GameObject from './GameObject';
-/// <reference path="gameobject.ts" />
+/// <reference path="../../../node_modules/@types/three/index.d.ts" />
 
 module Engine {
 	export class Core {
-		protected canvas: HTMLCanvasElement;
-		protected gl: WebGLRenderingContext;
+		constructor(canvas: HTMLCanvasElement) {
+			let scene = new THREE.Scene();
+			let camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000)
 
-		private gameobjects: GameObject[];
+			let renderer = new THREE.WebGLRenderer({ canvas: canvas });
 
-		static width = 0;
-		static height = 0;
+			let axis = new THREE.AxisHelper(10)
 
-		constructor(canvas : HTMLCanvasElement, fpsMax : number) {
-			var self : Core = this;
+			scene.add(axis)
 
-			this.update = this.update.bind(this);
-			this.draw = this.draw.bind(this);
+			// add lights
+			let light = new THREE.DirectionalLight(0xffffff, 1.0)
 
-			this.canvas = canvas;
-			this.gl = this.canvas.getContext('webgl');
+			light.position.set(100, 100, 100)
 
-			Core.width = this.canvas.width;
-			Core.height = this.canvas.height;
+			scene.add(light)
 
-			this.gameobjects = [];
+			let light2 = new THREE.DirectionalLight(0xffffff, 1.0)
 
-			this.gl.clearColor(27.0/255,27.0/255,27.0/255, 1.0); // Clear to the Inovia black
-			this.gl.clearDepth(1.0); // Clear the depth buffer
-			this.gl.enable(this.gl.DEPTH_TEST); // Enable depth testing (objects in the front hide the others)
+			light2.position.set(-100, 100, -100)
 
-			var cube = new Cube();
+			scene.add(light2)
 
-			this.addChild(cube);
+			let material = new THREE.MeshBasicMaterial({
+				color: 0xaaaaaa,
+				wireframe: true
+			})
 
+			// create a box and add it to the scene
+			let box = new THREE.Mesh(new THREE.BoxGeometry(1, 1, 1), material)
 
-			function loop() {
-				self.update();
-				self.draw();
+			scene.add(box)
 
-				setTimeout(loop, 1000 / fpsMax);
+			box.position.x = 0.5
+			box.rotation.y = 0.5
+
+			camera.position.x = 5
+			camera.position.y = 5
+			camera.position.z = 5
+
+			camera.lookAt(scene.position)
+
+			function animate(): void {
+				requestAnimationFrame(animate)
+				render()
 			}
 
-			loop();
-		}
-
-		get getContext(): WebGLRenderingContext {
-			return this.gl;
-		}
-
-		addChild(child : GameObject) {
-			child.addGl(this.gl);
-			this.gameobjects.push(child);
-		}
-
-		update() {
-			for (var i = 0; i < this.gameobjects.length; i++) {
-				this.gameobjects[i].update();
+			function render(): void {
+				let timer = 0.002 * Date.now()
+				box.position.y = 0.5 + 0.5 * Math.sin(timer)
+				box.rotation.x += 0.1
+				renderer.render(scene, camera)
 			}
-		}
 
-		draw() {
-			this.gl.clear(this.gl.COLOR_BUFFER_BIT | this.gl.DEPTH_BUFFER_BIT);
-
-
-			// this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
-
-			// for (var i = 0; i < this.gameobjects.length; i++) {
-			// 	this.gameobjects[i].draw();
-			// }
+			animate()
 		}
 	}
 }

@@ -11,15 +11,20 @@
 		"outDir": "../../.build/debug/",
 		// "rootDir": "./",
 		"typeRoots": [
-			"../../.build/",
-			"../../../node_modules/@types/"
+			"../../.build/"
+			// "../../../node_modules/@types/"
 		],
 		"types": [
 			"react",
 			"react-dom"
-		]
+		],
+		"lib": ["es5", "dom", "es2015.iterable"]
 	},
+	"exclude": [
+		"three/*.d.ts"
+	],
 	"include": [
-		"./**/*"
+		"./**/*.ts",
+		"./**/*.tsx"
 	]
 }

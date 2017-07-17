@@ -8,15 +8,9 @@
 		"declaration": true,
 		"preserveConstEnums": true,
 		"sourceMap": true,
-		// "baseUrl": "./",
+		// "moduleResolution": "node",
 		"outFile": "../../.build/engine.js",
-		// "outDir": "../../.build/srcs/wad/"
-		"typeRoots": [
-			"../../../node_modules/@types/"
-		],
-		"types": [
-			"sylvester"
-		]
+		"lib": ["es5", "dom", "es2015.iterable"]
 	},
 	"include": [
 		"./**/*"
