@@ -94,8 +94,8 @@ module Wad {
 			}
 		}
 
-		getImageData(): Uint8ClampedArray {
-			return this.imageData;
+		getImageData(): Uint8Array {
+			return Uint8Array.from(this.imageData);
 		}
 
 		getWidth(): number { return this.width; }

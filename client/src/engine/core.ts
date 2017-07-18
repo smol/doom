@@ -37,11 +37,23 @@ module Engine {
 
 			let controls = new Engine.OrbitControls(camera, canvas);
 
-			camera.lookAt(scene.position)
+			
 
 			let wall = new Engine.Wall();
-			wall.setTexture(wad.getGraphics()[Math.round(Math.random() * wad.getGraphics().length )]);
+			let graphics : Wad.Graphic[] = wad.getGraphics();
+
+			// for (var i =0; i < graphics.length; i++){
+			// 	if (graphics[i].getName().indexOf("DOOR2_4") !== -1){
+			// 		wall.setTexture(graphics[i]);
+			// 		break;
+			// 	}
+			// }
+
+			wall.setTexture(graphics[Math.round(Math.random() * graphics.length)]);
+			
 			scene.add(wall);
+
+			camera.lookAt(wall.position)
 
 			function animate(): void {
 				requestAnimationFrame(animate)
