@@ -2,8 +2,8 @@
 
 // import Map from 'wad/lumps/Map';
 
-/// <reference path="../../.build/wad.d.ts" />
-/// <reference path="../../.build/engine.d.ts" />
+/// <reference types="wad" />
+/// <reference types="engine" />
 
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
@@ -14,6 +14,7 @@ interface ThingsProps {
 
 interface MapProps {
 	map : Wad.Map;
+	wad: Wad.Wad;
 }
 
 export module Debug {
@@ -37,7 +38,7 @@ export module Debug {
 		private core : Engine.Core;
 
 		private rendering(){
-			this.core = new Engine.Core(this.refs.canvas as HTMLCanvasElement);
+			this.core = new Engine.Core(this.refs.canvas as HTMLCanvasElement, this.props.wad);
 		}
 
 		componentDidMount(){

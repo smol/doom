@@ -1,4 +1,4 @@
-/// <reference path="../../.build/wad.d.ts" />
+/// <reference types="wad" />
 // / <reference path="./playpal.debug.ts" />
 // / <reference path="./graphics.debug.ts" />
 // / <reference path="./colormap.debug.ts" />
@@ -48,7 +48,7 @@ module Debug {
 			datas = this.props.wad.getMaps().map(map => {
 				var data : TreeView.TreeData = {
 					label: map.getName(),
-					component: <Map.Map map={map} />,
+					component: <Map.Map map={map} wad={this.props.wad} />,
 					children: []
 				};
 

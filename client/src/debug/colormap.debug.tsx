@@ -1,5 +1,5 @@
 // import ColorMap from 'wad/lumps/ColorMap';
-/// <reference path="../../.build/wad.d.ts" />
+/// <reference types="wad" />
 
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';

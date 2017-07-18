@@ -1,7 +1,8 @@
 /// <reference path="lump.ts" />
 /// <reference path="things.ts" />
 /// <reference path="vertexes.ts" />
-
+/// <reference path="linedef.ts" />
+/// <reference path="sectors.ts" />
 
 module Wad {
 	export class Map extends Lump {

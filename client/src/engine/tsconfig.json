@@ -9,8 +9,14 @@
 		"preserveConstEnums": true,
 		"sourceMap": true,
 		// "moduleResolution": "node",
-		"outFile": "../../.build/engine.js",
-		"lib": ["es5", "dom", "es2015.iterable"]
+		"outFile": "../../.build/engine/index.js",
+		"lib": ["es5", "dom", "es2015.iterable"],
+		"typeRoots": [
+			"../../.build/"
+		],
+		"types": [
+			"wad"
+		]
 	},
 	"include": [
 		"./**/*"

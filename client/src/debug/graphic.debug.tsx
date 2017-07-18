@@ -1,5 +1,5 @@
 // import Graphic from 'wad/lumps/Graphic';
-/// <reference path="../../.build/wad.d.ts" />
+/// <reference types="wad" />
 
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
