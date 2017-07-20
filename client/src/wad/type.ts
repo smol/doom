@@ -69,7 +69,14 @@ module Wad {
 				return true;
 			}
 
+			function isFlat(dv, lump){
+				return lump.size == 4096;
+			}
+
 			if (isDoomGFX(dv, lump)) return "GRAPHIC";
+
+			if (isFlat(dv, lump))
+				return "FLAT";
 
 
 			return "";

@@ -77,7 +77,7 @@ module Wad {
 
 		private create(lump: any, data: any, index: number) {
 			var type: string = Type.get(lump, data, this.lumps, index);
-			// console.warn(lump.name);
+			// console.warn(lump.name, type);
 
 			if (lump.name === 'PLAYPAL') {
 				this.wad.setPlaypal(lump, data);
@@ -96,10 +96,18 @@ module Wad {
 				var maps: Map[] = this.wad.getMaps();
 
 				maps[maps.length - 1].setLinedefs(lump, data);
+			} else if (/^TEXTURE\d$/.test(lump.name)) {
+				this.wad.setTextures(lump, data);
 			} else if (lump.name === 'VERTEXES') {
 				var maps: Map[] = this.wad.getMaps();
 
 				maps[maps.length - 1].setVertexes(lump, data);
+			} else if (lump.name === 'F_START'){
+				this.wad.setStartFlats(true);
+			} else if (lump.name === 'F_END'){
+				this.wad.setStartFlats(false);
+			} else if (type === 'FLAT') {
+				this.wad.setFlat(lump, data);
 			} else if (type === 'GRAPHIC') {
 				this.wad.setGraphic(lump, data);
 			} else {

@@ -9,6 +9,10 @@ interface GraphicProps {
 	graphic: Wad.Graphic;
 }
 
+interface FlatProps {
+	flat: Wad.Flat;
+}
+
 export module Debug {
 	export class Graphic extends React.Component<GraphicProps, {}> {
 
@@ -42,6 +46,39 @@ export module Debug {
 
 		render() {
 			return <canvas className="debug-container endoom" ref="canvas" width={this.props.graphic.getWidth()} height={this.props.graphic.getHeight()}></canvas>;
+		}
+	}
+
+	export class Flat extends React.Component<FlatProps, {}> {
+		constructor(props: FlatProps) {
+			super(props);
+		}
+
+		componentDidMount() {
+			this.updateCanvas(this.props.flat);
+		}
+
+		private updateCanvas(flat: Wad.Flat) {
+			var canvas: HTMLCanvasElement = this.refs.canvas as HTMLCanvasElement;
+			canvas.height = flat.getHeight();
+			canvas.width = flat.getWidth();
+
+			setTimeout(function () {
+				var ctx: CanvasRenderingContext2D = canvas.getContext('2d');
+				var idata: ImageData = ctx.createImageData(canvas.width, canvas.height);
+
+				idata.data.set(flat.getImageData());
+				
+				ctx.putImageData(idata, 0, 0);
+			});
+		}
+
+		componentWillReceiveProps(nextProps) {
+			this.updateCanvas(nextProps.flat);
+		}
+
+		render() {
+			return <canvas className="debug-container endoom" ref="canvas" width={this.props.flat.getWidth()} height={this.props.flat.getHeight()}></canvas>;
 		}
 	}
 }

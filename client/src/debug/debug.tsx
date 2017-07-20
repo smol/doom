@@ -13,6 +13,7 @@ import { Debug as Graphic } from './Graphic.debug';
 import { Debug as ColorMap } from './ColorMap.debug';
 import { Debug as Endoom } from './Endoom.debug';
 import { Debug as Map } from './Map.debug';
+import { Debug as Textures } from './textures.debug';
 import { Debug as Vertexes } from './Vertexes.debug';
 
 import * as React from "react";
@@ -64,14 +65,31 @@ module Debug {
 		}
 
 		private getGraphics() : TreeView.TreeData[] {
-			var datas : TreeView.TreeData[] = [];
+			var datasGraphics : TreeView.TreeData[] = [];
 			var graphics : Wad.Graphic[] = this.props.wad.getGraphics();
 
 			for (var i = 0; i < graphics.length; i++){
-				datas.push({ label: graphics[i].getName(), component: <Graphic.Graphic graphic={ graphics[i] } />, children: null });
+				datasGraphics.push({ label: graphics[i].getName(), component: <Graphic.Graphic graphic={ graphics[i] } />, children: null });
 			}
 
-			return datas;
+			var dataFlats : TreeView.TreeData[] = [];
+			var flats : Wad.Flat[] = this.props.wad.getFlats();
+			for (var i = 0; i < flats.length; i++){
+				dataFlats.push({ label: flats[i].getName(), component: <Graphic.Flat flat={ flats[i] } />, children: null });
+			}
+
+			var dataTextures : TreeView.TreeData[] = [];
+			var textures : Wad.Textures[] = this.props.wad.getTextures();
+
+			for (var i = 0; i < textures.length; i++){
+				dataTextures.push({ label: textures[i].getName(), component: <Textures.Textures texture={ textures[i] } />, children: null });
+			}
+
+			return [
+				{ label: "GRAPHICS", component: null, children: datasGraphics },
+				{ label: "TEXTURES", component: null, children: dataTextures },
+				{ label: "FLATS", component: null, children: dataFlats }
+			];
 		}
 
 		private groups() {
