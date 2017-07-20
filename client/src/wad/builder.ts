@@ -26,15 +26,73 @@
 // import Playpal from './lumps/Playpal';
 
 module Wad {
+	// if (lump.name === 'PLAYPAL') {
+	// 			this.wad.setPlaypal(lump, data);
+	// 		} else if (lump.name === 'COLORMAP') {
+	// 			this.wad.setColorMap(lump, data);
+	// 		} else if (lump.name === 'ENDOOM') {
+	// 			this.wad.setEndoom(lump, data);
+	// 		} else if (/^E\dM\d$/.test(lump.name)) {
+	// 			this.wad.setMap(lump, data);
+	// 		} else if (lump.name === 'THINGS') {
+	// 			var maps: Map[] = this.wad.getMaps();
+
+	// 			maps[maps.length - 1].setThings(lump, data);
+	// 			return new Things(lump, data);
+	// 		} else if (lump.name === 'LINEDEFS'){
+	// 			var maps: Map[] = this.wad.getMaps();
+
+	// 			maps[maps.length - 1].setLinedefs(lump, data);
+	// 		} else if (/^TEXTURE\d$/.test(lump.name)) {
+	// 			this.wad.setTextures(lump, data);
+	// 		} else if (lump.name === 'VERTEXES') {
+	// 			var maps: Map[] = this.wad.getMaps();
+
+	// 			maps[maps.length - 1].setVertexes(lump, data);
+	// 		} else if (lump.name === 'F_START'){
+	// 			this.wad.setStartFlats(true);
+	// 		} else if (lump.name === 'F_END'){
+	// 			this.wad.setStartFlats(false);
+	// 		} else if (type === 'FLAT') {
+	// 			this.wad.setFlat(lump, data);
+	// 		} else if (type === 'GRAPHIC') {
+	// 			this.wad.setGraphic(lump, data);
+	// 		} else {
+	// 			this.unknownTypes.push(lump.name);
+	// 		}
+
+
+	interface BuilderFuncs {
+		name: string;
+		type: string;
+		regex: RegExp;
+		action: (builder: Builder, lump: any, data: any) => void;
+	}
+
+	const FUNCS: BuilderFuncs[] = [
+		{ name: 'PLAYPAL', type: null, regex: null, action: (builder: Builder, lump: any, data: any) => { builder.wad.setPlaypal(lump, data); } },
+		{ name: 'COLORMAP', type: null, regex: null, action: (builder: Builder, lump: any, data: any) => { builder.wad.setColorMap(lump, data); } },
+		{ name: 'ENDOOM', type: null, regex: null, action: (builder: Builder, lump: any, data: any) => { builder.wad.setEndoom(lump, data); } },
+		{ name: null, type: null, regex: /^E\dM\d$/, action: (builder: Builder, lump: any, data: any) => { builder.wad.setMap(lump, data); } },
+		{ name: 'THINGS', type: null, regex: null, action: (builder: Builder, lump: any, data: any) => { var maps: Map[] = builder.wad.getMaps(); maps[maps.length - 1].setThings(lump, data); } },
+		{ name: 'LINEDEFS', type: null, regex: null, action: (builder: Builder, lump: any, data: any) => { var maps: Map[] = builder.wad.getMaps(); maps[maps.length - 1].setLinedefs(lump, data); } },
+		{ name: 'VERTEXES', type: null, regex: null, action: (builder: Builder, lump: any, data: any) => { var maps: Map[] = builder.wad.getMaps(); maps[maps.length - 1].setVertexes(lump, data); } },
+		{ name: null, type: null, regex: /^TEXTURE\d$/, action: (builder: Builder, lump: any, data: any) => { builder.wad.setTextures(lump, data); } },
+		{ name: 'F_START', type: null, regex: null, action: (builder: Builder, lump: any, data: any) => { builder.wad.setStartFlats(true); } },
+		{ name: 'F_END', type: null, regex: null, action: (builder: Builder, lump: any, data: any) => { builder.wad.setStartFlats(false); } },
+		{ name: null, type: 'FLAT', regex: null, action: (builder: Builder, lump: any, data: any) => { builder.wad.setFlat(lump, data); } },
+		{ name: null, type: 'GRAPHIC', regex: null, action: (builder: Builder, lump: any, data: any) => { builder.wad.setGraphic(lump, data); } },
+	];
+
 	export class Builder {
+		public wad: Wad;
+
 		private parser: Parser;
 		private lumps: any[];
 
 		private maps: Map[];
 
-		private wad: Wad;
-
-		private unknownTypes : string[];
+		private unknownTypes: string[];
 
 		constructor(parser: Parser) {
 			this.parser = parser;
@@ -79,39 +137,15 @@ module Wad {
 			var type: string = Type.get(lump, data, this.lumps, index);
 			// console.warn(lump.name, type);
 
-			if (lump.name === 'PLAYPAL') {
-				this.wad.setPlaypal(lump, data);
-			} else if (lump.name === 'COLORMAP') {
-				this.wad.setColorMap(lump, data);
-			} else if (lump.name === 'ENDOOM') {
-				this.wad.setEndoom(lump, data);
-			} else if (/^E\dM\d$/.test(lump.name)) {
-				this.wad.setMap(lump, data);
-			} else if (lump.name === 'THINGS') {
-				var maps: Map[] = this.wad.getMaps();
-
-				maps[maps.length - 1].setThings(lump, data);
-				return new Things(lump, data);
-			} else if (lump.name === 'LINEDEFS'){
-				var maps: Map[] = this.wad.getMaps();
-
-				maps[maps.length - 1].setLinedefs(lump, data);
-			} else if (/^TEXTURE\d$/.test(lump.name)) {
-				this.wad.setTextures(lump, data);
-			} else if (lump.name === 'VERTEXES') {
-				var maps: Map[] = this.wad.getMaps();
-
-				maps[maps.length - 1].setVertexes(lump, data);
-			} else if (lump.name === 'F_START'){
-				this.wad.setStartFlats(true);
-			} else if (lump.name === 'F_END'){
-				this.wad.setStartFlats(false);
-			} else if (type === 'FLAT') {
-				this.wad.setFlat(lump, data);
-			} else if (type === 'GRAPHIC') {
-				this.wad.setGraphic(lump, data);
-			} else {
-				this.unknownTypes.push(lump.name);
+			for (var i = 0; i < FUNCS.length; i++) {
+				if (FUNCS[i].name === lump.name ||
+					FUNCS[i].type === type ||
+					(FUNCS[i].regex != null && FUNCS[i].regex.test(lump.name))) {
+					FUNCS[i].action(this, lump, data);
+					break;
+				} else {
+					this.unknownTypes.push(lump.name);
+				}
 			}
 		}
 	}

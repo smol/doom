@@ -13,7 +13,6 @@ import { Debug as Graphic } from './Graphic.debug';
 import { Debug as ColorMap } from './ColorMap.debug';
 import { Debug as Endoom } from './Endoom.debug';
 import { Debug as Map } from './Map.debug';
-import { Debug as Textures } from './textures.debug';
 import { Debug as Vertexes } from './Vertexes.debug';
 
 import * as React from "react";
@@ -35,7 +34,7 @@ module Debug {
 			this.items = [
 				{ label: "PLAYPAL", component: <Playpal.Playpal playpal={this.props.wad.getPlaypal()} />, children: [] },
 				{ label: "COLORMAP", component: <ColorMap.ColorMap colorMap={this.props.wad.getColorMap()} />, children: [] },
-				{ label: "ENDOOM", component: <Endoom.Endoom endoom={this.props.wad.getEndoom() } />, children: []},
+				{ label: "ENDOOM", component: <Endoom.Endoom endoom={this.props.wad.getEndoom()} />, children: [] },
 				{ label: "GRAPHICS", component: null, children: this.getGraphics() },
 				{ label: "MAPS", component: null, children: this.getMaps() }
 			];
@@ -43,19 +42,19 @@ module Debug {
 			this.selectItem = this.selectItem.bind(this);
 		}
 
-		private getMaps() : TreeView.TreeData[] {
-			var datas : TreeView.TreeData[] = [];
+		private getMaps(): TreeView.TreeData[] {
+			var datas: TreeView.TreeData[] = [];
 
 			datas = this.props.wad.getMaps().map(map => {
-				var data : TreeView.TreeData = {
+				var data: TreeView.TreeData = {
 					label: map.getName(),
 					component: <Map.Map map={map} wad={this.props.wad} />,
 					children: []
 				};
 
 				data.children = [
-					{ label: "THINGS", component: <Map.Things things={map.getThings()}/>, children: [] },
-					{ label: "VERTEXES", component: <Vertexes.Vertexes vertexes={map.getVertexes()} linedefs={map.getLinedefs()}/>, children: [] }
+					{ label: "THINGS", component: <Map.Things things={map.getThings()} />, children: [] },
+					{ label: "VERTEXES", component: <Vertexes.Vertexes vertexes={map.getVertexes()} linedefs={map.getLinedefs()} />, children: [] }
 				];
 
 				return data;
@@ -64,43 +63,48 @@ module Debug {
 			return datas;
 		}
 
-		private getGraphics() : TreeView.TreeData[] {
-			var datasGraphics : TreeView.TreeData[] = [];
-			var graphics : Wad.Graphic[] = this.props.wad.getGraphics();
+		private getGraphics(): TreeView.TreeData[] {
+			var datasGraphics: TreeView.TreeData[] = [];
+			var graphics: Wad.Graphic[] = this.props.wad.getGraphics();
 
-			for (var i = 0; i < graphics.length; i++){
-				datasGraphics.push({ label: graphics[i].getName(), component: <Graphic.Graphic graphic={ graphics[i] } />, children: null });
+			for (var i = 0; i < graphics.length; i++) {
+				datasGraphics.push({ label: graphics[i].getName(), component: <Graphic.Graphic graphic={graphics[i]} />, children: null });
 			}
 
-			var dataFlats : TreeView.TreeData[] = [];
-			var flats : Wad.Flat[] = this.props.wad.getFlats();
-			for (var i = 0; i < flats.length; i++){
-				dataFlats.push({ label: flats[i].getName(), component: <Graphic.Flat flat={ flats[i] } />, children: null });
-			}
-
-			var dataTextures : TreeView.TreeData[] = [];
-			var textures : Wad.Textures[] = this.props.wad.getTextures();
-
-			for (var i = 0; i < textures.length; i++){
-				dataTextures.push({ label: textures[i].getName(), component: <Textures.Textures texture={ textures[i] } />, children: null });
-			}
 
 			return [
 				{ label: "GRAPHICS", component: null, children: datasGraphics },
-				{ label: "TEXTURES", component: null, children: dataTextures },
-				{ label: "FLATS", component: null, children: dataFlats }
+				{ label: "TEXTURES", component: null, children: this.getTextures() },
+				{ label: "FLATS", component: null, children: this.getFlats() }
 			];
 		}
 
-		private groups() {
-			var groups: HTMLUListElement = document.createElement('ul') as HTMLUListElement;
+		private getFlats(): TreeView.TreeData[] {
+			var dataFlats: TreeView.TreeData[] = [];
+			var flats: Wad.Flat[] = this.props.wad.getFlats();
+			for (var i = 0; i < flats.length; i++) {
+				dataFlats.push({ label: flats[i].getName(), component: <Graphic.Flat flat={flats[i]} />, children: null });
+			}
 
-			// new Playpal.Playpal(this.wad.getPlaypal(), groups);
-			// new ColorMap(this.wad.getColorMap(), groups);
-			// new Graphics(this.wad.getGraphics(), groups);
-			// new Maps(this.wad.getMaps(), groups);
+			return dataFlats;
+		}
 
-			document.getElementById('treeview').appendChild(groups);
+		private getTextures(): TreeView.TreeData[] {
+			var dataTextures: TreeView.TreeData[] = [];
+			var textures: Wad.Textures[] = this.props.wad.getTextures();
+
+			for (var i = 0; i < textures.length; i++) {
+				var dataTexture : TreeView.TreeData = { label: textures[i].getName(), component: null, children: [] };
+				var graphics : Wad.Graphic[] = textures[i].getGraphics();
+
+				for (var j = 0; j < graphics.length; j++){
+					dataTexture.children.push({ label: graphics[j].getName(), component: <Graphic.Graphic graphic={ graphics[j] } />, children: null });
+				}
+
+				dataTextures.push(dataTexture);
+			}
+
+			return dataTextures;
 		}
 
 		selectItem(item: JSX.Element) {
@@ -111,7 +115,7 @@ module Debug {
 
 		render() {
 			return <div>
-				<TreeView.TreeView items={ this.items } select={ this.selectItem } />
+				<TreeView.TreeView items={this.items} select={this.selectItem} />
 				<div id="details">
 					{this.state.currentItem}
 				</div>
