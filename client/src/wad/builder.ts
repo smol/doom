@@ -66,7 +66,7 @@ module Wad {
 		name: string;
 		type: string;
 		regex: RegExp;
-		action: (builder: Builder, lump: any, data: any) => void;
+		action: (builder: Builder, lump: any, data: any) => any;
 	}
 
 	const FUNCS: BuilderFuncs[] = [
@@ -77,7 +77,7 @@ module Wad {
 		{ name: 'THINGS', type: null, regex: null, action: (builder: Builder, lump: any, data: any) => { var maps: Map[] = builder.wad.getMaps(); maps[maps.length - 1].setThings(lump, data); } },
 		{ name: 'LINEDEFS', type: null, regex: null, action: (builder: Builder, lump: any, data: any) => { var maps: Map[] = builder.wad.getMaps(); maps[maps.length - 1].setLinedefs(lump, data); } },
 		{ name: 'VERTEXES', type: null, regex: null, action: (builder: Builder, lump: any, data: any) => { var maps: Map[] = builder.wad.getMaps(); maps[maps.length - 1].setVertexes(lump, data); } },
-		{ name: null, type: null, regex: /^TEXTURE\d$/, action: (builder: Builder, lump: any, data: any) => { builder.wad.setTextures(lump, data); } },
+		{ name: null, type: null, regex: /^TEXTURE\d$/, action: (builder: Builder, lump: any, data: any) => { builder.wad.setTextures(lump, data);  } },
 		{ name: 'F_START', type: null, regex: null, action: (builder: Builder, lump: any, data: any) => { builder.wad.setStartFlats(true); } },
 		{ name: 'F_END', type: null, regex: null, action: (builder: Builder, lump: any, data: any) => { builder.wad.setStartFlats(false); } },
 		{ name: null, type: 'FLAT', regex: null, action: (builder: Builder, lump: any, data: any) => { builder.wad.setFlat(lump, data); } },
@@ -89,8 +89,6 @@ module Wad {
 
 		private parser: Parser;
 		private lumps: any[];
-
-		private maps: Map[];
 
 		private unknownTypes: string[];
 
@@ -107,39 +105,21 @@ module Wad {
 
 		go() {
 			this.lumps = this.parser.getLumps();
-			this.maps = [];
 
 			for (var i = 0; i < this.lumps.length; i++) {
 				var data = this.parser.getDataByLump(this.lumps[i]);
 				this.create(this.lumps[i], data, i);
-
-				// this.dispatch(temp, i);
 			}
 
 			console.info('UNKNOWN TYPES', this.unknownTypes);
 		}
 
-		// private dispatch(lump: Lump, index: number) {
-		// 	if (lump == null){
-		// 		return;
-		// 	}
-
-		// 	if (lump instanceof Map) {
-		// 		this.maps.push(lump);
-		// 	} else if (lump instanceof Things) {
-		// 		this.maps[this.maps.length - 1].setThings(lump);
-		// 	} else {
-		// 		this.data[this.lumps[index].name] = lump;
-		// 	}
-		// }
-
-		private create(lump: any, data: any, index: number) {
+		private create(lump: any, data: any, index: number) : Boolean {
 			var type: string = Type.get(lump, data, this.lumps, index);
-			// console.warn(lump.name, type);
+			console.warn(lump.name, type);
 
 			for (var i = 0; i < FUNCS.length; i++) {
-				if (FUNCS[i].name === lump.name ||
-					FUNCS[i].type === type ||
+				if (FUNCS[i].name === lump.name || FUNCS[i].type === type ||
 					(FUNCS[i].regex != null && FUNCS[i].regex.test(lump.name))) {
 					FUNCS[i].action(this, lump, data);
 					break;
@@ -147,6 +127,8 @@ module Wad {
 					this.unknownTypes.push(lump.name);
 				}
 			}
+
+			return false;
 		}
 	}
 }

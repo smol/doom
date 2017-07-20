@@ -17,12 +17,13 @@ module Wad {
 		}
 
 		push(graphic : Graphic){
-			this.count--;
+			console.info('COUNT Texture', this.count, this.getName());
 			this.graphics.push(graphic);
 		}
 
-		getCount() : number {
-			return this.count;
+		spaceAvailable() : Boolean {
+			// console.info('SPACE AVALAIBLE', this.count, this.graphics.length)
+			return this.graphics.length < this.count;
 		}
 
 		getGraphics() : Graphic[] {

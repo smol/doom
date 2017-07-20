@@ -50,7 +50,7 @@ module Wad {
 		setGraphic(lump: any, data: any) {
 			let graphic = new Graphic(this.playpal, lump, data);
 
-			if (this.textures !== null && this.textures[this.textures.length - 1].getCount() > 0)
+			if (this.textures[this.textures.length - 1].spaceAvailable())
 				this.textures[this.textures.length - 1].push(graphic);
 			else
 				this.graphics.push(graphic);

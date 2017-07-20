@@ -51,7 +51,6 @@ module Wad {
 
 				for (var i = 0; i < 4; i++) {
 					self.ident += String.fromCharCode(headerReader.getUint8(i));
-
 				}
 
 				if (self.ident != "IWAD" && self.ident != "PWAD") {
@@ -59,7 +58,6 @@ module Wad {
 					// self.error("Not a valid WAD file.");
 					// self.onLoad();
 				} else {
-					console.warn(self.ident);
 					self.numlumps = headerReader.getInt32(4, true);
 					self.dictpos = headerReader.getInt32(8, true);
 					offset = self.dictpos;
