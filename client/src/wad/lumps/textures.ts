@@ -15,7 +15,7 @@ module Wad {
 
 			var tempOffset : number = this.offset + lump.pos;
 
-			console.info('OFFSET', tempOffset);
+			// console.info('OFFSET', tempOffset);
 
 			for (var i = 0; i < this.count; i++){
 
@@ -26,13 +26,18 @@ module Wad {
 				tempOffset += texture.getSize();
 			}
 
-			console.info('TEXTURE', lump.name, this.count, this.offset);
+			// console.info('TEXTURE', lump.name, this.count, this.offset);
 		}
 
-		// push(graphic : Graphic){
-		// 	console.info('COUNT Texture', this.count, this.getName());
-		// 	this.graphics.push(graphic);
-		// }
+		getTextureByName(name : string) : Texture {
+			for (var i = 0; i < this.textures.length; i++){
+				if (name === this.textures[i].getName()){
+					return this.textures[i];
+				}
+			}
+
+			return null;
+		}
 
 		getTextures() : Texture[] {
 			return this.textures;

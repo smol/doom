@@ -175,6 +175,8 @@ module Wad {
 		private height: number;
 		private offset: number = 0;
 
+		private graphic : Graphic = null;
+
 		constructor(playpal: Playpal, data: any) {
 			this.dataView = new DataView(data);
 
@@ -217,11 +219,18 @@ module Wad {
 
 				patches.push({ x: x, y: y, index: index, stepdir: stepdir, colormap: colormap });
 			}
+		}
 
+		getName() : string {
+			return this.name;
+		}
 
+		setGraphic(graphic : Graphic){
+			this.graphic = graphic;
+		}
 
-			// this.offset += 2;
-			console.info(this.offset, this.width, this.height, this.name, patchCount, patches);
+		getGraphic() : Graphic {
+			return this.graphic;
 		}
 
 		getSize(): number {

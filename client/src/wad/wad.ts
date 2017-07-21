@@ -53,6 +53,15 @@ module Wad {
 		setGraphic(lump: any, data: any) {
 			let graphic = new Graphic(this.playpal, lump, data);
 
+			for (var i = 0; i < this.textures.length; i++){
+				let texture = this.textures[i].getTextureByName(lump.name);
+
+				if (texture !== null){
+					texture.setGraphic(graphic);
+					return;
+				}
+			}
+
 			this.graphics.push(graphic);
 		}
 
@@ -74,7 +83,21 @@ module Wad {
 		}
 
 		setTextures(parser: Parser, lump: any, data: any) {
-			this.textures.push(new Textures(parser, this.playpal, lump, data));
+			let textures : Textures = new Textures(parser, this.playpal, lump, data);
+
+			for (var i = 0; i < this.graphics.length; i++){
+				let texture : Texture = textures.getTextureByName(this.graphics[i].getName());
+
+				if (texture !== null){
+					texture.setGraphic(this.graphics[i]);
+
+					this.graphics = this.graphics.splice(i, 1);
+					break;
+				}
+			}
+
+			console.info(textures.getTextures());
+			this.textures.push(textures);
 		}
 
 		getPlaypal(): Playpal { return this.playpal; }
