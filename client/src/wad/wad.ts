@@ -50,10 +50,7 @@ module Wad {
 		setGraphic(lump: any, data: any) {
 			let graphic = new Graphic(this.playpal, lump, data);
 
-			if (this.textures[this.textures.length - 1].spaceAvailable())
-				this.textures[this.textures.length - 1].push(graphic);
-			else
-				this.graphics.push(graphic);
+			this.graphics.push(graphic);
 		}
 
 		setFlat(lump: any, data: any) {
@@ -69,8 +66,8 @@ module Wad {
 			this.flatsStarted = started;
 		}
 
-		setTextures(lump: any, data: any) {
-			this.textures.push(new Textures(lump, data));
+		setTextures(parser: Parser, lump: any, data: any) {
+			this.textures.push(new Textures(parser, this.playpal, lump, data));
 		}
 
 		getPlaypal(): Playpal { return this.playpal; }

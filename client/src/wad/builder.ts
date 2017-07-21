@@ -77,7 +77,7 @@ module Wad {
 		{ name: 'THINGS', type: null, regex: null, action: (builder: Builder, lump: any, data: any) => { var maps: Map[] = builder.wad.getMaps(); maps[maps.length - 1].setThings(lump, data); } },
 		{ name: 'LINEDEFS', type: null, regex: null, action: (builder: Builder, lump: any, data: any) => { var maps: Map[] = builder.wad.getMaps(); maps[maps.length - 1].setLinedefs(lump, data); } },
 		{ name: 'VERTEXES', type: null, regex: null, action: (builder: Builder, lump: any, data: any) => { var maps: Map[] = builder.wad.getMaps(); maps[maps.length - 1].setVertexes(lump, data); } },
-		{ name: null, type: null, regex: /^TEXTURE\d$/, action: (builder: Builder, lump: any, data: any) => { builder.wad.setTextures(lump, data);  } },
+		{ name: null, type: null, regex: /^TEXTURE\d$/, action: (builder: Builder, lump: any, data: any) => { builder.wad.setTextures(builder.parser, lump, data);  } },
 		{ name: 'F_START', type: null, regex: null, action: (builder: Builder, lump: any, data: any) => { builder.wad.setStartFlats(true); } },
 		{ name: 'F_END', type: null, regex: null, action: (builder: Builder, lump: any, data: any) => { builder.wad.setStartFlats(false); } },
 		{ name: null, type: 'FLAT', regex: null, action: (builder: Builder, lump: any, data: any) => { builder.wad.setFlat(lump, data); } },
@@ -86,8 +86,8 @@ module Wad {
 
 	export class Builder {
 		public wad: Wad;
+		public parser: Parser;
 
-		private parser: Parser;
 		private lumps: any[];
 
 		private unknownTypes: string[];
@@ -116,7 +116,7 @@ module Wad {
 
 		private create(lump: any, data: any, index: number) : Boolean {
 			var type: string = Type.get(lump, data, this.lumps, index);
-			console.warn(lump.name, type);
+			// console.warn(lump.name, type);
 
 			for (var i = 0; i < FUNCS.length; i++) {
 				if (FUNCS[i].name === lump.name || FUNCS[i].type === type ||

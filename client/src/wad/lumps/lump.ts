@@ -29,6 +29,8 @@ module Wad {
 		}
 
 		getName(): string {
+			if (this.lump === null)
+				return "NOTHING";
 			return this.lump.name;
 		}
 	}

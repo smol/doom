@@ -140,6 +140,10 @@ module Wad {
 			return null;
 		}
 
+		getDataByOffset(offset : number, size: number){
+			return this.data.slice(offset, offset + size);
+		}
+
 		getDataByLump(lump: any){
 			return this.data.slice(lump.pos, lump.pos + lump.size);
 		}

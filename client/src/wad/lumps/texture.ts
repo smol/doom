@@ -168,25 +168,64 @@
 // animate.
 
 module Wad {
-	export class Texture extends Lump {
-		private count: number;
+	export class Texture {
+		private dataView: DataView;
+		private name: string;
+		private width: number;
+		private height: number;
+		private offset: number = 0;
 
-		constructor(lump: any, data: any) {
-			super(lump, data);
+		constructor(playpal: Playpal, data: any) {
+			this.dataView = new DataView(data);
 
-			this.count = this.dataView.getUint32(0, true);
-			var offset = this.dataView.getUint32(4, true);
+			this.name = "";
 
-			var test: string = "";
-			for (var i = offset; i < offset + 8; i++) {
-				var code: number = this.dataView.getUint8(i);
+			for (; this.offset < 8; this.offset++) {
+				this.name += String.fromCharCode(this.dataView.getUint8(this.offset));
+			}
 
-				test += String.fromCharCode(code);
+			this.offset += 2; // always zero
+			this.offset += 2; // always zero
+
+			this.width = this.dataView.getUint8(this.offset);
+			this.offset += 2;
+
+			this.height = this.dataView.getUint8(this.offset);
+			this.offset += 2;
+
+			this.offset += 2; // always zero
+			this.offset += 2; // always zero
+
+			var patchCount: number = this.dataView.getInt8(this.offset);
+			this.offset += 2;
+			var patches: { x: number, y: number, index: number, stepdir: number, colormap: number }[] = [];
+
+			for (var i = 0; i < patchCount; i++) {
+				var x = this.dataView.getUint8(this.offset);
+				this.offset += 2;
+				var y = this.dataView.getUint8(this.offset);
+				this.offset += 2;
+
+				var index: number = this.dataView.getUint8(this.offset);
+				this.offset += 2;
+
+				var stepdir: number = this.dataView.getUint8(this.offset);
+				this.offset += 2;
+
+				var colormap: number = this.dataView.getUint8(this.offset);
+				this.offset += 2;
+
+				patches.push({ x: x, y: y, index: index, stepdir: stepdir, colormap: colormap });
 			}
 
 
 
-			console.warn(this.count, offset, test);
+			// this.offset += 2;
+			console.info(this.offset, this.width, this.height, this.name, patchCount, patches);
+		}
+
+		getSize(): number {
+			return this.offset;
 		}
 	}
 }

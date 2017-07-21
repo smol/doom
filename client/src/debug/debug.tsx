@@ -74,7 +74,7 @@ module Debug {
 
 			return [
 				{ label: "GRAPHICS", component: null, children: datasGraphics },
-				{ label: "TEXTURES", component: null, children: this.getTextures() },
+				// { label: "TEXTURES", component: null, children: this.getTextures() },
 				{ label: "FLATS", component: null, children: this.getFlats() }
 			];
 		}
@@ -89,23 +89,23 @@ module Debug {
 			return dataFlats;
 		}
 
-		private getTextures(): TreeView.TreeData[] {
-			var dataTextures: TreeView.TreeData[] = [];
-			var textures: Wad.Textures[] = this.props.wad.getTextures();
+		// private getTextures(): TreeView.TreeData[] {
+		// 	var dataTextures: TreeView.TreeData[] = [];
+		// 	var textures: Wad.Textures[] = this.props.wad.getTextures();
 
-			for (var i = 0; i < textures.length; i++) {
-				var dataTexture : TreeView.TreeData = { label: textures[i].getName(), component: null, children: [] };
-				var graphics : Wad.Graphic[] = textures[i].getGraphics();
+		// 	for (var i = 0; i < textures.length; i++) {
+		// 		var dataTexture : TreeView.TreeData = { label: textures[i].getName(), component: null, children: [] };
+		// 		var graphics : Wad.Graphic[] = textures[i].getGraphics();
 
-				for (var j = 0; j < graphics.length; j++){
-					dataTexture.children.push({ label: graphics[j].getName(), component: <Graphic.Graphic graphic={ graphics[j] } />, children: null });
-				}
+		// 		for (var j = 0; j < graphics.length; j++){
+		// 			dataTexture.children.push({ label: graphics[j].getName(), component: <Graphic.Graphic graphic={ graphics[j] } />, children: null });
+		// 		}
 
-				dataTextures.push(dataTexture);
-			}
+		// 		dataTextures.push(dataTexture);
+		// 	}
 
-			return dataTextures;
-		}
+		// 	return dataTextures;
+		// }
 
 		selectItem(item: JSX.Element) {
 			this.setState(prevState => ({
