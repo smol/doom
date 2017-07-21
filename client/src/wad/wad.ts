@@ -21,9 +21,11 @@ module Wad {
 		private maps: Map[];
 
 		private graphics: Graphic[];
+		private musics : Music[];
 
 		private textures: Textures[];
 		private flats: Flat[];
+		
 
 		private flatsStarted: Boolean = false;
 
@@ -33,6 +35,7 @@ module Wad {
 
 			this.flats = [];
 			this.textures = [];
+			this.musics = [];
 		}
 
 		setPlaypal(lump: any, data: any) {
@@ -66,6 +69,10 @@ module Wad {
 			this.flatsStarted = started;
 		}
 
+		setMusic(lump: any, data: any){
+			this.musics.push(new Music(lump, data));
+		}
+
 		setTextures(parser: Parser, lump: any, data: any) {
 			this.textures.push(new Textures(parser, this.playpal, lump, data));
 		}
@@ -77,6 +84,7 @@ module Wad {
 		getFlats(): Flat[] { return this.flats; }
 		getMaps(): Map[] { return this.maps; }
 		getTextures() : Textures[] { return this.textures; }
+		getMusics() : Music[] { return this.musics; }
 	}
 }
 

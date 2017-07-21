@@ -13,6 +13,7 @@ import { Debug as Graphic } from './Graphic.debug';
 import { Debug as ColorMap } from './ColorMap.debug';
 import { Debug as Endoom } from './Endoom.debug';
 import { Debug as Map } from './Map.debug';
+import { Debug as Music } from './Music.debug';
 import { Debug as Vertexes } from './Vertexes.debug';
 
 import * as React from "react";
@@ -36,6 +37,7 @@ module Debug {
 				{ label: "COLORMAP", component: <ColorMap.ColorMap colorMap={this.props.wad.getColorMap()} />, children: [] },
 				{ label: "ENDOOM", component: <Endoom.Endoom endoom={this.props.wad.getEndoom()} />, children: [] },
 				{ label: "GRAPHICS", component: null, children: this.getGraphics() },
+				{ label: "MUSICS", component: null, children: this.getMusics() },
 				{ label: "MAPS", component: null, children: this.getMaps() }
 			];
 
@@ -63,6 +65,16 @@ module Debug {
 			return datas;
 		}
 
+		private getMusics() : TreeView.TreeData[] {
+			var data : TreeView.TreeData[] = [];
+
+			data = this.props.wad.getMusics().map(music => {
+				return { label: music.getName(), component: <Music.Music music={ music } />, children: [] };
+			});
+
+			return data;
+		}
+
 		private getGraphics(): TreeView.TreeData[] {
 			var datasGraphics: TreeView.TreeData[] = [];
 			var graphics: Wad.Graphic[] = this.props.wad.getGraphics();
@@ -71,10 +83,9 @@ module Debug {
 				datasGraphics.push({ label: graphics[i].getName(), component: <Graphic.Graphic graphic={graphics[i]} />, children: null });
 			}
 
-
 			return [
 				{ label: "GRAPHICS", component: null, children: datasGraphics },
-				// { label: "TEXTURES", component: null, children: this.getTextures() },
+				{ label: "TEXTURES", component: null, children: this.getTextures() },
 				{ label: "FLATS", component: null, children: this.getFlats() }
 			];
 		}
@@ -89,23 +100,23 @@ module Debug {
 			return dataFlats;
 		}
 
-		// private getTextures(): TreeView.TreeData[] {
-		// 	var dataTextures: TreeView.TreeData[] = [];
-		// 	var textures: Wad.Textures[] = this.props.wad.getTextures();
+		private getTextures(): TreeView.TreeData[] {
+			var dataTextures: TreeView.TreeData[] = [];
+			var textures: Wad.Textures[] = this.props.wad.getTextures();
 
-		// 	for (var i = 0; i < textures.length; i++) {
-		// 		var dataTexture : TreeView.TreeData = { label: textures[i].getName(), component: null, children: [] };
-		// 		var graphics : Wad.Graphic[] = textures[i].getGraphics();
+			for (var i = 0; i < textures.length; i++) {
+				var dataTexture : TreeView.TreeData = { label: textures[i].getName(), component: null, children: [] };
+				var texturesList : Wad.Texture[] = textures[i].getTextures();
 
-		// 		for (var j = 0; j < graphics.length; j++){
-		// 			dataTexture.children.push({ label: graphics[j].getName(), component: <Graphic.Graphic graphic={ graphics[j] } />, children: null });
-		// 		}
+				for (var j = 0; j < texturesList.length; j++){
+					dataTexture.children.push({ label: texturesList[j].getName(), component: <Graphic.Graphic graphic={ texturesList[j].getGraphic() } />, children: null });
+				}
 
-		// 		dataTextures.push(dataTexture);
-		// 	}
+				dataTextures.push(dataTexture);
+			}
 
-		// 	return dataTextures;
-		// }
+			return dataTextures;
+		}
 
 		selectItem(item: JSX.Element) {
 			this.setState(prevState => ({

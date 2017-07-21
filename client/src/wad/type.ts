@@ -13,7 +13,7 @@ module Wad {
 				var dv = new DataView(data);
 				if (headerCheck(dv, 'MThd')) return "MIDI";
 				if (headerCheck(dv, 'ID3')) return "MP3";
-				if (headerCheck(dv, 'MUS')) return "MUS";
+				if (headerCheck(dv, 'MUS')) return "MUSIC";
 				if (headerCheck(dv, String.fromCharCode(137) + 'PNG')) return "PNG";
 			}
 

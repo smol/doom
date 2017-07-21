@@ -82,6 +82,7 @@ module Wad {
 		{ name: 'F_END', type: null, regex: null, action: (builder: Builder, lump: any, data: any) => { builder.wad.setStartFlats(false); } },
 		{ name: null, type: 'FLAT', regex: null, action: (builder: Builder, lump: any, data: any) => { builder.wad.setFlat(lump, data); } },
 		{ name: null, type: 'GRAPHIC', regex: null, action: (builder: Builder, lump: any, data: any) => { builder.wad.setGraphic(lump, data); } },
+		{ name: null, type: 'MUSIC', regex: null, action: (builder: Builder, lump: any, data: any) => { builder.wad.setMusic(lump, data); } },
 	];
 
 	export class Builder {
