@@ -117,7 +117,7 @@ module.exports = function (grunt) {
 		concurrent: {
 			dev: {
 				// 'nodemon:server', 
-				tasks: ['watch:engine', 'watch:debug', 'watch:stylesheets', 'watch:wad'],
+				tasks: ['nodemon:server', 'watch:engine', 'watch:debug', 'watch:stylesheets', 'watch:wad'],
 				options: {
 					logConcurrentOutput: true
 				}
@@ -131,7 +131,7 @@ module.exports = function (grunt) {
 	grunt.loadNpmTasks('grunt-contrib-concat');
 	grunt.loadNpmTasks('grunt-nodemon');
 	grunt.loadNpmTasks('grunt-concurrent');
-	grunt.loadNpmTasks('grunt-browserify');
+	// grunt.loadNpmTasks('grunt-browserify');
 	grunt.loadNpmTasks('grunt-ts');
 	grunt.loadNpmTasks('grunt-webpack');
 
