@@ -27,36 +27,30 @@ module Wad {
 		private ssector : number = -1;
 
 		constructor(offset: number, dataView: DataView) {
-			this.x = dataView.getUint16(offset + 0, true);
-			this.y = dataView.getUint16(offset + 2, true);
+			this.x = dataView.getInt16(offset + 0, true);
+			this.y = dataView.getInt16(offset + 2, true);
 
-			this.dX = dataView.getUint16(offset + 4, true);
-			this.dY = dataView.getUint16(offset + 6, true);
+			this.dX = dataView.getInt16(offset + 4, true);
+			this.dY = dataView.getInt16(offset + 6, true);
 
-			this.rightUpperY = dataView.getUint16(offset + 8, true);
-			this.rightLowerY = dataView.getUint16(offset + 10, true);
-			this.rightLowerX = dataView.getUint16(offset + 12, true);
-			this.rightUpperX = dataView.getUint16(offset + 14, true);
+			this.rightUpperY = dataView.getInt16(offset + 8, true);
+			this.rightLowerY = dataView.getInt16(offset + 10, true);
+			this.rightLowerX = dataView.getInt16(offset + 12, true);
+			this.rightUpperX = dataView.getInt16(offset + 14, true);
 
-			this.leftUpperY = dataView.getUint16(offset + 16, true);
-			this.leftLowerY = dataView.getUint16(offset + 18, true);
-			this.leftLowerX = dataView.getUint16(offset + 20, true);
-			this.leftUpperX = dataView.getUint16(offset + 22, true);
+			this.leftUpperY = dataView.getInt16(offset + 16, true);
+			this.leftLowerY = dataView.getInt16(offset + 18, true);
+			this.leftLowerX = dataView.getInt16(offset + 20, true);
+			this.leftUpperX = dataView.getInt16(offset + 22, true);
 
-			var temp = dataView.getUint16(offset + 24, true);
-
-			// console.info(temp, temp >> 15, temp >> 1);
-
+			var temp = dataView.getInt16(offset + 24, true);
 			if ((temp >> 15) == 0){
 				this.nodeRightIndex = temp >> 1;
 			} else {
 				this.ssector = temp >> 1;
 			}
 
-			temp = dataView.getUint16(offset + 26, true);
-
-			// console.info(temp, temp >> 15, temp >> 1);
-
+			temp = dataView.getInt16(offset + 26, true);
 			if ((temp >> 15) == 0){
 				this.nodeLeftIndex = temp >> 1;
 			} else {
@@ -67,6 +61,14 @@ module Wad {
 		setChildren(nodes : Node[]){
 			this.nodeRight = nodes[this.nodeRightIndex] || null;
 			this.nodeLeft = nodes[this.nodeLeftIndex] || null;
+		}
+
+		getRightBounds() : { uX: number, uY: number, lX : number, lY: number } {
+			return { uX: this.rightUpperX, uY: this.rightUpperY, lX: this.rightLowerX, lY: this.rightLowerY };
+		}
+
+		getRightNode() : Node {
+			return this.nodeRight;
 		}
 	}
 
@@ -80,12 +82,15 @@ module Wad {
 				this.nodes.push(new Node(i, this.dataView));
 			}
 
-
 			for (var i = 0; i < this.nodes.length; i++){
 				this.nodes[i].setChildren(this.nodes);
 			}
 
 			console.info('NODES', lump.pos, this.nodes);
+		}
+
+		getNode() : Node {
+			return this.nodes[this.nodes.length - 1];
 		}
 	}
 }

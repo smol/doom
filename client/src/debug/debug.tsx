@@ -11,6 +11,7 @@ import { Debug as TreeView } from './treeview';
 import { Debug as Playpal } from './playpal.debug';
 import { Debug as Graphic } from './Graphic.debug';
 import { Debug as ColorMap } from './ColorMap.debug';
+import { Debug as Nodes } from './Nodes.debug';
 import { Debug as Endoom } from './Endoom.debug';
 import { Debug as Map } from './Map.debug';
 import { Debug as Music } from './Music.debug';
@@ -56,7 +57,8 @@ module Debug {
 
 				data.children = [
 					{ label: "THINGS", component: <Map.Things things={map.getThings()} />, children: [] },
-					{ label: "VERTEXES", component: <Vertexes.Vertexes vertexes={map.getVertexes()} linedefs={map.getLinedefs()} />, children: [] }
+					{ label: "VERTEXES", component: <Vertexes.Vertexes vertexes={map.getVertexes()} linedefs={map.getLinedefs()} />, children: [] },
+					{ label: "NODES", component: <Nodes.Nodes vertexes={map.getVertexes()} linedefs={map.getLinedefs()} node={ map.getNode() } />, children: [] }
 				];
 
 				return data;

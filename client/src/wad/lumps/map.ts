@@ -45,6 +45,10 @@ module Wad {
 			return this.linedefs.get();
 		}
 
+		getNode() : Node {
+			return this.nodes.getNode();
+		}
+
 		getVertexes() : Vertex[] {
 			return this.vertexes.get();
 		}
