@@ -88,7 +88,7 @@ export module Debug {
 				ctx.closePath();
 			}
 
-			this.renderNode(this.props.node, ctx, start, 0.1);
+			this.renderNode(this.props.node, ctx, start, scale);
 		}
 
 		private renderNode(node : Wad.Node, ctx : CanvasRenderingContext2D, start : {x: number, y: number}, scale: number){
@@ -105,6 +105,16 @@ export module Debug {
 			ctx.lineTo((start.x - rightBounds.uX) * scale, (start.y - rightBounds.uY) * scale);
 			ctx.strokeStyle = "lightgreen";
 			ctx.stroke();
+
+			let leftBounds : { lX: number, lY: number, uX: number, uY: number } = node.getLeftBounds();
+
+			ctx.moveTo((start.x - leftBounds.uX) * scale, (start.y - leftBounds.uY) * scale);
+			ctx.lineTo((start.x - leftBounds.lX) * scale, (start.y - leftBounds.uY) * scale);
+			ctx.lineTo((start.x - leftBounds.lX) * scale, (start.y - leftBounds.lY) * scale);
+			ctx.lineTo((start.x - leftBounds.uX) * scale, (start.y - leftBounds.lY) * scale);
+			ctx.lineTo((start.x - leftBounds.uX) * scale, (start.y - leftBounds.uY) * scale);
+			ctx.strokeStyle = "blue";
+			ctx.stroke();
 			// ctx.closePath();
 
 			// console.info(rightBounds);
@@ -117,6 +127,7 @@ export module Debug {
 
 
 			this.renderNode(node.getRightNode(), ctx, start, scale);
+			this.renderNode(node.getLeftNode(), ctx, start, scale);
 			
 		}
 

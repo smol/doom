@@ -70,6 +70,14 @@ module Wad {
 		getRightNode() : Node {
 			return this.nodeRight;
 		}
+
+		getLeftBounds() : { uX: number, uY: number, lX : number, lY: number } {
+			return { uX: this.leftUpperX, uY: this.leftUpperY, lX: this.leftLowerX, lY: this.leftLowerY };
+		}
+
+		getLeftNode() : Node {
+			return this.nodeLeft;
+		}
 	}
 
 	export class Nodes extends Lump {
@@ -90,7 +98,7 @@ module Wad {
 		}
 
 		getNode() : Node {
-			return this.nodes[this.nodes.length - 1];
+			return this.nodes[0];
 		}
 	}
 }
