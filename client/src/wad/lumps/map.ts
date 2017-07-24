@@ -10,6 +10,7 @@ module Wad {
 		private linedefs : Linedefs;
 		private vertexes : Vertexes;
 		private sectors : Sectors;
+		private nodes : Nodes;
 
 		constructor(lump: any, data: any) {
 			super(lump, data);
@@ -34,6 +35,10 @@ module Wad {
 
 		setSectors(lump: any, data:any){
 			this.sectors = new Sectors(lump, data);
+		}
+
+		setNodes(lump: any, data: any){
+			this.nodes = new Nodes(lump, data);
 		}
 
 		getLinedefs() : Linedef[] {

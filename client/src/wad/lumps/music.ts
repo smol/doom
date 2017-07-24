@@ -12,9 +12,7 @@ module Wad {
 			this.numberOfBytesHeader = this.dataView.getUint8(6);
 			this.primaryChannelsCount = this.dataView.getUint8(8);
 			this.secondaryChannelsCount = this.dataView.getUint8(10);
-
-
-			console.info(this.lump.name, this.numberOfBytesMusic);
+			// console.info(this.lump.name, this.numberOfBytesMusic);
 		}
 	}
 }

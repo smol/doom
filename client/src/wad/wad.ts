@@ -25,7 +25,6 @@ module Wad {
 
 		private textures: Textures[];
 		private flats: Flat[];
-		
 
 		private flatsStarted: Boolean = false;
 
