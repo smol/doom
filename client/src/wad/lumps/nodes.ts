@@ -98,7 +98,7 @@ module Wad {
 		}
 
 		getNode() : Node {
-			return this.nodes[0];
+			return this.nodes[this.nodes.length - 1];
 		}
 	}
 }

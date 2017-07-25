@@ -103,7 +103,7 @@ export module Debug {
 			ctx.lineTo((start.x - rightBounds.lX) * scale, (start.y - rightBounds.lY) * scale);
 			ctx.lineTo((start.x - rightBounds.uX) * scale, (start.y - rightBounds.lY) * scale);
 			ctx.lineTo((start.x - rightBounds.uX) * scale, (start.y - rightBounds.uY) * scale);
-			ctx.strokeStyle = "lightgreen";
+			ctx.strokeStyle = "rgba(0, 255, 0, 0.1)";
 			ctx.stroke();
 
 			let leftBounds : { lX: number, lY: number, uX: number, uY: number } = node.getLeftBounds();
@@ -113,11 +113,11 @@ export module Debug {
 			ctx.lineTo((start.x - leftBounds.lX) * scale, (start.y - leftBounds.lY) * scale);
 			ctx.lineTo((start.x - leftBounds.uX) * scale, (start.y - leftBounds.lY) * scale);
 			ctx.lineTo((start.x - leftBounds.uX) * scale, (start.y - leftBounds.uY) * scale);
-			ctx.strokeStyle = "blue";
+			ctx.strokeStyle = "rgba(0, 0, 255, 0.1)";
 			ctx.stroke();
-			// ctx.closePath();
+			ctx.closePath();
 
-			// console.info(rightBounds);
+			// console.info(rightBounds, leftBounds, node);
 
 			// console.info(
 			// 	(rightBounds.uX) * scale, (rightBounds.uY) * scale,
@@ -128,7 +128,6 @@ export module Debug {
 
 			this.renderNode(node.getRightNode(), ctx, start, scale);
 			this.renderNode(node.getLeftNode(), ctx, start, scale);
-			
 		}
 
 
