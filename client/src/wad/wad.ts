@@ -95,7 +95,7 @@ module Wad {
 				}
 			}
 
-			console.info(textures.getTextures());
+			// console.info(textures.getTextures());
 			this.textures.push(textures);
 		}
 

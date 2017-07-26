@@ -94,7 +94,7 @@ module Wad {
 				this.nodes[i].setChildren(this.nodes);
 			}
 
-			console.info('NODES', lump.pos, this.nodes);
+			// console.info('NODES', lump.pos, this.nodes);
 		}
 
 		getNode() : Node {

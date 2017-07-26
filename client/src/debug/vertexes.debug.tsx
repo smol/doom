@@ -70,7 +70,6 @@ export module Debug {
 				var firstVertex: Wad.Vertex = this.props.vertexes[firstVertexIndex];
 				var secondVertex: Wad.Vertex = this.props.vertexes[secondVertexIndex];
 
-				
 				// console.warn("first", firstVertex.x, firstVertex.y);
 				// console.warn("second", secondVertex.x, secondVertex.y);
 				ctx.beginPath();

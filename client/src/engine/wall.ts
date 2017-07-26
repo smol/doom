@@ -2,14 +2,18 @@
 
 module Engine {
 	export class Wall extends THREE.Group {
-		private box: THREE.Mesh;
+		private mesh: THREE.Mesh;
 		private texture: THREE.DataTexture;
 		private material: THREE.MeshBasicMaterial;
 
-		constructor() {
+		private firstVertex: Wad.Vertex;
+		private secondVertex: Wad.Vertex;
+
+		constructor(firstVertex: Wad.Vertex, secondVertex: Wad.Vertex) {
 			super();
 
-
+			this.firstVertex = firstVertex;
+			this.secondVertex = secondVertex;
 		}
 
 		setTexture(texture: Wad.Graphic) {
@@ -18,7 +22,6 @@ module Engine {
 			const pixelData = [];
 			var width = texture.getWidth();
 			var height = texture.getHeight();
-
 
 			this.texture = new THREE.DataTexture(texture.getImageData(), width, height,
 				THREE.RGBAFormat,
@@ -29,13 +32,66 @@ module Engine {
 
 			this.material = new THREE.MeshBasicMaterial({
 				transparent: true,
-				map: this.texture
-				// color: 0xFF0000
+				// map: this.texture,
+				color: 0xFF0000
 			});
+
+			this.material.side = THREE.DoubleSide;
 
 			this.material.needsUpdate = true;
 
+			const geom = new THREE.Geometry();
 
+			var v1 = new THREE.Vector3(0, 0, 0);
+			var v2 = new THREE.Vector3(0, 500, 0);
+			var v3 = new THREE.Vector3(0, 500, 500);
+
+			geom.vertices.push(
+				new THREE.Vector3(0, 0, 0),
+				new THREE.Vector3(0, 500, 0),
+				new THREE.Vector3(0, 500, 500)
+			);
+
+			geom.faces.push(new THREE.Face3(0, 1, 2));
+			
+			// var object = new THREE.Mesh(geom, new THREE.MeshNormalMaterial());
+			console.info(this.firstVertex, this.secondVertex);
+
+			// var a = {
+			// 	x: 100,
+			// 	y: 500
+			// }
+			// var b = {
+			// 	x: 100,
+			// 	y: 500
+			// }
+
+			// console.info(a, b);
+
+			// // var geometry = new THREE.Geometry();
+
+			// geom.vertices.push(new THREE.Vector3(a.x, a.y, 2));
+			// geom.vertices.push(new THREE.Vector3(b.x, a.y, 2));
+			// geom.vertices.push(new THREE.Vector3(b.x, b.y, 2));
+			// geom.vertices.push(new THREE.Vector3(a.x, b.y, 2));
+
+			// // geom.vertices.push(new THREE.Vector3(this.firstVertex.x, 200, this.firstVertex.y));
+			// // geom.vertices.push(new THREE.Vector3(this.secondVertex.x, 200, this.firstVertex.y));
+			// // geom.vertices.push(new THREE.Vector3(this.secondVertex.x, 200, this.secondVertex.y));
+			// // geom.vertices.push(new THREE.Vector3(this.firstVertex.x, 200, this.secondVertex.y));
+
+			// geom.faces.push(new THREE.Face3(0, 1, 2));
+			// geom.faces.push(new THREE.Face3(0, 2, 3));
+			geom.computeFaceNormals();
+			geom.computeVertexNormals();
+			// console.info('test');
+
+			this.mesh = new THREE.Mesh(geom, this.material);
+
+			this.add(this.mesh);
+
+			// this.position.x = 2;
+			// this.position.z = 2;
 
 			// const assignUVs = geometry => {
 			// 	geometry.computeBoundingBox();
@@ -73,14 +129,7 @@ module Engine {
 			// });
 
 			// create a box and add it to the scene
-			const geom = new THREE.BoxGeometry(2, 2, 2);
-			// assignUVs(geom);
-			this.box = new THREE.Mesh(geom, this.material);
 
-			this.add(this.box);
-
-			this.position.x = 2;
-			this.position.z = 2;
 		}
 	}
 }
