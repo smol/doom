@@ -8,11 +8,12 @@
 
 module Engine {
 	export class Core {
-		private scene : THREE.Scene;
+		private scene: THREE.Scene;
 
 		constructor(canvas: HTMLCanvasElement) {
 			this.scene = new THREE.Scene();
 			let camera = new THREE.PerspectiveCamera(75, canvas.width / canvas.height, 0.1, 1000);
+			camera.far = Infinity;
 
 			let renderer = new THREE.WebGLRenderer({ canvas: canvas });
 
@@ -59,33 +60,41 @@ module Engine {
 		}
 
 		createWalls(wad: Wad.Wad) {
-			var map : Wad.Map = wad.getMaps()[0];
+			var map: Wad.Map = wad.getMaps()[0];
 
-			let linedef : Wad.Linedef = map.getLinedefs()[0];
+			let linedefs: Wad.Linedef[] = map.getLinedefs();
 
-			
+
 			let graphics: Wad.Graphic[] = wad.getGraphics();
-			let vertexes : Wad.Vertex[] = map.getVertexes();
+			let vertexes: Wad.Vertex[] = map.getVertexes();
 
-			var firstVertex: Wad.Vertex = vertexes[linedef.getFirst()];
-			var secondVertex: Wad.Vertex = vertexes[linedef.getSecond()];
+			for (var i = 0; i < linedefs.length; i++) {
+				if (linedefs[i].getFlag() === 'Not on Map' || linedefs[i].getFlag() === 'Two-sided')
+					continue;
 
-			let wall = new Engine.Wall(firstVertex, secondVertex);
+				var firstVertex: Wad.Vertex = vertexes[linedefs[i].getFirst()];
+				var secondVertex: Wad.Vertex = vertexes[linedefs[i].getSecond()];
 
-			// for (var i =0; i < graphics.length; i++){
-			// 	if (graphics[i].getName().indexOf("DOOR2_4") !== -1){
-			// 		wall.setTexture(graphics[i]);
-			// 		break;
-			// 	}
-			// }
+				let wall = new Engine.Wall(firstVertex, secondVertex);
 
-			let index = Math.round(Math.random() * graphics.length)
-			console.info(index);
-			wall.setTexture(graphics[index]);
+				// for (var i =0; i < graphics.length; i++){
+				// 	if (graphics[i].getName().indexOf("DOOR2_4") !== -1){
+				// 		wall.setTexture(graphics[i]);
+				// 		break;
+				// 	}
+				// }
+
+				console.info(linedefs[i]);
+
+				let index = Math.round(Math.random() * graphics.length)
+				// console.info(index);
+				wall.setTexture(graphics[index]);
 
 
 
-			this.scene.add(wall);
+				this.scene.add(wall);
+			}
+
 		}
 	}
 }

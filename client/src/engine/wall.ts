@@ -17,7 +17,7 @@ module Engine {
 		}
 
 		setTexture(texture: Wad.Graphic) {
-			console.info(texture.getName(), texture.getWidth(), texture.getHeight());
+			// console.info(texture.getName(), texture.getWidth(), texture.getHeight());
 
 			const pixelData = [];
 			var width = texture.getWidth();
@@ -46,16 +46,23 @@ module Engine {
 			var v2 = new THREE.Vector3(0, 500, 0);
 			var v3 = new THREE.Vector3(0, 500, 500);
 
-			geom.vertices.push(
-				new THREE.Vector3(0, 0, 0),
-				new THREE.Vector3(0, 500, 0),
-				new THREE.Vector3(0, 500, 500)
-			);
+			// geom.vertices.push(
+			// 	new THREE.Vector3(0, 0, 0),
+			// 	new THREE.Vector3(0, -500, 0),
+			// 	new THREE.Vector3(0, -500, 500),
+			// 	new THREE.Vector3(0, 0, 500),
+			// );
+
+			geom.vertices.push(new THREE.Vector3(this.firstVertex.x / 20, 0, this.firstVertex.y / 20));
+			geom.vertices.push(new THREE.Vector3(this.firstVertex.x / 20, 10, this.firstVertex.y / 20));
+			geom.vertices.push(new THREE.Vector3(this.secondVertex.x / 20, 10, this.secondVertex.y / 20));
+			geom.vertices.push(new THREE.Vector3(this.secondVertex.x / 20, 0, this.secondVertex.y / 20));
 
 			geom.faces.push(new THREE.Face3(0, 1, 2));
+			geom.faces.push(new THREE.Face3(0, 2, 3));
 			
 			// var object = new THREE.Mesh(geom, new THREE.MeshNormalMaterial());
-			console.info(this.firstVertex, this.secondVertex);
+			// console.info(this.firstVertex, this.secondVertex);
 
 			// var a = {
 			// 	x: 100,
@@ -75,10 +82,7 @@ module Engine {
 			// geom.vertices.push(new THREE.Vector3(b.x, b.y, 2));
 			// geom.vertices.push(new THREE.Vector3(a.x, b.y, 2));
 
-			// // geom.vertices.push(new THREE.Vector3(this.firstVertex.x, 200, this.firstVertex.y));
-			// // geom.vertices.push(new THREE.Vector3(this.secondVertex.x, 200, this.firstVertex.y));
-			// // geom.vertices.push(new THREE.Vector3(this.secondVertex.x, 200, this.secondVertex.y));
-			// // geom.vertices.push(new THREE.Vector3(this.firstVertex.x, 200, this.secondVertex.y));
+			
 
 			// geom.faces.push(new THREE.Face3(0, 1, 2));
 			// geom.faces.push(new THREE.Face3(0, 2, 3));

@@ -74,7 +74,7 @@ module Wad {
 				this.sectors.push(new Sector(i, this.dataView));
 			}
 
-			console.info(this.sectors);
+			// console.info(this.sectors);
 		}
 	}
 }
