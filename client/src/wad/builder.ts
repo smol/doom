@@ -10,58 +10,7 @@
 /// <reference path="./lumps/colormap.ts" />
 /// <reference path="./lumps/playpal.ts" />
 
-
-
-// // import WadParser from './Parser';
-// import Wad from './Wad';
-// import Type from './Type';
-
-// import Lump from './lumps/Lump';
-// import Graphics from './lumps/Graphic';
-// import Texture from './lumps/Texture';
-// import Map from './lumps/Map';
-// import Things from './lumps/Things';
-// import Endoom from './lumps/Endoom';
-// import ColorMap from './lumps/ColorMap';
-// import Playpal from './lumps/Playpal';
-
 module Wad {
-	// if (lump.name === 'PLAYPAL') {
-	// 			this.wad.setPlaypal(lump, data);
-	// 		} else if (lump.name === 'COLORMAP') {
-	// 			this.wad.setColorMap(lump, data);
-	// 		} else if (lump.name === 'ENDOOM') {
-	// 			this.wad.setEndoom(lump, data);
-	// 		} else if (/^E\dM\d$/.test(lump.name)) {
-	// 			this.wad.setMap(lump, data);
-	// 		} else if (lump.name === 'THINGS') {
-	// 			var maps: Map[] = this.wad.getMaps();
-
-	// 			maps[maps.length - 1].setThings(lump, data);
-	// 			return new Things(lump, data);
-	// 		} else if (lump.name === 'LINEDEFS'){
-	// 			var maps: Map[] = this.wad.getMaps();
-
-	// 			maps[maps.length - 1].setLinedefs(lump, data);
-	// 		} else if (/^TEXTURE\d$/.test(lump.name)) {
-	// 			this.wad.setTextures(lump, data);
-	// 		} else if (lump.name === 'VERTEXES') {
-	// 			var maps: Map[] = this.wad.getMaps();
-
-	// 			maps[maps.length - 1].setVertexes(lump, data);
-	// 		} else if (lump.name === 'F_START'){
-	// 			this.wad.setStartFlats(true);
-	// 		} else if (lump.name === 'F_END'){
-	// 			this.wad.setStartFlats(false);
-	// 		} else if (type === 'FLAT') {
-	// 			this.wad.setFlat(lump, data);
-	// 		} else if (type === 'GRAPHIC') {
-	// 			this.wad.setGraphic(lump, data);
-	// 		} else {
-	// 			this.unknownTypes.push(lump.name);
-	// 		}
-
-
 	interface BuilderFuncs {
 		name: string;
 		type: string;
@@ -120,7 +69,6 @@ module Wad {
 
 		private create(lump: any, data: any, index: number) : Boolean {
 			var type: string = Type.get(lump, data, this.lumps, index);
-			// console.warn(lump.name, type);
 
 			for (var i = 0; i < FUNCS.length; i++) {
 				if (FUNCS[i].name === lump.name || FUNCS[i].type === type ||
