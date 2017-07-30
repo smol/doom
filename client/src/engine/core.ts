@@ -59,6 +59,16 @@ module Engine {
 			animate()
 		}
 
+		private node(node : Wad.Node){
+			if (node === null)
+				return;
+
+			console.info(node);
+
+			this.node(node.getLeftNode());
+			this.node(node.getRightNode());
+		}
+
 		createWalls(wad: Wad.Wad) {
 			var map: Wad.Map = wad.getMaps()[0];
 
@@ -68,6 +78,8 @@ module Engine {
 			let graphics: Wad.Graphic[] = wad.getGraphics();
 			let vertexes: Wad.Vertex[] = map.getVertexes();
 
+			
+			this.node(map.getNode());
 			for (var i = 0; i < linedefs.length; i++) {
 				if (linedefs[i].getFlag() === 'Not on Map' || linedefs[i].getFlag() === 'Two-sided')
 					continue;
@@ -84,7 +96,7 @@ module Engine {
 				// 	}
 				// }
 
-				console.info(linedefs[i]);
+				// console.info(linedefs[i]);
 
 				let index = Math.round(Math.random() * graphics.length)
 				// console.info(index);

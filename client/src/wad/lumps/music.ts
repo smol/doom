@@ -5,8 +5,8 @@ module Wad {
 		constructor(lump: any, data: any){
 			super(lump, data);
 
-			let converter = new MusToMidi(this.dataView);
-			this.buffer = converter.getMasterOutput();
+			// let converter = new MusToMidi(this.dataView);
+			// this.buffer = converter.getMasterOutput();
 			// console.info(this.buffer);
 		}
 

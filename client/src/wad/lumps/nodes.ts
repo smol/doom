@@ -24,9 +24,10 @@ module Wad {
 		private nodeRight : Node = null;
 		private nodeLeft : Node = null;
 
-		private ssector : number = -1;
+		private ssectorRight : Subsector = null;
+		private ssectorLeft : Subsector = null;
 
-		constructor(offset: number, dataView: DataView) {
+		constructor(offset: number, dataView: DataView, subsectors : Subsectors) {
 			this.x = dataView.getInt16(offset + 0, true);
 			this.y = dataView.getInt16(offset + 2, true);
 
@@ -47,14 +48,14 @@ module Wad {
 			if ((temp >> 15) == 0){
 				this.nodeRightIndex = temp >> 1;
 			} else {
-				this.ssector = temp >> 1;
+				this.ssectorRight = subsectors.getSubsector(temp >> 1);
 			}
 
 			temp = dataView.getInt16(offset + 26, true);
 			if ((temp >> 15) == 0){
 				this.nodeLeftIndex = temp >> 1;
 			} else {
-				this.ssector = temp >> 1;
+				this.ssectorLeft = subsectors.getSubsector(temp >> 1);
 			}
 		}
 
@@ -83,11 +84,11 @@ module Wad {
 	export class Nodes extends Lump {
 		private nodes: Node[] = []
 
-		constructor(lump: any, data: any) {
+		constructor(lump: any, data: any, subsectors : Subsectors) {
 			super(lump, data);
 
 			for (var i = 0; i < this.dataView.byteLength; i += 28) {
-				this.nodes.push(new Node(i, this.dataView));
+				this.nodes.push(new Node(i, this.dataView, subsectors));
 			}
 
 			for (var i = 0; i < this.nodes.length; i++){

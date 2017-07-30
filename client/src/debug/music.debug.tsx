@@ -15,27 +15,27 @@ export module Debug {
 			this.audioContext = new AudioContext();
 			this.node = this.audioContext.createBufferSource();
 
-			let temp : Uint8Array = this.props.music.getBuffer();
+			// let temp : Uint8Array = this.props.music.getBuffer();
 
-			console.info(temp);
+			// console.info(temp);
 
-			let buffer: AudioBuffer = this.audioContext.createBuffer(1, temp.length, this.audioContext.sampleRate);
-			let data: Float32Array = buffer.getChannelData(0);
+			// let buffer: AudioBuffer = this.audioContext.createBuffer(1, temp.length, this.audioContext.sampleRate);
+			// let data: Float32Array = buffer.getChannelData(0);
 
-			for (var i = 0; i < temp.length; i++) {
-				console.info(temp[i]);
-				data[i] = temp[i];
-			}
+			// for (var i = 0; i < temp.length; i++) {
+			// 	console.info(temp[i]);
+			// 	data[i] = temp[i];
+			// }
 
-			this.node.buffer = buffer;
-			this.node.loop = true;
-			this.node.connect(this.audioContext.destination);
+			// this.node.buffer = buffer;
+			// this.node.loop = true;
+			// this.node.connect(this.audioContext.destination);
 
-			this.start = this.start.bind(this);
-			this.stop = this.stop.bind(this);
-			this.node.start(0);
+			// this.start = this.start.bind(this);
+			// this.stop = this.stop.bind(this);
+			// this.node.start(0);
 
-			this.audioContext.suspend();
+			// this.audioContext.suspend();
 
 			// context.decodeAudioData(this.props.music.getBuffer(), (buffer : AudioBuffer) => {
 			// 	source.buffer = buffer;
