@@ -26,6 +26,8 @@ module Wad {
 			for (var i = 0; i < this.dataView.byteLength; i += 4){
 				this.subsectors.push(new Subsector(i, this.dataView, segs));
 			}
+
+			// console.info('SUBSECTOR', this.subsectors);
 		}
 
 		getSubsector(index : number) : Subsector {

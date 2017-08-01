@@ -73,8 +73,6 @@ module Engine {
 			var map: Wad.Map = wad.getMaps()[0];
 
 			let linedefs: Wad.Linedef[] = map.getLinedefs();
-
-
 			let graphics: Wad.Graphic[] = wad.getGraphics();
 			let vertexes: Wad.Vertex[] = map.getVertexes();
 

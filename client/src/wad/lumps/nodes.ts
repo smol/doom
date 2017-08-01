@@ -45,17 +45,20 @@ module Wad {
 			this.leftUpperX = dataView.getInt16(offset + 22, true);
 
 			var temp = dataView.getInt16(offset + 24, true);
+			// console.info('SUBSECTOR', temp);
 			if ((temp >> 15) == 0){
 				this.nodeRightIndex = temp >> 1;
 			} else {
-				this.ssectorRight = subsectors.getSubsector(temp >> 1);
+				var mask : number = (1 << 15) - 1;
+				this.ssectorRight = subsectors.getSubsector(temp & mask);
 			}
 
 			temp = dataView.getInt16(offset + 26, true);
 			if ((temp >> 15) == 0){
 				this.nodeLeftIndex = temp >> 1;
 			} else {
-				this.ssectorLeft = subsectors.getSubsector(temp >> 1);
+				var mask : number = (1 << 15) - 1;
+				this.ssectorLeft = subsectors.getSubsector(temp & mask);
 			}
 		}
 
@@ -95,7 +98,7 @@ module Wad {
 				this.nodes[i].setChildren(this.nodes);
 			}
 
-			// console.info('NODES', lump.pos, this.nodes);
+			// console.info('NODES', this.nodes);
 		}
 
 		getNode() : Node {
