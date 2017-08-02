@@ -104,5 +104,9 @@ module Wad {
 		getNode() : Node {
 			return this.nodes[this.nodes.length - 1];
 		}
+
+		getNodes() : Node[] {
+			return this.nodes;
+		}
 	}
 }

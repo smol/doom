@@ -8,16 +8,23 @@ interface NodesProps {
 
 
 export module Debug {
+	export class Node extends React.Component<NodesProps> {
+		constructor(props : NodesProps){
+			super(props);
+		}
+	}
+
 	export class Nodes extends React.Component<NodesProps> {
 		private position: { x: number, y: number };
 		private startPosition: { x: number, y: number };
+		private scale : number = 0.1;
 
 		constructor(props : NodesProps){
 			super(props);
 
 			this.mouseMove = this.mouseMove.bind(this);
 			this.mouseDown = this.mouseDown.bind(this);
-			this.position = { x: 500, y: 500 };
+			this.position = { x: 700, y: 700 };
 			this.startPosition = { x: 0, y: 0 };
 		}
 
@@ -27,8 +34,8 @@ export module Debug {
 			}
 
 			this.position = {
-				x: this.position.x + ((e.screenX - this.startPosition.x) * 2),
-				y: this.position.y + ((e.screenY - this.startPosition.y) * 2)
+				x: this.position.x + ((e.screenX - this.startPosition.x) * (1 / this.scale)),
+				y: this.position.y + ((e.screenY - this.startPosition.y) * (1 / this.scale))
 			};
 
 			this.update();
@@ -48,8 +55,6 @@ export module Debug {
 			// console.warn('vertexes', this.props.vertexes, 'linedefs', this.props.linedefs);
 
 			ctx.beginPath();
-
-			var scale = 0.5;
 
 			
 			var start: { x: number, y: number } = {
@@ -80,15 +85,15 @@ export module Debug {
 					ctx.strokeStyle = 'white';
 				}
 				
-				ctx.moveTo((start.x - firstVertex.x) * scale, (start.y - firstVertex.y) * scale);
-				ctx.lineTo((start.x - secondVertex.x) * scale, (start.y - secondVertex.y) * scale);
+				ctx.moveTo((start.x - firstVertex.x) * this.scale, (start.y - firstVertex.y) * this.scale);
+				ctx.lineTo((start.x - secondVertex.x) * this.scale, (start.y - secondVertex.y) * this.scale);
 
 				
 				ctx.stroke();
 				ctx.closePath();
 			}
 
-			this.renderNode(this.props.node, ctx, start, scale);
+			this.renderNode(this.props.node, ctx, start, this.scale);
 		}
 
 		private renderNode(node : Wad.Node, ctx : CanvasRenderingContext2D, start : {x: number, y: number}, scale: number){
@@ -126,8 +131,13 @@ export module Debug {
 
 
 
-			this.renderNode(node.getRightNode(), ctx, start, scale);
-			this.renderNode(node.getLeftNode(), ctx, start, scale);
+			// this.renderNode(node.getRightNode(), ctx, start, scale);
+			// this.renderNode(node.getLeftNode(), ctx, start, scale);
+		}
+
+		componentWillReceiveProps(nextProps) {
+			this.props = nextProps;
+			this.update();
 		}
 
 

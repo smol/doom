@@ -58,11 +58,22 @@ module Debug {
 				data.children = [
 					{ label: "THINGS", component: <Map.Things things={map.getThings()} />, children: [] },
 					{ label: "VERTEXES", component: <Vertexes.Vertexes vertexes={map.getVertexes()} linedefs={map.getLinedefs()} />, children: [] },
-					{ label: "NODES", component: <Nodes.Nodes vertexes={map.getVertexes()} linedefs={map.getLinedefs()} node={ map.getNode() } />, children: [] }
+					{ label: "NODES", component: null, children: this.getNodes(map) }
 				];
 
 				return data;
 			});
+
+			return datas;
+		}
+
+		private getNodes(map: Wad.Map) : TreeView.TreeData[] {
+			var datas : TreeView.TreeData[] = [];
+			var nodes : Wad.Node[] = map.getNodes();
+
+			for (var i = 0; i < nodes.length; i++) {
+				datas.push({ label: "NODE " + i, component: <Nodes.Nodes vertexes={map.getVertexes()} linedefs={map.getLinedefs()} node={ nodes[i] } />, children: [] });
+			}
 
 			return datas;
 		}

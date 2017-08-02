@@ -31,6 +31,7 @@ module Wad {
 		}
 
 		getSeg(index: number) : Seg {
+			// console.info(index, this.segs.length);
 			return this.segs[index];
 		}
 	}

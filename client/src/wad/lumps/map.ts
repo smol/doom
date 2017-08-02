@@ -48,7 +48,9 @@ module Wad {
 		}
 
 		setSegs(lump: any, data: any){
+			
 			this.segs = new Segs(lump, data);
+			console.info(this.getName(), this.segs);
 		}
 
 		getLinedefs() : Linedef[] {
@@ -57,6 +59,10 @@ module Wad {
 
 		getNode() : Node {
 			return this.nodes.getNode();
+		}
+
+		getNodes() : Node[] {
+			return this.nodes.getNodes();
 		}
 
 		getVertexes() : Vertex[] {

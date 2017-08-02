@@ -8,11 +8,14 @@ module Wad {
 		constructor(offset : number, data : DataView, segs : Segs){
 			this.segsCount = data.getUint16(offset);
 			this.segsOffset = data.getUint16(offset + 2);
-
+			// console.info(this);
 			this.segs = [];
+
 			for (var i = 0; i < this.segsCount; i++){
 				this.segs.push(segs.getSeg(i + this.segsOffset));
 			}
+
+			
 		}
 	}
 
