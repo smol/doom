@@ -1,0 +1,9 @@
+exclude:
+- /client/src/engine/orbitcontrols.ts
+- /client/sylvester.js
+- /gruntfile.js
+- /webpack.config.js
+component_depth: 1
+languages:
+- javascript
+- typescript
