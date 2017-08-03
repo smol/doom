@@ -17,15 +17,23 @@ export module Debug {
 	export class Nodes extends React.Component<NodesProps> {
 		private position: { x: number, y: number };
 		private startPosition: { x: number, y: number };
-		private scale : number = 0.1;
+		private scale : number = 0.3;
 
 		constructor(props : NodesProps){
 			super(props);
 
 			this.mouseMove = this.mouseMove.bind(this);
 			this.mouseDown = this.mouseDown.bind(this);
+			this.scroll = this.scroll.bind(this);
+
+			
+			
 			this.position = { x: 700, y: 700 };
 			this.startPosition = { x: 0, y: 0 };
+		}
+
+		scroll(e){
+			console.info(e);
 		}
 
 		mouseMove(e) {
@@ -92,7 +100,7 @@ export module Debug {
 				ctx.stroke();
 				ctx.closePath();
 			}
-
+			console.info('RENDER NODE', this.props.node);
 			this.renderNode(this.props.node, ctx, start, this.scale);
 		}
 
@@ -103,22 +111,25 @@ export module Debug {
 
 			let rightBounds : { lX: number, lY: number, uX: number, uY: number } = node.getRightBounds();
 
+			ctx.beginPath();
 			ctx.moveTo((start.x - rightBounds.uX) * scale, (start.y - rightBounds.uY) * scale);
 			ctx.lineTo((start.x - rightBounds.lX) * scale, (start.y - rightBounds.uY) * scale);
 			ctx.lineTo((start.x - rightBounds.lX) * scale, (start.y - rightBounds.lY) * scale);
 			ctx.lineTo((start.x - rightBounds.uX) * scale, (start.y - rightBounds.lY) * scale);
 			ctx.lineTo((start.x - rightBounds.uX) * scale, (start.y - rightBounds.uY) * scale);
-			ctx.strokeStyle = "rgba(0, 255, 0, 0.1)";
+			ctx.strokeStyle = "blue";
 			ctx.stroke();
+			ctx.closePath();
 
 			let leftBounds : { lX: number, lY: number, uX: number, uY: number } = node.getLeftBounds();
 
+			ctx.beginPath();
 			ctx.moveTo((start.x - leftBounds.uX) * scale, (start.y - leftBounds.uY) * scale);
 			ctx.lineTo((start.x - leftBounds.lX) * scale, (start.y - leftBounds.uY) * scale);
 			ctx.lineTo((start.x - leftBounds.lX) * scale, (start.y - leftBounds.lY) * scale);
 			ctx.lineTo((start.x - leftBounds.uX) * scale, (start.y - leftBounds.lY) * scale);
 			ctx.lineTo((start.x - leftBounds.uX) * scale, (start.y - leftBounds.uY) * scale);
-			ctx.strokeStyle = "rgba(0, 0, 255, 0.1)";
+			ctx.strokeStyle = "green";
 			ctx.stroke();
 			ctx.closePath();
 
@@ -142,12 +153,17 @@ export module Debug {
 
 
 		componentDidMount() {
+			(this.refs.canvas as HTMLCanvasElement).addEventListener('scroll', this.scroll);
 			this.update();
 			// ctx.scale(0.1, 0.1);
 		}
 
+		componentWillUnmount(){
+			(this.refs.canvas as HTMLCanvasElement).removeEventListener('scroll', this.scroll);
+		}
+
 		render() {
-			return <canvas ref="canvas" width={window.innerWidth} height={window.innerHeight / 2} onMouseMove={this.mouseMove} onMouseDown={this.mouseDown} />;
+			return <canvas ref="canvas" width={window.innerWidth} height={window.innerHeight / 2} onScroll={ this.scroll } onMouseMove={this.mouseMove} onMouseDown={this.mouseDown} />;
 		}
 	}
 }
