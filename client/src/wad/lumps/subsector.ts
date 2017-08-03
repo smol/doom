@@ -6,16 +6,18 @@ module Wad {
 		private segs : Seg[];
 
 		constructor(offset : number, data : DataView, segs : Segs){
-			this.segsCount = data.getUint16(offset);
-			this.segsOffset = data.getUint16(offset + 2);
+			this.segsCount = data.getUint16(offset, true);
+			this.segsOffset = data.getUint16(offset + 2, true);
 			// console.info(this);
 			this.segs = [];
 
 			for (var i = 0; i < this.segsCount; i++){
 				this.segs.push(segs.getSeg(i + this.segsOffset));
 			}
+		}
 
-			
+		getSegs() : Seg[] {
+			return this.segs;
 		}
 	}
 
@@ -29,8 +31,6 @@ module Wad {
 			for (var i = 0; i < this.dataView.byteLength; i += 4){
 				this.subsectors.push(new Subsector(i, this.dataView, segs));
 			}
-
-			// console.info('SUBSECTOR', this.subsectors);
 		}
 
 		getSubsector(index : number) : Subsector {

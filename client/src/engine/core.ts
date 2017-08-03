@@ -59,51 +59,65 @@ module Engine {
 			animate()
 		}
 
-		private node(node : Wad.Node){
+		private node(level : number, node: Wad.Node) {
 			if (node === null)
 				return;
 
-			console.info(node);
+			// console.info(level, node);
 
-			this.node(node.getLeftNode());
-			this.node(node.getRightNode());
+			this.subsector(node.getRightSubsector());
+			this.subsector(node.getLeftSubsector());
+
+
+			this.node(level+1,node.getLeftNode());
+			this.node(level+1, node.getRightNode());
 		}
 
-		createWalls(wad: Wad.Wad) {
-			var map: Wad.Map = wad.getMaps()[0];
+		private subsector(subsector: Wad.Subsector) {
+			if (subsector !== null) {
+				var segs: Wad.Seg[] = subsector.getSegs();
 
+				for (var i = 0; i < segs.length; i++) {
+					let wall = new Engine.Wall(segs[i].getStartVertex(), segs[i].getEndVertex());
+					wall.setTexture(null);
+					this.scene.add(wall);
+				}
+			}
+		}
+
+		createWalls(map: Wad.Map, wad: Wad.Wad) {
 			let linedefs: Wad.Linedef[] = map.getLinedefs();
 			let graphics: Wad.Graphic[] = wad.getGraphics();
 			let vertexes: Wad.Vertex[] = map.getVertexes();
 
-			
-			this.node(map.getNode());
-			for (var i = 0; i < linedefs.length; i++) {
-				if (linedefs[i].getFlag() === 'Not on Map' || linedefs[i].getFlag() === 'Two-sided')
-					continue;
 
-				var firstVertex: Wad.Vertex = vertexes[linedefs[i].getFirst()];
-				var secondVertex: Wad.Vertex = vertexes[linedefs[i].getSecond()];
+			this.node(0, map.getNode());
+			// for (var i = 0; i < linedefs.length; i++) {
+			// 	if (linedefs[i].getFlag() === 'Not on Map' || linedefs[i].getFlag() === 'Two-sided')
+			// 		continue;
 
-				let wall = new Engine.Wall(firstVertex, secondVertex);
+			// 	var firstVertex: Wad.Vertex = vertexes[linedefs[i].getFirst()];
+			// 	var secondVertex: Wad.Vertex = vertexes[linedefs[i].getSecond()];
 
-				// for (var i =0; i < graphics.length; i++){
-				// 	if (graphics[i].getName().indexOf("DOOR2_4") !== -1){
-				// 		wall.setTexture(graphics[i]);
-				// 		break;
-				// 	}
-				// }
+			// 	let wall = new Engine.Wall(firstVertex, secondVertex);
 
-				// console.info(linedefs[i]);
+			// 	// for (var i =0; i < graphics.length; i++){
+			// 	// 	if (graphics[i].getName().indexOf("DOOR2_4") !== -1){
+			// 	// 		wall.setTexture(graphics[i]);
+			// 	// 		break;
+			// 	// 	}
+			// 	// }
 
-				let index = Math.round(Math.random() * graphics.length)
-				// console.info(index);
-				wall.setTexture(graphics[index]);
+			// 	// console.info(linedefs[i]);
+
+			// 	let index = Math.round(Math.random() * graphics.length)
+			// 	// console.info(index);
+			// 	wall.setTexture(graphics[index]);
 
 
 
-				this.scene.add(wall);
-			}
+			// 	this.scene.add(wall);
+			// }
 
 		}
 	}

@@ -45,9 +45,8 @@ module Wad {
 			this.leftUpperX = dataView.getInt16(offset + 22, true);
 
 			var temp = dataView.getInt16(offset + 24, true);
-			// console.info('SUBSECTOR', temp);
 			if ((temp >> 15) == 0){
-				this.nodeRightIndex = temp >> 1;
+				this.nodeRightIndex = temp;
 			} else {
 				var mask : number = (1 << 15) - 1;
 				this.ssectorRight = subsectors.getSubsector(temp & mask);
@@ -55,7 +54,7 @@ module Wad {
 
 			temp = dataView.getInt16(offset + 26, true);
 			if ((temp >> 15) == 0){
-				this.nodeLeftIndex = temp >> 1;
+				this.nodeLeftIndex = temp;
 			} else {
 				var mask : number = (1 << 15) - 1;
 				this.ssectorLeft = subsectors.getSubsector(temp & mask);
@@ -82,6 +81,14 @@ module Wad {
 		getLeftNode() : Node {
 			return this.nodeLeft;
 		}
+
+		getRightSubsector() : Subsector {
+			return this.ssectorRight;
+		}
+
+		getLeftSubsector() : Subsector {
+			return this.ssectorLeft;
+		}
 	}
 
 	export class Nodes extends Lump {
@@ -97,11 +104,10 @@ module Wad {
 			for (var i = 0; i < this.nodes.length; i++){
 				this.nodes[i].setChildren(this.nodes);
 			}
-
-			// console.info('NODES', this.nodes);
 		}
 
 		getNode() : Node {
+			console.info('NODES', this.nodes);
 			return this.nodes[this.nodes.length - 1];
 		}
 

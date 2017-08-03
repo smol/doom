@@ -30,13 +30,13 @@ module Wad {
 		{ name: 'SEGS', type: null, regex: null, action: (builder: Builder, lump: any, data: any) => { var maps: Map[] = builder.wad.getMaps(); maps[maps.length - 1].setSegs(lump, data); } },
 		{ name: 'SECTORS', type: null, regex: null, action: (builder: Builder, lump: any, data: any) => { var maps: Map[] = builder.wad.getMaps(); maps[maps.length - 1].setSectors(lump, data); } },
 		{ name: 'SSECTORS', type: null, regex: null, action: (builder: Builder, lump: any, data: any) => { var maps: Map[] = builder.wad.getMaps(); maps[maps.length - 1].setSubsectors(lump, data); } },
-		{ name: null, type: null, regex: /^TEXTURE\d$/, action: (builder: Builder, lump: any, data: any) => { builder.wad.setTextures(builder.parser, lump, data);  } },
+		{ name: null, type: null, regex: /^TEXTURE\d$/, action: (builder: Builder, lump: any, data: any) => { builder.wad.setTextures(builder.parser, lump, data); } },
 		{ name: 'F_START', type: null, regex: null, action: (builder: Builder, lump: any, data: any) => { builder.wad.setStartFlats(true); } },
 		{ name: 'F_END', type: null, regex: null, action: (builder: Builder, lump: any, data: any) => { builder.wad.setStartFlats(false); } },
 		{ name: null, type: 'FLAT', regex: null, action: (builder: Builder, lump: any, data: any) => { builder.wad.setFlat(lump, data); } },
 		{ name: null, type: 'GRAPHIC', regex: null, action: (builder: Builder, lump: any, data: any) => { builder.wad.setGraphic(lump, data); } },
 		{ name: null, type: 'MUSIC', regex: null, action: (builder: Builder, lump: any, data: any) => { builder.wad.setMusic(lump, data); } },
-		
+
 	];
 
 	export class Builder {
@@ -61,6 +61,7 @@ module Wad {
 		go() {
 			this.lumps = this.parser.getLumps();
 
+			this.unknownTypes = [];
 			for (var i = 0; i < this.lumps.length; i++) {
 				var data = this.parser.getDataByLump(this.lumps[i]);
 				this.create(this.lumps[i], data, i);
@@ -69,18 +70,19 @@ module Wad {
 			console.info('UNKNOWN TYPES', this.unknownTypes);
 		}
 
-		private create(lump: any, data: any, index: number) : Boolean {
+		private create(lump: any, data: any, index: number): Boolean {
 			var type: string = Type.get(lump, data, this.lumps, index);
 
 			for (var i = 0; i < FUNCS.length; i++) {
 				if (FUNCS[i].name === lump.name || FUNCS[i].type === type ||
 					(FUNCS[i].regex != null && FUNCS[i].regex.test(lump.name))) {
 					FUNCS[i].action(this, lump, data);
-					break;
-				} else {
-					this.unknownTypes.push(lump.name);
+					return true;
 				}
 			}
+
+			this.unknownTypes.push(lump.name);
+
 
 			return false;
 		}

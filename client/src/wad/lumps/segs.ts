@@ -1,32 +1,44 @@
 module Wad {
 	export class Seg {
-		private startVertex : number;
-		private endVertex : number;
+		private startVertex : Vertex;
+		private endVertex : Vertex;
 		private angle : number;
-		private linedef : number;
+		private linedef : Linedef;
 		private direction : number;
 		private offset : number;
 
-		constructor(offset: number, data: DataView){
-			this.startVertex = data.getInt16(offset + 0, true);
-			this.endVertex = data.getInt16(offset + 2, true);
+		constructor(offset: number, data: DataView, vertices: Vertex[], linedefs : Linedef[]){
+			this.startVertex = vertices[data.getInt16(offset + 0, true)];
+			this.endVertex = vertices[data.getInt16(offset + 2, true)];
 
 			this.angle = data.getInt16(offset + 4, true);
-			this.linedef = data.getInt16(offset + 6, true);
+			this.linedef = linedefs[data.getInt16(offset + 6, true)];
 			this.direction = data.getInt16(offset + 8, true);
 			this.offset = data.getInt16(offset + 10, true);
+		}
+
+		getStartVertex() : Vertex {
+			return this.startVertex;
+		}
+
+		getEndVertex() : Vertex {
+			return this.endVertex;
+		}
+
+		getLinedef() : Linedef {
+			return this.linedef;
 		}
 	}
 
 	export class Segs extends Lump {
 		private segs : Seg[];
 
-		constructor(lump: any, data: any){
+		constructor(lump: any, data: any, vertices : Vertex[], linedefs : Linedef[]){
 			super(lump, data);
 
 			this.segs = [];
 			for (var i = 0; i < this.dataView.byteLength; i += 12){
-				this.segs.push(new Seg(i, this.dataView));
+				this.segs.push(new Seg(i, this.dataView, vertices, linedefs));
 			}
 		}
 
