@@ -66,15 +66,24 @@ module Wad {
 	export class Sectors extends Lump {
 		private sectors: Sector[];
 
-		constructor(lump: any, data: any) {
+		constructor(lump: any, data: any, sidedefs: Sidedef[]) {
 			super(lump, data);
 
 			this.sectors = [];
 			for (var i = 0; i < this.dataView.byteLength; i += 26) {
-				this.sectors.push(new Sector(i, this.dataView));
+				let sector = new Sector(i, this.dataView);
+				this.sectors.push(sector);
+			}
+
+			for (var i = 0; i < sidedefs.length; i++) {
+				sidedefs[i].setSector(this.sectors[sidedefs[i].getSectorIndex()]);
 			}
 
 			// console.info(this.sectors);
+		}
+
+		get(): Sector[] {
+			return this.sectors;
 		}
 	}
 }

@@ -3,6 +3,7 @@
 /// <reference path="vertexes.ts" />
 /// <reference path="linedef.ts" />
 /// <reference path="sectors.ts" />
+/// <reference path="sidedefs.ts" />
 
 module Wad {
 	export class Map extends Lump {
@@ -13,6 +14,7 @@ module Wad {
 		private nodes : Nodes;
 		private subsectors : Subsectors;
 		private segs : Segs;
+		private sidedefs : Sidedefs;
 
 		constructor(lump: any, data: any) {
 			super(lump, data);
@@ -36,11 +38,15 @@ module Wad {
 		}
 
 		setSectors(lump: any, data:any){
-			this.sectors = new Sectors(lump, data);
+			this.sectors = new Sectors(lump, data, this.sidedefs.get());
 		}
 
 		setNodes(lump: any, data: any){
 			this.nodes = new Nodes(lump, data, this.subsectors);
+		}
+
+		setSidedefs(lump: any, data: any){
+			this.sidedefs = new Sidedefs(lump, data);
 		}
 
 		setSubsectors(lump: any, data: any){

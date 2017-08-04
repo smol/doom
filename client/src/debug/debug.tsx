@@ -49,7 +49,6 @@ module Debug {
 			var datas: TreeView.TreeData[] = [];
 
 			datas = this.props.wad.getMaps().map(map => {
-				console.info(map);
 				var data: TreeView.TreeData = {
 					label: map.getName(),
 					component: <Map.Map map={map} wad={this.props.wad} />,
