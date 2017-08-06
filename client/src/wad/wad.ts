@@ -25,6 +25,7 @@ module Wad {
 
 		private textures: Textures[];
 		private flats: Flat[];
+		private pnames : Pnames;
 
 		private flatsStarted: Boolean = false;
 
@@ -52,19 +53,16 @@ module Wad {
 		setGraphic(lump: any, data: any) {
 			let graphic = new Graphic(this.playpal, lump, data);
 
-			for (var i = 0; i < this.textures.length; i++){
-				let texture = this.textures[i].getTextureByName(lump.name);
-
-				if (texture !== null){
-					texture.setGraphic(graphic);
-					return;
-				}
-			}
-
 			this.graphics.push(graphic);
 		}
 
+		setPnames(lump: any, data: any){
+			this.pnames = new Pnames(lump, data, this.graphics);
+		}
+
 		setFlat(lump: any, data: any) {
+				// console.info('HI', this.textures[i], lump.name);
+			
 			if (this.flatsStarted)
 				this.flats.push(new Flat(this.playpal, lump, data));
 		}
@@ -83,17 +81,6 @@ module Wad {
 
 		setTextures(parser: Parser, lump: any, data: any) {
 			let textures : Textures = new Textures(parser, this.playpal, lump, data);
-
-			for (var i = 0; i < this.graphics.length; i++){
-				let texture : Texture = textures.getTextureByName(this.graphics[i].getName());
-
-				if (texture !== null){
-					texture.setGraphic(this.graphics[i]);
-
-					this.graphics = this.graphics.splice(i, 1);
-					break;
-				}
-			}
 
 			// console.info(textures.getTextures());
 			this.textures.push(textures);

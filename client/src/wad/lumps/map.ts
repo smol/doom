@@ -15,6 +15,7 @@ module Wad {
 		private subsectors : Subsectors;
 		private segs : Segs;
 		private sidedefs : Sidedefs;
+		private rejects : Rejects;
 
 		constructor(lump: any, data: any) {
 			super(lump, data);
@@ -23,6 +24,7 @@ module Wad {
 			this.linedefs = null;
 			this.vertexes = null;
 			this.sectors = null;
+			this.rejects = null;
 		}
 
 		setThings(lump: any, data: any) {
@@ -45,8 +47,12 @@ module Wad {
 			this.nodes = new Nodes(lump, data, this.subsectors);
 		}
 
+		setReject(lump : any, data: any){
+			this.rejects = new Rejects(lump, data, this.sectors);
+		}
+
 		setSidedefs(lump: any, data: any){
-			this.sidedefs = new Sidedefs(lump, data);
+			this.sidedefs = new Sidedefs(lump, data, this.linedefs.get());
 		}
 
 		setSubsectors(lump: any, data: any){

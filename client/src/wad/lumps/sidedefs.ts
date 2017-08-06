@@ -36,6 +36,14 @@ module Wad {
 			return this.sectorIndex;
 		}
 
+		getSector() : Sector {
+			return this.sector;
+		}
+
+		getMiddle() : string {
+			return this.middle;
+		}
+
 		setSector(sector : Sector) {
 			this.sector = sector;
 		}
@@ -44,18 +52,23 @@ module Wad {
 	export class Sidedefs extends Lump {
 		private sidedefs : Sidedef[];
 
-		constructor(lump: any, data: any){
+		constructor(lump: any, data: any, linedefs : Linedef[]){
 			super(lump, data);
 
 			this.sidedefs = [];
 
-			console.info(lump.pos);
-
 			for (var i = 0; i < this.dataView.byteLength; i += 30){
-				this.sidedefs.push(new Sidedef(i, this.dataView));
+				let sidedef = new Sidedef(i, this.dataView);
+
+				this.sidedefs.push(sidedef);
 			}
 
-			console.info('SIDEDEFS', this.sidedefs);
+			for (var i = 0; i < linedefs.length; i++){
+				var rightIndex : number = linedefs[i].getRight();
+				var leftIndex : number = linedefs[i].getLeft();
+
+				linedefs[i].setSidedef(this.sidedefs[rightIndex], this.sidedefs[leftIndex]);
+			}
 		}
 
 		get() : Sidedef[] {

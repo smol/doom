@@ -168,14 +168,22 @@
 // animate.
 
 module Wad {
+	export class TexturePatch {
+		x : number;
+		y : number;
+		index : number;
+		stepdir : number;
+		colormap : number;
+	}
+
 	export class Texture {
 		private dataView: DataView;
 		private name: string;
 		private width: number;
 		private height: number;
 		private offset: number = 0;
-
-		private graphic : Graphic = null;
+		private patches : TexturePatch[];
+		private pname : string;
 
 		constructor(playpal: Playpal, data: any) {
 			this.dataView = new DataView(data);
@@ -200,7 +208,7 @@ module Wad {
 
 			var patchCount: number = this.dataView.getInt8(this.offset);
 			this.offset += 2;
-			var patches: { x: number, y: number, index: number, stepdir: number, colormap: number }[] = [];
+			this.patches = [];
 
 			for (var i = 0; i < patchCount; i++) {
 				var x = this.dataView.getUint8(this.offset);
@@ -217,7 +225,7 @@ module Wad {
 				var colormap: number = this.dataView.getUint8(this.offset);
 				this.offset += 2;
 
-				patches.push({ x: x, y: y, index: index, stepdir: stepdir, colormap: colormap });
+				this.patches.push({ x: x, y: y, index: index, stepdir: stepdir, colormap: colormap });
 			}
 		}
 
@@ -225,12 +233,9 @@ module Wad {
 			return this.name;
 		}
 
-		setGraphic(graphic : Graphic){
-			this.graphic = graphic;
-		}
-
-		getGraphic() : Graphic {
-			return this.graphic;
+		getPnameIndex() : number {
+			return 0;
+			// return this.patches
 		}
 
 		getSize(): number {

@@ -122,7 +122,7 @@ module Debug {
 				var texturesList : Wad.Texture[] = textures[i].getTextures();
 
 				for (var j = 0; j < texturesList.length; j++){
-					dataTexture.children.push({ label: texturesList[j].getName(), component: <Graphic.Graphic graphic={ texturesList[j].getGraphic() } />, children: null });
+					dataTexture.children.push({ label: texturesList[j].getName(), component: null, children: null });
 				}
 
 				dataTextures.push(dataTexture);

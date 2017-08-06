@@ -29,6 +29,16 @@ module Wad {
 			// console.info('TEXTURE', lump.name, this.count, this.offset);
 		}
 
+		setPnames(pnames : string[]){
+			// for (var i = 0; i < pnames.length; i++){
+			// 	for (var j = 0; j < this.textures.length; j++){
+			// 		if (pnames[i] === this.textures[j].getName()){
+			// 			this.textures[j].setPnames(p)
+			// 		}
+			// 	}
+			// }
+		}
+
 		getTextureByName(name : string) : Texture {
 			for (var i = 0; i < this.textures.length; i++){
 				if (name === this.textures[i].getName()){

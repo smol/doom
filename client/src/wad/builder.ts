@@ -31,12 +31,14 @@ module Wad {
 		{ name: 'SECTORS', type: null, regex: null, action: (builder: Builder, lump: any, data: any) => { var maps: Map[] = builder.wad.getMaps(); maps[maps.length - 1].setSectors(lump, data); } },
 		{ name: 'SIDEDEFS', type: null, regex: null, action: (builder: Builder, lump: any, data: any) => { var maps: Map[] = builder.wad.getMaps(); maps[maps.length - 1].setSidedefs(lump, data); } },
 		{ name: 'SSECTORS', type: null, regex: null, action: (builder: Builder, lump: any, data: any) => { var maps: Map[] = builder.wad.getMaps(); maps[maps.length - 1].setSubsectors(lump, data); } },
+		{ name: 'REJECT', type: null, regex: null, action: (builder: Builder, lump: any, data: any) => { var maps: Map[] = builder.wad.getMaps(); maps[maps.length - 1].setReject(lump, data); } },
 		{ name: null, type: null, regex: /^TEXTURE\d$/, action: (builder: Builder, lump: any, data: any) => { builder.wad.setTextures(builder.parser, lump, data); } },
 		{ name: 'F_START', type: null, regex: null, action: (builder: Builder, lump: any, data: any) => { builder.wad.setStartFlats(true); } },
 		{ name: 'F_END', type: null, regex: null, action: (builder: Builder, lump: any, data: any) => { builder.wad.setStartFlats(false); } },
 		{ name: null, type: 'FLAT', regex: null, action: (builder: Builder, lump: any, data: any) => { builder.wad.setFlat(lump, data); } },
 		{ name: null, type: 'GRAPHIC', regex: null, action: (builder: Builder, lump: any, data: any) => { builder.wad.setGraphic(lump, data); } },
 		{ name: null, type: 'MUSIC', regex: null, action: (builder: Builder, lump: any, data: any) => { builder.wad.setMusic(lump, data); } },
+		{ name: 'PNAMES', type: null, regex: null, action: (builder: Builder, lump: any, data: any) => { builder.wad.setPnames(lump, data); } },
 
 	];
 
@@ -67,6 +69,8 @@ module Wad {
 				var data = this.parser.getDataByLump(this.lumps[i]);
 				this.create(this.lumps[i], data, i);
 			}
+
+			console.info('WAD', this.wad);
 
 			console.info('UNKNOWN TYPES', this.unknownTypes);
 		}

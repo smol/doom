@@ -38,6 +38,8 @@ module Wad {
 		private right : number;
 		private left : number;
 		private flags : string;
+		private rightSidedef : Sidedef;
+		private leftSidedef : Sidedef;
 
 		constructor(lump: any, data: any, offset: number){
 			super(lump, data);
@@ -57,6 +59,27 @@ module Wad {
 			}
 			// console.warn('linedefs', firstVertexIndex, secondVertexIndex, flagsString, types, tag, right, left);
 			
+		}
+
+		setSidedef(rightSidedef : Sidedef, leftSidedef : Sidedef){
+			this.rightSidedef = rightSidedef;
+			this.leftSidedef = leftSidedef;
+		}
+
+		getRightSidedef() : Sidedef {
+			return this.rightSidedef;
+		}
+
+		getLeftSidedef() : Sidedef {
+			return this.leftSidedef;
+		}
+
+		getRight() : number {
+			return this.right;
+		}
+
+		getLeft() : number {
+			return this.left;
 		}
 
 		getFirst() : number {

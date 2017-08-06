@@ -61,6 +61,14 @@ module Wad {
 			this.specialSector = dataView.getInt16(22 + offset, true);
 			this.linedefsTag = dataView.getInt16(24 + offset, true);
 		}
+
+		getCeilingHeight() : number {
+			return this.ceilingHeight;
+		}
+
+		getFloorHeight() : number {
+			return this.floorHeight;
+		}
 	}
 
 	export class Sectors extends Lump {
