@@ -9,7 +9,7 @@ module Engine {
 		private firstVertex: Wad.Vertex;
 		private secondVertex: Wad.Vertex;
 
-		seg : Wad.Seg;
+		seg: Wad.Seg;
 
 		constructor(seg: Wad.Seg) {
 			super();
@@ -18,11 +18,11 @@ module Engine {
 			this.firstVertex = seg.getStartVertex();
 			this.secondVertex = seg.getEndVertex();
 
-			let rightSidedef : Wad.Sidedef = seg.getLinedef().getRightSidedef();
-			let rightSector : Wad.Sector = rightSidedef.getSector();
+			let rightSidedef: Wad.Sidedef = seg.getLinedef().getRightSidedef();
+			let rightSector: Wad.Sector = rightSidedef.getSector();
 
-			let ceiling : number = rightSector.getCeilingHeight();
-			let floor : number = rightSector.getFloorHeight();
+			let ceiling: number = rightSector.getCeilingHeight();
+			let floor: number = rightSector.getFloorHeight();
 
 			this.material = new THREE.MeshBasicMaterial({
 				transparent: true,
@@ -44,6 +44,30 @@ module Engine {
 			geom.faces.push(new THREE.Face3(0, 1, 2));
 			geom.faces.push(new THREE.Face3(0, 2, 3));
 
+			geom.computeBoundingBox();
+
+			var max = geom.boundingBox.max,
+				min = geom.boundingBox.min;
+			var offset = new THREE.Vector2(0 - min.x, 0 - min.y);
+			var range = new THREE.Vector2(max.x - min.x, max.y - min.y);
+			var faces = geom.faces;
+
+			geom.faceVertexUvs[0] = [];
+
+			for (var i = 0; i < faces.length; i++) {
+
+				var v1 = geom.vertices[faces[i].a],
+					v2 = geom.vertices[faces[i].b],
+					v3 = geom.vertices[faces[i].c];
+
+				geom.faceVertexUvs[0].push([
+					new THREE.Vector2((v1.x + offset.x) / range.x, (v1.y + offset.y) / range.y),
+					new THREE.Vector2((v2.x + offset.x) / range.x, (v2.y + offset.y) / range.y),
+					new THREE.Vector2((v3.x + offset.x) / range.x, (v3.y + offset.y) / range.y)
+				]);
+			}
+			geom.uvsNeedUpdate = true;
+
 			geom.computeFaceNormals();
 			geom.computeVertexNormals();
 
@@ -52,12 +76,12 @@ module Engine {
 			this.add(this.mesh);
 		}
 
-		getMesh() : THREE.Mesh {
+		getMesh(): THREE.Mesh {
 			return this.mesh;
 		}
 
 		setTexture(texture: Wad.Graphic) {
-			if (texture == null){
+			if (texture == null) {
 				return;
 			}
 			// console.info(texture.getName(), texture.getWidth(), texture.getHeight());
@@ -66,7 +90,7 @@ module Engine {
 			var width = texture.getWidth();
 			var height = texture.getHeight();
 
-			var data : Uint8Array = Uint8Array.from(texture.getImageData());
+			var data: Uint8Array = Uint8Array.from(texture.getImageData());
 			this.texture = new THREE.DataTexture(data, width, height,
 				THREE.RGBAFormat,
 				THREE.UnsignedByteType,

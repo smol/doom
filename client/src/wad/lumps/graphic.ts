@@ -20,6 +20,10 @@ module Wad {
 		constructor(playpal: Playpal, lump: any, data: any, pnames : Pnames) {
 			super(lump, data);
 
+			if (this.getName() === 'DOOR3_6'){
+				console.info(pnames, this);
+			}
+
 			pnames.setGraphic(this);
 
 			this.playpal = playpal;

@@ -2,7 +2,7 @@ module Wad {
 
 	export class Pname {
 		private name: string;
-		private graphic : Graphic;
+		private graphic: Graphic;
 
 		constructor(offset: number, data: DataView) {
 			this.name = "";
@@ -20,15 +20,15 @@ module Wad {
 			// }
 		}
 
-		getName() : string {
+		getName(): string {
 			return this.name;
 		}
 
-		setGraphic(graphic : Graphic){
+		setGraphic(graphic: Graphic) {
 			this.graphic = graphic;
 		}
 
-		getGraphics() : Graphic {
+		getGraphics(): Graphic {
 			return this.graphic;
 		}
 	}
@@ -36,7 +36,7 @@ module Wad {
 	export class Pnames extends Lump {
 		private pnames: Pname[];
 
-		constructor(lump: any, data: any, textures : Textures[]) {
+		constructor(lump: any, data: any, textures: Textures[]) {
 			super(lump, data);
 
 			let count: number = this.dataView.getUint32(0, true);
@@ -57,10 +57,17 @@ module Wad {
 			});
 		}
 
-		setGraphic(graphic : Graphic){
+		setGraphic(graphic: Graphic) {
 			this.pnames.forEach(pname => {
-				if (graphic.getName() == pname.getName()){
+
+				if (graphic.getName() == pname.getName()) {
+					
+
 					pname.setGraphic(graphic);
+
+					if (graphic.getName() === 'DOOR3_6') {
+						console.info(graphic.getName(), pname.getName(), pname);
+					}
 					return
 				}
 			});
