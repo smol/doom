@@ -108,6 +108,8 @@ module Engine {
 		private subsector(subsector: Wad.Subsector) {
 			if (subsector !== null) {
 				var segs: Wad.Seg[] = subsector.getSegs();
+				console.info(segs);
+				this.scene.add(new Engine.Floor(segs));
 
 				for (var i = 0; i < segs.length; i++) {
 					// console.info(segs[i]);
@@ -140,7 +142,7 @@ module Engine {
 				for (var j = 0; j < textures.length; j++){
 					if (textures[j].getName() === textureName){
 						console.info(textures[j]);
-						wall.setTexture(textures[j].getGraphic());
+						wall.setTexture(textures[j].getPatches()[0].pname.getGraphics());
 						return
 					}
 				}

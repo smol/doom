@@ -17,8 +17,10 @@ module Wad {
 		private buffer: Uint8ClampedArray;
 		private imageData: Uint8ClampedArray;
 
-		constructor(playpal: Playpal, lump: any, data: any) {
+		constructor(playpal: Playpal, lump: any, data: any, pnames : Pnames) {
 			super(lump, data);
+
+			pnames.setGraphic(this);
 
 			this.playpal = playpal;
 

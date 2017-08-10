@@ -36,10 +36,10 @@ module Engine {
 
 			const geom = new THREE.Geometry();
 
-			geom.vertices.push(new THREE.Vector3(this.firstVertex.x / 20, floor / 20, this.firstVertex.y / 20));
-			geom.vertices.push(new THREE.Vector3(this.firstVertex.x / 20, ceiling / 20, this.firstVertex.y / 20));
-			geom.vertices.push(new THREE.Vector3(this.secondVertex.x / 20, ceiling / 20, this.secondVertex.y / 20));
-			geom.vertices.push(new THREE.Vector3(this.secondVertex.x / 20, floor / 20, this.secondVertex.y / 20));
+			geom.vertices.push(new THREE.Vector3(this.firstVertex.x / 10, floor / 10, this.firstVertex.y / 10));
+			geom.vertices.push(new THREE.Vector3(this.firstVertex.x / 10, ceiling / 10, this.firstVertex.y / 10));
+			geom.vertices.push(new THREE.Vector3(this.secondVertex.x / 10, ceiling / 10, this.secondVertex.y / 10));
+			geom.vertices.push(new THREE.Vector3(this.secondVertex.x / 10, floor / 10, this.secondVertex.y / 10));
 
 			geom.faces.push(new THREE.Face3(0, 1, 2));
 			geom.faces.push(new THREE.Face3(0, 2, 3));
@@ -57,29 +57,39 @@ module Engine {
 		}
 
 		setTexture(texture: Wad.Graphic) {
+			if (texture == null){
+				return;
+			}
 			// console.info(texture.getName(), texture.getWidth(), texture.getHeight());
 
 			const pixelData = [];
 			var width = texture.getWidth();
 			var height = texture.getHeight();
 
-			console.info(texture.getImageData());
-			this.texture = new THREE.DataTexture(texture.getImageData(), width, height,
+			var data : Uint8Array = Uint8Array.from(texture.getImageData());
+			this.texture = new THREE.DataTexture(data, width, height,
 				THREE.RGBAFormat,
 				THREE.UnsignedByteType,
-				THREE.UVMapping
+				THREE.UVMapping,
+				THREE.ClampToEdgeWrapping,
+				THREE.ClampToEdgeWrapping,
+				THREE.LinearFilter,
+				THREE.LinearFilter,
+				16,
+				THREE.LinearEncoding
 			);
 			this.texture.needsUpdate = true;
 
-			this.material = new THREE.MeshBasicMaterial({
-				transparent: true,
-				map: this.texture,
-				// color: 0xFF0000
-			});
+			// this.material = new THREE.MeshBasicMaterial({
+			// 	transparent: true,
+			// 	map: this.texture,
+			// 	// color: 0xFF0000
+			// });
 
-			this.material.side = THREE.DoubleSide;
+			// this.material.side = THREE.DoubleSide;
 
-			this.material.needsUpdate = true;
+			// this.material.needsUpdate = true;
+			(this.mesh.material as THREE.MeshBasicMaterial).map = this.texture;
 
 
 

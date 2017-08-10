@@ -171,9 +171,10 @@ module Wad {
 	export class TexturePatch {
 		x : number;
 		y : number;
-		index : number;
+		pnameIndex : number;
 		stepdir : number;
 		colormap : number;
+		pname : Pname;
 	}
 
 	export class Texture {
@@ -183,7 +184,6 @@ module Wad {
 		private height: number;
 		private offset: number = 0;
 		private patches : TexturePatch[];
-		private pname : string;
 
 		constructor(playpal: Playpal, data: any) {
 			this.dataView = new DataView(data);
@@ -225,12 +225,16 @@ module Wad {
 				var colormap: number = this.dataView.getUint8(this.offset);
 				this.offset += 2;
 
-				this.patches.push({ x: x, y: y, index: index, stepdir: stepdir, colormap: colormap });
+				this.patches.push({ x: x, y: y, pnameIndex: index, stepdir: stepdir, colormap: colormap, pname: null });
 			}
 		}
 
 		getName() : string {
 			return this.name;
+		}
+
+		getPatches() : TexturePatch[] {
+			return this.patches;
 		}
 
 		getPnameIndex() : number {

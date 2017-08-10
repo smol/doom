@@ -51,13 +51,13 @@ module Wad {
 		}
 
 		setGraphic(lump: any, data: any) {
-			let graphic = new Graphic(this.playpal, lump, data);
-
+			let graphic = new Graphic(this.playpal, lump, data, this.pnames);
+			
 			this.graphics.push(graphic);
 		}
 
 		setPnames(lump: any, data: any){
-			this.pnames = new Pnames(lump, data, this.graphics);
+			this.pnames = new Pnames(lump, data, this.textures);
 		}
 
 		setFlat(lump: any, data: any) {
