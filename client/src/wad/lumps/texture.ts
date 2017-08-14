@@ -191,8 +191,14 @@ module Wad {
 			this.name = "";
 
 			for (; this.offset < 8; this.offset++) {
-				this.name += String.fromCharCode(this.dataView.getUint8(this.offset));
+				let charcode = this.dataView.getUint8(this.offset);
+				if (charcode == 0)
+					break;
+
+				this.name += String.fromCharCode(charcode);
 			}
+
+			this.offset = 8;
 
 			this.offset += 2; // always zero
 			this.offset += 2; // always zero

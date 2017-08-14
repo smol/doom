@@ -1,10 +1,16 @@
 module Engine {
 	export class Floor extends THREE.Group {
-		private mesh : THREE.Mesh;
-		private material : THREE.MeshBasicMaterial;
+		private mesh: THREE.Mesh;
+		private material: THREE.MeshBasicMaterial;
+		private geometry: THREE.Geometry;
+		private textures: Wad.Textures[];
+		
+		seg : Wad.Seg;
 
-		constructor(segs : Wad.Seg[]){
+		constructor(textures: Wad.Textures[]) {
 			super();
+
+			this.textures = textures;
 
 			this.material = new THREE.MeshBasicMaterial({
 				transparent: true,
@@ -13,63 +19,56 @@ module Engine {
 			});
 
 			this.material.side = THREE.DoubleSide;
-
 			this.material.needsUpdate = true;
+			this.geometry = new THREE.Geometry();
+		}
 
-			const geom = new THREE.Geometry();
+		addSeg(seg: Wad.Seg) {
+			this.seg = seg;
+			let linedef: Wad.Linedef = seg.getLinedef();
+			let rightSidedef: Wad.Sidedef = linedef.getRightSidedef();
+			let leftSidedef: Wad.Sidedef = linedef.getLeftSidedef();
 
-			for (var i = 0; i < segs.length; i++){
-				const firstVertex : Wad.Vertex = segs[i].getStartVertex();
-				const secondVertex : Wad.Vertex = segs[i].getEndVertex();
-				
-				vertice(firstVertex, secondVertex, segs[i].getLinedef().getRightSidedef());
-				vertice(firstVertex, secondVertex, segs[i].getLinedef().getLeftSidedef());
-				
-				// geom.faces.push(new THREE.Face3(0, 2, 3));
-			}
+			this.createVertexes(rightSidedef, linedef);
 
-			if (geom.vertices.length < 3){
-				geom.vertices.push(new THREE.Vector3(geom.vertices[0].x, geom.vertices[0].y, geom.vertices[1].z));
-			}
-
-			face();
-
-			function vertice(firstVertex: Wad.Vertex, secondVertex: Wad.Vertex, sidedef : Wad.Sidedef){
-				if (sidedef == null){
-					return;
-				}
-
-				const floor = sidedef.getSector().getFloorHeight();
-
-				geom.vertices.push(new THREE.Vector3(firstVertex.x / 10, floor / 10, firstVertex.y / 10));
-				// geom.vertices.push(new THREE.Vector3(firstVertex.x / 10, floor / 10, secondVertex.y / 10));
-				geom.vertices.push(new THREE.Vector3(secondVertex.x / 10, floor / 10, secondVertex.y / 10));
-				// geom.vertices.push(new THREE.Vector3(secondVertex.x / 10, floor / 10, firstVertex.y / 10));
-				// 
-				
-				
-				
-			}
-
-			function face(){
-				for (var i = 0; i < geom.vertices.length; i++){
-					if (i > 1)
-						geom.faces.push(new THREE.Face3(0, i - 1, i));
-				}
-				
-			}
-
-			
-			// geom.vertices.push(new THREE.Vector3(this.firstVertex.x / 10, floor / 10, this.firstVertex.y / 10));
-			// geom.vertices.push(new THREE.Vector3(this.secondVertex.x / 10, floor / 10, this.secondVertex.y / 10));
-			// geom.vertices.push(new THREE.Vector3(this.secondVertex.x / 10, floor / 10, this.secondVertex.y / 10));
-
+			let wall: Engine.Wall = this.createWall(seg, rightSidedef, leftSidedef);
 			
 
-			geom.computeFaceNormals();
-			geom.computeVertexNormals();
+		}
 
-			this.mesh = new THREE.Mesh(geom, this.material);
+		
+
+		private createVertexes(sidedef: Wad.Sidedef, linedef: Wad.Linedef) {
+
+
+		}
+
+		private createWall(seg: Wad.Seg, rightSidedef: Wad.Sidedef, leftSidedef: Wad.Sidedef): Engine.Wall {
+			let wall = new Engine.Wall(this.textures);
+
+			let startVertex: THREE.Vector2 = new THREE.Vector2(seg.getStartVertex().x, seg.getStartVertex().y);
+			let endVertex: THREE.Vector2 = new THREE.Vector2(seg.getEndVertex().x, seg.getEndVertex().y);
+
+			wall.setVertexes(startVertex, endVertex, rightSidedef, leftSidedef);
+			this.add(wall);
+
+			return wall;
+		}
+
+		private createFaces() {
+			for (var i = 0; i < this.geometry.vertices.length; i++) {
+				if (i > 1)
+					this.geometry.faces.push(new THREE.Face3(0, i - 1, i));
+			}
+		}
+
+		create() {
+			this.createFaces();
+
+			this.geometry.computeFaceNormals();
+			this.geometry.computeVertexNormals();
+
+			this.mesh = new THREE.Mesh(this.geometry, this.material);
 
 			this.add(this.mesh);
 		}

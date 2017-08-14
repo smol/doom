@@ -9,13 +9,13 @@
 
 import { Debug as TreeView } from './treeview';
 import { Debug as Playpal } from './playpal.debug';
-import { Debug as Graphic } from './Graphic.debug';
-import { Debug as ColorMap } from './ColorMap.debug';
-import { Debug as Nodes } from './Nodes.debug';
-import { Debug as Endoom } from './Endoom.debug';
-import { Debug as Map } from './Map.debug';
-import { Debug as Music } from './Music.debug';
-import { Debug as Vertexes } from './Vertexes.debug';
+import { Debug as Graphic } from './graphic.debug';
+import { Debug as ColorMap } from './colormap.debug';
+import { Debug as Nodes } from './nodes.debug';
+import { Debug as Endoom } from './endoom.debug';
+import { Debug as Map } from './map.debug';
+import { Debug as Music } from './music.debug';
+import { Debug as Vertexes } from './vertexes.debug';
 
 import * as React from "react";
 import * as ReactDOM from "react-dom";

@@ -8,7 +8,11 @@ module Wad {
 			this.name = "";
 
 			for (var b = 0; b < 8; b++) {
-				this.name += String.fromCharCode(data.getInt8(offset + b));
+				let charcode = data.getUint8(offset + b);
+				if (charcode == 0)
+					break;
+
+				this.name += String.fromCharCode(charcode);
 			}
 
 			// console.info(graphics);
@@ -59,9 +63,10 @@ module Wad {
 
 		setGraphic(graphic: Graphic) {
 			this.pnames.forEach(pname => {
-
-				if (graphic.getName() == pname.getName()) {
+				// if (pname.getName()
 					
+				if (graphic.getName() == pname.getName()) {
+
 
 					pname.setGraphic(graphic);
 

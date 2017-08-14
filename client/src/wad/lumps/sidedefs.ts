@@ -17,16 +17,27 @@ module Wad {
 			this.middle = "";
 
 			var i = 4;
-			for (; i < 12; i++){
-				this.upper += String.fromCharCode(data.getInt8(offset + i));
+			for (i = 4; i < 12; i++){
+				let charcode = data.getUint8(offset + i);
+				if (charcode == 0)
+					break;
+
+				this.upper += String.fromCharCode(charcode);
 			}
 
-			for (; i < 20; i++){
-				this.lower += String.fromCharCode(data.getInt8(offset + i));
+			for (i = 12; i < 20; i++){
+				let charcode = data.getUint8(offset + i);
+				if (charcode == 0)
+					break;
+				this.lower += String.fromCharCode(charcode);
 			}
 
-			for (; i < 28; i++){
-				this.middle += String.fromCharCode(data.getInt8(offset + i));
+			for (i = 20; i < 28; i++){
+				let charcode = data.getUint8(offset + i);
+				if (charcode == 0)
+					break;
+
+				this.middle += String.fromCharCode(charcode);
 			}
 
 			this.sectorIndex = data.getInt16(offset + 28, true);
@@ -38,6 +49,14 @@ module Wad {
 
 		getSector() : Sector {
 			return this.sector;
+		}
+
+		getLower() : string {
+			return this.lower;
+		}
+
+		getUpper() : string {
+			return this.upper;
 		}
 
 		getMiddle() : string {
