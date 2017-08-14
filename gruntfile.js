@@ -142,7 +142,18 @@ module.exports = function (grunt) {
 		'ts:debug',
 		'webpack:debug',
 		'copy:assets',
+		'sass',
 		'concurrent:dev'
+	]);
+
+	grunt.registerTask('prod', [
+		'ts:wad',
+		'ts:engine',
+		'concat:lib',
+		'ts:debug',
+		'webpack:debug',
+		'copy:assets',
+		'sass'
 	]);
 
 
