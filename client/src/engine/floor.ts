@@ -4,13 +4,14 @@ module Engine {
 		private material: THREE.MeshBasicMaterial;
 		private geometry: THREE.Geometry;
 		private textures: Wad.Textures[];
-		
+		private walls : Wall[];
 		seg : Wad.Seg;
 
 		constructor(textures: Wad.Textures[]) {
 			super();
 
 			this.textures = textures;
+			this.walls = [];
 
 			this.material = new THREE.MeshBasicMaterial({
 				transparent: true,
@@ -32,11 +33,7 @@ module Engine {
 			this.createVertexes(rightSidedef, linedef);
 
 			let wall: Engine.Wall = this.createWall(seg, rightSidedef, leftSidedef);
-			
-
 		}
-
-		
 
 		private createVertexes(sidedef: Wad.Sidedef, linedef: Wad.Linedef) {
 
@@ -51,7 +48,7 @@ module Engine {
 
 			wall.setVertexes(startVertex, endVertex, rightSidedef, leftSidedef);
 			this.add(wall);
-
+			this.walls.push(wall);
 			return wall;
 		}
 
@@ -63,6 +60,10 @@ module Engine {
 		}
 
 		create() {
+			this.walls.forEach(wall => {
+				// wall.getLowerVertexes();
+			});
+
 			this.createFaces();
 
 			this.geometry.computeFaceNormals();

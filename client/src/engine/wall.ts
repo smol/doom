@@ -66,8 +66,8 @@ module Engine {
 			}
 
 			let wrapping: THREE.Wrapping = THREE.ClampToEdgeWrapping;
-// MirroredRepeatWrapping
-			// if (isPowerOf2(width) && isPowerOf2(height))
+
+			if (isPowerOf2(width) && isPowerOf2(height))
 				wrapping = THREE.RepeatWrapping;
 
 
@@ -106,6 +106,10 @@ module Engine {
 			// );
 
 
+		}
+
+		getVertexes() : THREE.Vector3[] {
+			return this.geometry.vertices;
 		}
 	}
 
@@ -173,7 +177,7 @@ module Engine {
 
 
 					if (textures[t2].getName() == name) {
-						if (textures[t2].getName() == "PLANET1" && name === "PLANET1")
+						if (textures[t2].getName() == "TEKWALL4" && name === "TEKWALL4")
 							console.info(textures[t2]);
 						return textures[t2].getPatches()[0].pname.getGraphics();
 					}
@@ -183,6 +187,16 @@ module Engine {
 			return null;
 		}
 
+		getUpperVertexes() : THREE.Vector3[] {
+			return this.upperSector.getVertexes();
+		}
 
+		getLowerVertexes() : THREE.Vector3[] {
+			return this.lowerSector.getVertexes();
+		}
+
+		getMiddleVertexes() : THREE.Vector3[] {
+			return this.middleSector.getVertexes();
+		}
 	}
 }

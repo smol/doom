@@ -4,9 +4,6 @@ module Engine {
 			var segs: Wad.Seg[] = subsector.getSegs();
 		
 			if (segs.length > 1) {
-				
-
-
 				let floor = new Engine.Floor(textures);
 				scene.add(floor);
 

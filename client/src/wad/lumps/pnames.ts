@@ -14,6 +14,7 @@ module Wad {
 
 				this.name += String.fromCharCode(charcode);
 			}
+			this.name = this.name.toUpperCase();
 
 			// console.info(graphics);
 			// for (var i = 0; i < graphics.length; i++){
