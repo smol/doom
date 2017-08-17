@@ -186,7 +186,9 @@ module Engine {
 		}
 
 		getUpperVertexes() : THREE.Vector3[] {
-			return this.upperSector.getVertexes();
+			if (this.upperSector)
+				return this.upperSector.getVertexes();
+			return [];
 		}
 
 		getLowerVertexes() : THREE.Vector3[] {
@@ -196,7 +198,9 @@ module Engine {
 		}
 
 		getMiddleVertexes() : THREE.Vector3[] {
-			return this.middleSector.getVertexes();
+			if (this.middleSector)
+				return this.middleSector.getVertexes();
+			return [];
 		}
 	}
 }
