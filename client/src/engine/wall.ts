@@ -177,8 +177,6 @@ module Engine {
 
 
 					if (textures[t2].getName() == name) {
-						if (textures[t2].getName() == "TEKWALL4" && name === "TEKWALL4")
-							console.info(textures[t2]);
 						return textures[t2].getPatches()[0].pname.getGraphics();
 					}
 				}
@@ -192,7 +190,9 @@ module Engine {
 		}
 
 		getLowerVertexes() : THREE.Vector3[] {
-			return this.lowerSector.getVertexes();
+			if (this.lowerSector)
+				return this.lowerSector.getVertexes();
+			return [];
 		}
 
 		getMiddleVertexes() : THREE.Vector3[] {
