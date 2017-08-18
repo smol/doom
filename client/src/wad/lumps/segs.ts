@@ -28,6 +28,10 @@ module Wad {
 		getLinedef() : Linedef {
 			return this.linedef;
 		}
+
+		getDirection() : number {
+			return this.direction;
+		}
 	}
 
 	export class Segs extends Lump {

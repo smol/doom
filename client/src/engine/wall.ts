@@ -6,9 +6,12 @@ module Engine {
 		private mesh: THREE.Mesh;
 		private material: THREE.Material;
 		private texture: THREE.DataTexture;
+		private textureNames : { floor : string, ceiling : string }
 
-		constructor(vertices: THREE.Vector3[]) {
+		constructor(vertices: THREE.Vector3[], direction : number, textureNames : { floor : string, ceiling : string }) {
 			super();
+
+			this.textureNames = textureNames;
 
 			this.geometry = new THREE.Geometry();
 			this.material = new THREE.MeshBasicMaterial({
@@ -17,7 +20,10 @@ module Engine {
 				// color: 0x002200
 			});
 
-			// this.material.side = THREE.FrontSide;
+			// if (direction === 0)
+			// 	this.material.side = THREE.FrontSide;
+			// else
+			// 	this.material.side = THREE.BackSide;
 			this.material.side = THREE.DoubleSide;
 
 			this.material.needsUpdate = true;
@@ -108,6 +114,10 @@ module Engine {
 
 		}
 
+		getFloorTexture() : string {
+			return this.textureNames.floor;
+		}
+
 		getVertexes() : THREE.Vector3[] {
 			return this.geometry.vertices;
 		}
@@ -124,8 +134,11 @@ module Engine {
 			this.textures = textures;
 		}
 
-		setVertexes(firstVertex: THREE.Vector2, secondVertex: THREE.Vector2, rightSidedef: Wad.Sidedef, leftSidedef: Wad.Sidedef) {
+		setVertexes(firstVertex: THREE.Vector2, secondVertex: THREE.Vector2, rightSidedef: Wad.Sidedef, leftSidedef: Wad.Sidedef, seg : Wad.Seg) {
+			let rightSector : Wad.Sector = rightSidedef.getSector();
+
 			if (leftSidedef) {
+				let leftSector : Wad.Sector = leftSidedef.getSector();
 				let upperFloorHeight = leftSidedef.getSector().getCeilingHeight();
 				let upperCeilingHeight = rightSidedef.getSector().getCeilingHeight();
 				let lowerFloorHeight = rightSidedef.getSector().getFloorHeight();
@@ -136,7 +149,7 @@ module Engine {
 					new THREE.Vector3(firstVertex.x / 5, lowerCeilingHeight / 5, firstVertex.y / 5),
 					new THREE.Vector3(secondVertex.x / 5, lowerCeilingHeight / 5, secondVertex.y / 5),
 					new THREE.Vector3(secondVertex.x / 5, lowerFloorHeight / 5, secondVertex.y / 5),
-				]);
+				], seg.getDirection(), { floor: rightSector.getFloorTextureName(), ceiling: leftSector.getCeilingTextureName() });
 
 				this.add(this.lowerSector);
 
@@ -147,7 +160,7 @@ module Engine {
 					new THREE.Vector3(firstVertex.x / 5, upperCeilingHeight / 5, firstVertex.y / 5),
 					new THREE.Vector3(secondVertex.x / 5, upperCeilingHeight / 5, secondVertex.y / 5),
 					new THREE.Vector3(secondVertex.x / 5, upperFloorHeight / 5, secondVertex.y / 5),
-				]);
+				], seg.getDirection(), { floor: leftSector.getFloorTextureName(), ceiling: rightSector.getCeilingTextureName() });
 
 				this.add(this.upperSector);
 
@@ -161,7 +174,7 @@ module Engine {
 					new THREE.Vector3(firstVertex.x / 5, ceilingHeight / 5, firstVertex.y / 5),
 					new THREE.Vector3(secondVertex.x / 5, ceilingHeight / 5, secondVertex.y / 5),
 					new THREE.Vector3(secondVertex.x / 5, floorHeight / 5, secondVertex.y / 5),
-				]);
+				], seg.getDirection(), { floor: rightSector.getFloorTextureName(), ceiling: rightSector.getCeilingTextureName() });
 
 				this.add(this.middleSector);
 
@@ -183,6 +196,12 @@ module Engine {
 			}
 
 			return null;
+		}
+
+		getFloorTexture() : string {
+			if (this.lowerSector)
+				return this.lowerSector.getFloorTexture() 
+			return this.middleSector.getFloorTexture();
 		}
 
 		getUpperVertexes() : THREE.Vector3[] {

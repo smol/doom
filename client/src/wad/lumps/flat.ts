@@ -1,6 +1,6 @@
 module Wad {
 	export class Flat extends Lump {
-		private buffer: Uint8Array;
+		private buffer: Uint8ClampedArray;
 
 		constructor(playpal: Playpal, lump: any, data: any) {
 			super(lump, data);
@@ -8,9 +8,8 @@ module Wad {
 			let width: number = 64;
 			let height: number = 64;
 
-			var buffer: Uint8Array = new Uint8Array(width * height);
 			let colors: { r: number, g: number, b: number }[] = playpal.getColors()[0];
-			this.buffer = new Uint8Array(width * height * 4);
+			this.buffer = new Uint8ClampedArray(width * height * 4);
 			
 
 
@@ -26,6 +25,6 @@ module Wad {
 
 		getWidth(): number { return 64; }
 		getHeight(): number { return 64; }
-		getImageData() { return this.buffer; }
+		getImageData() : Uint8ClampedArray { return this.buffer; }
 	}
 }

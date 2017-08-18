@@ -53,13 +53,26 @@ module Wad {
 			this.floorTexture = "";
 			this.ceilingTexture = "";
 			for (var i = 0; i < 8; i++) {
-				this.floorTexture += String.fromCharCode(dataView.getUint8(i + 4 + offset));
-				this.ceilingTexture += String.fromCharCode(dataView.getUint8(i + 12 + offset));
+				let floorCharcode = dataView.getUint8(i + 4 + offset);
+				let ceilingCharCode = dataView.getUint8(i + 12 + offset);
+
+				if (floorCharcode != 0)
+					this.floorTexture += String.fromCharCode(floorCharcode);
+				if (ceilingCharCode != 0)
+					this.ceilingTexture += String.fromCharCode(ceilingCharCode);
 			}
 
 			this.lightLevel = dataView.getInt16(20 + offset, true);
 			this.specialSector = dataView.getInt16(22 + offset, true);
 			this.linedefsTag = dataView.getInt16(24 + offset, true);
+		}
+
+		getCeilingTextureName() : string {
+			return this.ceilingTexture;
+		}
+
+		getFloorTextureName() : string {
+			return this.floorTexture;
 		}
 
 		getCeilingHeight() : number {

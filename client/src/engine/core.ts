@@ -11,6 +11,7 @@ module Engine {
 		private scene: THREE.Scene;
 		private camera: THREE.PerspectiveCamera;
 		private textures: Wad.Textures[];
+		private flats : Wad.Flat[];
 
 		constructor(canvas: HTMLCanvasElement) {
 			
@@ -45,10 +46,10 @@ module Engine {
 				var intersects = raycaster.intersectObjects(self.scene.children, true);
 				console.info(mouse3D, intersects);
 				if (intersects.length > 0) {
-					let floor : Floor = intersects[0].object.parent.parent.parent as Floor;
+					let sector : Sector = intersects[0].object.parent.parent.parent as Sector;
 					// let wall: Wall =  as Wall;
 
-					console.info(floor.seg);
+					console.info(sector);
 				}
 			}
 
@@ -76,7 +77,7 @@ module Engine {
 			// add lights
 			let light = new THREE.DirectionalLight(0xffffff, 1.0)
 
-			light.position.set(100, 100, 100)
+			light.position.set(100, 100, 100);
 
 			this.scene.add(light)
 
@@ -93,16 +94,18 @@ module Engine {
 
 			// console.info(level, node);
 
-			this.subsector(node.getRightSubsector());
-			this.subsector(node.getLeftSubsector());
+			this.subsector(node.getRightSubsector(), node.getRightBounds());
+			this.subsector(node.getLeftSubsector(), node.getLeftBounds());
 
 			this.node(level + 1, node.getLeftNode());
 			this.node(level + 1, node.getRightNode());
 		}
 
-		private subsector(subsector: Wad.Subsector) {
+		private subsector(subsector: Wad.Subsector, bounds : { uX: number; uY: number; lX: number; lY: number; }) {
 			if (subsector !== null) {
-				let sector = new Sector(subsector, this.textures, this.scene);
+				let sector = new Sector(subsector, this.textures, this.flats, bounds);
+
+				this.scene.add(sector);
 
 				// for (var i = 0; i < segs.length; i++) {
 				// 	// console.info(segs[i]);
@@ -144,6 +147,7 @@ module Engine {
 
 		createWalls(map: Wad.Map, wad: Wad.Wad) {
 			this.textures = wad.getTextures();
+			this.flats = wad.getFlats();
 			this.node(0, map.getNode());
 		}
 	}
