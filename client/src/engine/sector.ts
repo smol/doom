@@ -3,11 +3,11 @@ module Engine {
 		private floors: Floor[];
 		private walls: Wall[];
 		private textures: Wad.Textures[];
-		private flats : Wad.Flat[];
+		private flats: Wad.Flat[];
 		private subsector: Wad.Subsector;
-		private bounds : { uX: number; uY: number; lX: number; lY: number; };
+		private bounds: { uX: number; uY: number; lX: number; lY: number; };
 
-		constructor(subsector: Wad.Subsector, textures: Wad.Textures[], flats: Wad.Flat[], bounds : { uX: number; uY: number; lX: number; lY: number; }) {
+		constructor(subsector: Wad.Subsector, textures: Wad.Textures[], flats: Wad.Flat[], bounds: { uX: number; uY: number; lX: number; lY: number; }) {
 			super();
 			this.flats = flats;
 			this.bounds = bounds;
@@ -32,31 +32,60 @@ module Engine {
 
 			// console.info('CREATE FLOOR');
 
-			let floor = new Floor(this.flats);
+
 			// new THREE.Vector3(firstVertex.x / 5, lowerFloorHeight / 5, firstVertex.y / 5),
 			// new THREE.Vector3(firstVertex.x / 5, lowerCeilingHeight / 5, firstVertex.y / 5),
 			// new THREE.Vector3(secondVertex.x / 5, lowerCeilingHeight / 5, secondVertex.y / 5),
 			// new THREE.Vector3(secondVertex.x / 5, lowerFloorHeight / 5, secondVertex.y / 5),
 
-			
 
-			this.add(floor);
-			this.floors.push(floor);
+			let floor = new Floor(this.flats);
+			let lower = new Floor(this.flats);
+
 
 			this.walls.forEach(wall => {
-				// console.info('WALL', wall);
-				let middleVertices: THREE.Vector3[] = wall.getMiddleVertexes();
-				let lowerVertices: THREE.Vector3[] = wall.getLowerVertexes();
+
+				
+				let middleSector: WallSector = wall.getMiddleSector();
+				let lowerSector: WallSector = wall.getLowerSector();
 				let upperVertices: THREE.Vector3[] = wall.getUpperVertexes();
 
-				if (middleVertices.length > 0){
-					floor.addVertex(new THREE.Vector3(this.bounds.uX / 5, middleVertices[0].y, this.bounds.uY / 5));
-					floor.addVertex(new THREE.Vector3(this.bounds.uX / 5, middleVertices[0].y, this.bounds.lY / 5));
-					floor.addVertex(new THREE.Vector3(this.bounds.lX / 5, middleVertices[0].y, this.bounds.lY / 5));
-					floor.addVertex(new THREE.Vector3(this.bounds.lX / 5, middleVertices[0].y, this.bounds.uY / 5));
-					floor.setTexture(wall.getFloorTexture());
-					floor.create();
+				if (middleSector) {
+
+					// console.info('WALL');
+
+					floor.addWall(middleSector);
+
+
 				}
+
+				if (lowerSector){
+					lower.addWall(lowerSector);
+				}
+
+				// if (lowerVertices.length > 0){
+				// 	let floor = new Floor(this.flats);
+				// 	floor.addVertex(new THREE.Vector3(this.bounds.uX / 2, lowerVertices[0].y, this.bounds.uY / 2));
+				// 	floor.addVertex(new THREE.Vector3(this.bounds.uX / 2, lowerVertices[0].y, this.bounds.lY / 2));
+				// 	floor.addVertex(new THREE.Vector3(this.bounds.lX / 2, lowerVertices[0].y, this.bounds.lY / 2));
+				// 	floor.addVertex(new THREE.Vector3(this.bounds.lX / 2, lowerVertices[0].y, this.bounds.uY / 2));
+				// 	floor.create();
+				// 	floor.setTexture(wall.getFloorTexture());
+				// 	this.add(floor);
+				// 	this.floors.push(floor);
+				// }
+
+				// if (upperVertices.length > 0){
+				// 	let floor = new Floor(this.flats, true);
+				// 	floor.addVertex(new THREE.Vector3(this.bounds.uX / 2, upperVertices[0].y, this.bounds.uY / 2));
+				// 	floor.addVertex(new THREE.Vector3(this.bounds.uX / 2, upperVertices[0].y, this.bounds.lY / 2));
+				// 	floor.addVertex(new THREE.Vector3(this.bounds.lX / 2, upperVertices[0].y, this.bounds.lY / 2));
+				// 	floor.addVertex(new THREE.Vector3(this.bounds.lX / 2, upperVertices[0].y, this.bounds.uY / 2));
+				// 	floor.create();
+				// 	floor.setTexture(wall.getCeilingTexture());
+				// 	this.add(floor);
+				// 	this.floors.push(floor);
+				// }
 
 				// if (lowerVertices.length > 0 && middleVertices.length > 0) {
 				// 	let middleFloor = new Floor(this.textures);
@@ -72,6 +101,15 @@ module Engine {
 				// 	this.floors.push(middleFloor);
 				// }
 			});
+
+			lower.create(this.bounds);
+
+			floor.create(this.bounds);
+			// floor.setTexture(wall.getFloorTexture());
+			this.add(floor);
+			this.add(lower);
+			this.floors.push(floor);
+			this.floors.push(lower);
 
 			// console.info('END CREATE FLOOR');
 

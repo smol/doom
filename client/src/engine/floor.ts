@@ -5,12 +5,14 @@ module Engine {
 		private geometry: THREE.Geometry;
 		private texture: THREE.DataTexture;
 		private textures: Wad.Flat[];
+		private vertices : THREE.Vector3[];
 		seg: Wad.Seg;
 
-		constructor(textures: Wad.Flat[]) {
+		constructor(textures: Wad.Flat[], invert: Boolean = false) {
 			super();
 
 			this.textures = textures;
+			this.vertices = [];
 
 			this.material = new THREE.MeshBasicMaterial({
 				transparent: true,
@@ -18,7 +20,11 @@ module Engine {
 				color: 0xFFFFFF
 			});
 
-			this.material.side = THREE.DoubleSide;
+			if (invert)
+				this.material.side = THREE.BackSide;
+			else
+				this.material.side = THREE.FrontSide;
+
 			this.material.needsUpdate = true;
 			this.geometry = new THREE.Geometry();
 
@@ -51,6 +57,68 @@ module Engine {
 			this.geometry.vertices.push(vertex);
 		}
 
+		addWall(wall: WallSector) {
+			// this.sectors.push(wall);
+			let vertices: THREE.Vector3[] = wall.getVertexes();
+
+			// for (var i = 1; i < this.geometry.vertices.length; i++){
+			// 	let oldDist = Math.sqrt(
+			// 		Math.pow(this.geometry.vertices[i].x - this.geometry.vertices[i - 1].x,2) +
+			// 		Math.pow(this.geometry.vertices[i].z - this.geometry.vertices[i - 1].z,2)
+			// 	);
+
+			// 	let newDist = Math.sqrt(
+			// 		Math.pow(vertices[0].x - this.geometry.vertices[i - 1].x,2) +
+			// 		Math.pow(vertices[0].z - this.geometry.vertices[i - 1].z,2)
+			// 	);
+
+			// 	if (oldDist > newDist){
+			// 		this.geometry.vertices.
+			// 	}
+			// }
+
+			this.vertices.push(vertices[0]);
+
+			// this.vertices.push(vertices[0]);
+			// this.vertices.push(vertices[3]);
+			// if (vertices[0] != this.geometry.vertices[this.geometry.vertices.length - 1])
+				// this.geometry.vertices.push(vertices[0]);
+
+			// this.geometry.vertices.push(vertices[3]);
+
+
+			this.setTexture(wall.getFloorTexture());
+		}
+
+		private repeatedTexture(size: { width: number, height: number }) {
+			let bounding = this.geometry.boundingBox;
+			if (!bounding)
+				return;
+
+			// let z: number = bounding.max.z - bounding.min.z;
+
+			let scale: number = 1;
+			let width: number = bounding.max.x - bounding.min.x;
+			let height: number = bounding.max.z - bounding.min.z;
+			let offsetX = bounding.min.x / width;
+			let offsetY = bounding.min.z / height;
+
+			width = (width / size.width) * scale;
+			height = (height / size.height) * scale;
+
+
+
+			let result = {
+				x: width,
+				y: height,
+				offsetX: offsetX,
+				offsetY: offsetY
+			};
+
+			console.info('width', width, 'height', height, 'size', size, 'result', result);
+			return result;
+		}
+
 		setTexture(name: string) {
 			let texture: Wad.Flat = this.getTexture(name);
 
@@ -58,7 +126,6 @@ module Engine {
 				console.info(name);
 				return;
 			}
-			// console.info(texture);
 
 			const pixelData = [];
 			var width = texture.getWidth();
@@ -86,6 +153,14 @@ module Engine {
 				16,
 				THREE.LinearEncoding
 			);
+
+			let repeated: any = this.repeatedTexture({ width: width, height: height });
+			if (repeated) {
+				this.texture.repeat.set(repeated.x, repeated.y);
+				this.texture.offset.set(repeated.offsetX, repeated.offsetY);
+			}
+
+			// this.texture.repeat.set(2, 2);
 			this.texture.needsUpdate = true;
 
 			// this.material = new THREE.MeshBasicMaterial({
@@ -110,7 +185,11 @@ module Engine {
 			return null;
 		}
 
-		create() {
+		create(bounds: { uX: number, uY: number, lX: number, lY: number }) {
+			if (this.vertices.length == 0){
+				return;
+			}
+			
 			// this.walls.forEach(wall => {
 			// 	// wall.getLowerVertexes();
 
@@ -121,8 +200,27 @@ module Engine {
 
 			// });
 
+			// if (this.vertices.length < 3) {
+				// this.geometry.vertices.push(new THREE.Vector3(bounds.uX, this.vertices[0].y, bounds.uY));
+				// this.geometry.vertices.push(new THREE.Vector3(bounds.uX, this.vertices[0].y, bounds.lY));
+				// this.geometry.vertices.push(new THREE.Vector3(bounds.lX, this.vertices[0].y, bounds.lY));
+				// this.geometry.vertices.push(new THREE.Vector3(bounds.lX, this.vertices[0].y, bounds.uY));
+
+				// this.vertices.sort((a, b) => {
+					
+				// });
+
+				// console.info('FLOOR', this.vertices);
+
+				this.vertices.forEach(vertex => {
+					this.geometry.vertices.push(vertex);
+				});
+
+			// }
+
 			this.createFaces();
 
+			this.geometry.computeBoundingBox();
 			this.geometry.computeFaceNormals();
 			this.geometry.computeVertexNormals();
 

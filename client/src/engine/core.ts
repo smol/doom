@@ -46,10 +46,10 @@ module Engine {
 				var intersects = raycaster.intersectObjects(self.scene.children, true);
 				console.info(mouse3D, intersects);
 				if (intersects.length > 0) {
-					let sector : Sector = intersects[0].object.parent.parent.parent as Sector;
+					let floor : Floor = intersects[0].object.parent as Floor;
 					// let wall: Wall =  as Wall;
 
-					console.info(sector);
+					console.info(floor);
 				}
 			}
 
@@ -57,8 +57,8 @@ module Engine {
 		}
 
 		private initCamera(canvas: HTMLCanvasElement) {
-			this.camera = new THREE.PerspectiveCamera(75, canvas.width / canvas.height, 0.1, 1000);
-			this.camera.far = Infinity;
+			this.camera = new THREE.PerspectiveCamera(75, canvas.width / canvas.height, 0.1, 3000);
+			// this.camera.far = Infinity;
 
 			this.camera.position.x = 500
 			this.camera.position.y = 500
