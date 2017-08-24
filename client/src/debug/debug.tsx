@@ -12,6 +12,7 @@ import { Debug as Playpal } from './playpal.debug';
 import { Debug as Graphic } from './graphic.debug';
 import { Debug as ColorMap } from './colormap.debug';
 import { Debug as Nodes } from './nodes.debug';
+import { Debug as Floors } from './floor.debug';
 import { Debug as Endoom } from './endoom.debug';
 import { Debug as Map } from './map.debug';
 import { Debug as Music } from './music.debug';
@@ -58,7 +59,8 @@ module Debug {
 				data.children = [
 					{ label: "THINGS", component: <Map.Things things={map.getThings()} />, children: [] },
 					{ label: "VERTEXES", component: <Vertexes.Vertexes vertexes={map.getVertexes()} linedefs={map.getLinedefs()} />, children: [] },
-					{ label: "NODES", component: null, children: this.getNodes(map) }
+					{ label: "NODES", component: null, children: this.getNodes(map) },
+					{ label: "FLOOR", component: <Floors.Floors node={ map.getNode() } />, children: [] },
 				];
 
 				return data;

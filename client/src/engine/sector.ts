@@ -39,28 +39,25 @@ module Engine {
 			// new THREE.Vector3(secondVertex.x / 5, lowerFloorHeight / 5, secondVertex.y / 5),
 
 
+			if (this.walls.length == 0){
+				return;
+			}
+
 			let floor = new Floor(this.flats);
 			let lower = new Floor(this.flats);
 
 
-			this.walls.forEach(wall => {
-
-				
+			this.walls.forEach(wall => {			
 				let middleSector: WallSector = wall.getMiddleSector();
 				let lowerSector: WallSector = wall.getLowerSector();
 				let upperVertices: THREE.Vector3[] = wall.getUpperVertexes();
 
 				if (middleSector) {
-
-					// console.info('WALL');
-
 					floor.addWall(middleSector);
-
-
 				}
 
 				if (lowerSector){
-					lower.addWall(lowerSector);
+					// lower.addWall(lowerSector);
 				}
 
 				// if (lowerVertices.length > 0){

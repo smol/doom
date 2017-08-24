@@ -107,7 +107,6 @@ module Wad {
 		}
 
 		getNode() : Node {
-			console.info('NODES', this.nodes);
 			return this.nodes[this.nodes.length - 1];
 		}
 

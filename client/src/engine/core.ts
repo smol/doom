@@ -44,7 +44,7 @@ module Engine {
 
 				raycaster.setFromCamera(mouse3D, self.camera);
 				var intersects = raycaster.intersectObjects(self.scene.children, true);
-				console.info(mouse3D, intersects);
+				// console.info(mouse3D, intersects);
 				if (intersects.length > 0) {
 					let floor : Floor = intersects[0].object.parent as Floor;
 					// let wall: Wall =  as Wall;

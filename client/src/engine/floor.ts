@@ -5,14 +5,16 @@ module Engine {
 		private geometry: THREE.Geometry;
 		private texture: THREE.DataTexture;
 		private textures: Wad.Flat[];
-		private vertices : THREE.Vector3[];
+		private graham : Graham;
+		private y : number;
+		// private vertices : THREE.Vector3[];
 		seg: Wad.Seg;
 
 		constructor(textures: Wad.Flat[], invert: Boolean = false) {
 			super();
 
 			this.textures = textures;
-			this.vertices = [];
+			this.graham = new Graham();
 
 			this.material = new THREE.MeshBasicMaterial({
 				transparent: true,
@@ -23,7 +25,7 @@ module Engine {
 			if (invert)
 				this.material.side = THREE.BackSide;
 			else
-				this.material.side = THREE.FrontSide;
+				this.material.side = THREE.BackSide;
 
 			this.material.needsUpdate = true;
 			this.geometry = new THREE.Geometry();
@@ -58,34 +60,10 @@ module Engine {
 		}
 
 		addWall(wall: WallSector) {
-			// this.sectors.push(wall);
 			let vertices: THREE.Vector3[] = wall.getVertexes();
-
-			// for (var i = 1; i < this.geometry.vertices.length; i++){
-			// 	let oldDist = Math.sqrt(
-			// 		Math.pow(this.geometry.vertices[i].x - this.geometry.vertices[i - 1].x,2) +
-			// 		Math.pow(this.geometry.vertices[i].z - this.geometry.vertices[i - 1].z,2)
-			// 	);
-
-			// 	let newDist = Math.sqrt(
-			// 		Math.pow(vertices[0].x - this.geometry.vertices[i - 1].x,2) +
-			// 		Math.pow(vertices[0].z - this.geometry.vertices[i - 1].z,2)
-			// 	);
-
-			// 	if (oldDist > newDist){
-			// 		this.geometry.vertices.
-			// 	}
-			// }
-
-			this.vertices.push(vertices[0]);
-
-			// this.vertices.push(vertices[0]);
-			// this.vertices.push(vertices[3]);
-			// if (vertices[0] != this.geometry.vertices[this.geometry.vertices.length - 1])
-				// this.geometry.vertices.push(vertices[0]);
-
-			// this.geometry.vertices.push(vertices[3]);
-
+			this.y = vertices[0].y;
+			this.graham.addPoint(new THREE.Vector2(vertices[0].x, vertices[0].z));
+			this.graham.addPoint(new THREE.Vector2(vertices[3].x, vertices[3].z));
 
 			this.setTexture(wall.getFloorTexture());
 		}
@@ -105,8 +83,6 @@ module Engine {
 
 			width = (width / size.width) * scale;
 			height = (height / size.height) * scale;
-
-
 
 			let result = {
 				x: width,
@@ -186,45 +162,36 @@ module Engine {
 		}
 
 		create(bounds: { uX: number, uY: number, lX: number, lY: number }) {
-			if (this.vertices.length == 0){
+			if (this.graham.getPoints().length == 0){
 				return;
 			}
+
+			this.geometry.vertices = [];
+
+			if (this.graham.getPoints().length < 3){
+				this.graham.addPoint(new THREE.Vector2(bounds.uX, bounds.uY));
+				this.graham.addPoint(new THREE.Vector2(bounds.uX, bounds.lY));
+				this.graham.addPoint(new THREE.Vector2(bounds.lX, bounds.lY));
+				this.graham.addPoint(new THREE.Vector2(bounds.lX, bounds.uY));
+			}
 			
-			// this.walls.forEach(wall => {
-			// 	// wall.getLowerVertexes();
 
-			// 	let lowerVertices : THREE.Vector3[] = wall.getLowerVertexes();
+			let temp = this.graham.sort()
+			if (temp.length == 0){
+				return;
+			}
 
-			// 	if (lowerVertices.length > 1)
-			// 		this.geometry.vertices.push(lowerVertices[0]);
+			temp.forEach(point => {
+				this.geometry.vertices.push(new THREE.Vector3(point.x, this.y, point.y));
+			});
 
-			// });
-
-			// if (this.vertices.length < 3) {
-				// this.geometry.vertices.push(new THREE.Vector3(bounds.uX, this.vertices[0].y, bounds.uY));
-				// this.geometry.vertices.push(new THREE.Vector3(bounds.uX, this.vertices[0].y, bounds.lY));
-				// this.geometry.vertices.push(new THREE.Vector3(bounds.lX, this.vertices[0].y, bounds.lY));
-				// this.geometry.vertices.push(new THREE.Vector3(bounds.lX, this.vertices[0].y, bounds.uY));
-
-				// this.vertices.sort((a, b) => {
-					
-				// });
-
-				// console.info('FLOOR', this.vertices);
-
-				this.vertices.forEach(vertex => {
-					this.geometry.vertices.push(vertex);
-				});
-
-			// }
+			// console.info(temp, this.geometry.vertices);
 
 			this.createFaces();
 
 			this.geometry.computeBoundingBox();
 			this.geometry.computeFaceNormals();
 			this.geometry.computeVertexNormals();
-
-
 		}
 	}
 }
