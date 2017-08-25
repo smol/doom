@@ -27,6 +27,8 @@ module Wad {
 		private ssectorRight : Subsector = null;
 		private ssectorLeft : Subsector = null;
 
+		private nodeParent : Node = null;
+
 		constructor(offset: number, dataView: DataView, subsectors : Subsectors) {
 			this.x = dataView.getInt16(offset + 0, true);
 			this.y = dataView.getInt16(offset + 2, true);
@@ -64,6 +66,12 @@ module Wad {
 		setChildren(nodes : Node[]){
 			this.nodeRight = nodes[this.nodeRightIndex] || null;
 			this.nodeLeft = nodes[this.nodeLeftIndex] || null;
+
+			if (this.nodeRight)
+				this.nodeRight.nodeParent = this;
+
+			if (this.nodeLeft)
+				this.nodeLeft.nodeParent = this;
 		}
 
 		getRightBounds() : { uX: number, uY: number, lX : number, lY: number } {
@@ -76,6 +84,10 @@ module Wad {
 
 		getLeftBounds() : { uX: number, uY: number, lX : number, lY: number } {
 			return { uX: this.leftUpperX, uY: this.leftUpperY, lX: this.leftLowerX, lY: this.leftLowerY };
+		}
+
+		getParent() :Node {
+			return this.nodeParent;
 		}
 
 		getLeftNode() : Node {
