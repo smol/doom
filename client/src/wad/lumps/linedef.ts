@@ -41,6 +41,9 @@ module Wad {
 		private rightSidedef : Sidedef;
 		private leftSidedef : Sidedef;
 
+		private firstVertex : Vertex;
+		private secondVertex : Vertex;
+
 		constructor(lump: any, data: any, offset: number){
 			super(lump, data);
 
@@ -62,8 +65,29 @@ module Wad {
 		}
 
 		setSidedef(rightSidedef : Sidedef, leftSidedef : Sidedef){
+			rightSidedef.setLinedef(this);
+
+			if (leftSidedef)
+				leftSidedef.setLinedef(this);
+
 			this.rightSidedef = rightSidedef;
 			this.leftSidedef = leftSidedef;
+		}
+
+		setFirstVertex(vertex : Vertex){
+			this.firstVertex = vertex;
+		}
+
+		setSecondVertex(vertex : Vertex){
+			this.secondVertex = vertex;
+		}
+
+		getFirstVertex() : Vertex {
+			return this.firstVertex;
+		}
+		
+		getSecondVertex() : Vertex {
+			return this.secondVertex;
 		}
 
 		getRightSidedef() : Sidedef {
@@ -92,6 +116,10 @@ module Wad {
 
 		getFlag() : string {
 			return this.flags;
+		}
+
+		getSectorTag() : number {
+			return this.tag;
 		}
 	}
 }

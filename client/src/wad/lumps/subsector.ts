@@ -36,5 +36,9 @@ module Wad {
 		getSubsector(index : number) : Subsector {
 			return this.subsectors[index];
 		}
+
+		get() : Subsector[] {
+			return this.subsectors;
+		}
 	}
 }

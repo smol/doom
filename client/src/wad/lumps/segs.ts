@@ -1,7 +1,15 @@
 module Wad {
+	enum Angle {
+		NORTH = 1,
+		EAST = 2,
+		SOUTH = 4,
+		WEST = 8
+	};
+
 	export class Seg {
 		private startVertex : Vertex;
 		private endVertex : Vertex;
+		private angleBAMS : number;
 		private angle : number;
 		private linedef : Linedef;
 		private direction : number;
@@ -10,11 +18,14 @@ module Wad {
 		constructor(offset: number, data: DataView, vertices: Vertex[], linedefs : Linedef[]){
 			this.startVertex = vertices[data.getInt16(offset + 0, true)];
 			this.endVertex = vertices[data.getInt16(offset + 2, true)];
-
-			this.angle = data.getInt16(offset + 4, true);
+			
+			this.angleBAMS = data.getInt16(offset + 4, true);
 			this.linedef = linedefs[data.getInt16(offset + 6, true)];
 			this.direction = data.getInt16(offset + 8, true);
 			this.offset = data.getInt16(offset + 10, true);
+
+			this.linedef.setFirstVertex(this.startVertex);
+			this.linedef.setSecondVertex(this.endVertex);
 		}
 
 		getStartVertex() : Vertex {

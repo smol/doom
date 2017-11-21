@@ -6,6 +6,7 @@ module Wad {
 		private lower : string;
 		private middle : string;
 		private sector : Sector;
+		private linedef : Linedef;
 		private sectorIndex : number;
 
 		constructor(offset: number, data : DataView){
@@ -61,6 +62,19 @@ module Wad {
 
 		getMiddle() : string {
 			return this.middle;
+		}
+
+		getPosition() : {x: number, y :number} {
+			console.info(this.x, this.y);
+			return { x: this.x, y: this.y };
+		}
+
+		setLinedef(linedef : Linedef){
+			this.linedef = linedef;
+		}
+
+		getLinedef() : Linedef {
+			return this.linedef;
 		}
 
 		setSector(sector : Sector) {

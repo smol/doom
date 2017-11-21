@@ -1,3 +1,8 @@
+/// <reference path="./delaunay/delaunay.ts" />
+/// <reference path="./delaunay/wtf.ts" />
+
+
+
 module Engine {
 	export class Floor extends THREE.Group {
 		private mesh: THREE.Mesh;
@@ -5,16 +10,19 @@ module Engine {
 		private geometry: THREE.Geometry;
 		private texture: THREE.DataTexture;
 		private textures: Wad.Flat[];
-		private graham : Graham;
-		private y : number;
-		// private vertices : THREE.Vector3[];
+		private delaunay: Delaunay;
+		private y: number = Number.MIN_VALUE;
 		seg: Wad.Seg;
+
+		private vertices: {start: THREE.Vector3, end: THREE.Vector3}[];
+		private indices: number[];
 
 		constructor(textures: Wad.Flat[], invert: Boolean = false) {
 			super();
 
 			this.textures = textures;
-			this.graham = new Graham();
+			this.vertices = [];
+			this.delaunay = new Delaunay();
 
 			this.material = new THREE.MeshBasicMaterial({
 				transparent: true,
@@ -23,9 +31,9 @@ module Engine {
 			});
 
 			if (invert)
-				this.material.side = THREE.BackSide;
+				this.material.side = THREE.DoubleSide;
 			else
-				this.material.side = THREE.BackSide;
+				this.material.side = THREE.DoubleSide;
 
 			this.material.needsUpdate = true;
 			this.geometry = new THREE.Geometry();
@@ -36,44 +44,47 @@ module Engine {
 		}
 
 		private createFaces() {
-			for (var i = 0; i < this.geometry.vertices.length; i++) {
-				if (i > 1)
-					this.geometry.faces.push(new THREE.Face3(0, i - 1, i));
-			}
+			this.geometry.computeBoundingBox();
+			
+			var max = this.geometry.boundingBox.max,
+				min = this.geometry.boundingBox.min;
+			var offset = new THREE.Vector2(0 - min.x, 0 - min.z);
+			var range = new THREE.Vector2(max.x - min.x, max.z - min.z);
+			var faces = this.geometry.faces;
 
 			this.geometry.faceVertexUvs[0] = [];
-			this.geometry.faceVertexUvs[0].push([
-				new THREE.Vector2(0, 0),
-				new THREE.Vector2(0, 1),
-				new THREE.Vector2(1, 1),
-			]);
 
-			this.geometry.faceVertexUvs[0].push([
-				new THREE.Vector2(0, 0),
-				new THREE.Vector2(1, 1),
-				new THREE.Vector2(1, 0),
-			]);
+			for (var i = 0; i < faces.length; i++) {
+
+				var v1 = this.geometry.vertices[faces[i].a],
+					v2 = this.geometry.vertices[faces[i].b],
+					v3 = this.geometry.vertices[faces[i].c];
+
+				this.geometry.faceVertexUvs[0].push([
+					new THREE.Vector2((v1.x + offset.x) / range.x, (v1.z + offset.y) / range.y),
+					new THREE.Vector2((v2.x + offset.x) / range.x, (v2.z + offset.y) / range.y),
+					new THREE.Vector2((v3.x + offset.x) / range.x, (v3.z + offset.y) / range.y)
+				]);
+			}
+			this.geometry.uvsNeedUpdate = true;
 		}
+	
 
-		addVertex(vertex: THREE.Vector3) {
-			this.geometry.vertices.push(vertex);
-		}
-
-		addWall(wall: WallSector) {
-			let vertices: THREE.Vector3[] = wall.getVertexes();
-			this.y = vertices[0].y;
-			this.graham.addPoint(new THREE.Vector2(vertices[0].x, vertices[0].z));
-			this.graham.addPoint(new THREE.Vector2(vertices[3].x, vertices[3].z));
-
-			this.setTexture(wall.getFloorTexture());
+		select(){
+			console.info(JSON.stringify(this.vertices));
+			this.children.forEach(child => {
+				let mesh = child as THREE.Mesh;
+				if (mesh.geometry.type === 'BoxGeometry'){
+					
+					(mesh.material as THREE.MeshBasicMaterial).color.setHex(0xff0000);
+				}
+			});
 		}
 
 		private repeatedTexture(size: { width: number, height: number }) {
 			let bounding = this.geometry.boundingBox;
 			if (!bounding)
 				return;
-
-			// let z: number = bounding.max.z - bounding.min.z;
 
 			let scale: number = 1;
 			let width: number = bounding.max.x - bounding.min.x;
@@ -91,7 +102,7 @@ module Engine {
 				offsetY: offsetY
 			};
 
-			console.info('width', width, 'height', height, 'size', size, 'result', result);
+			// console.info('width', width, 'height', height, 'size', size, 'result', result);
 			return result;
 		}
 
@@ -161,35 +172,102 @@ module Engine {
 			return null;
 		}
 
-		create(bounds: { uX: number, uY: number, lX: number, lY: number }) {
-			if (this.graham.getPoints().length == 0){
-				return;
-			}
-
-			this.geometry.vertices = [];
-
-			if (this.graham.getPoints().length < 3){
-				this.graham.addPoint(new THREE.Vector2(bounds.uX, bounds.uY));
-				this.graham.addPoint(new THREE.Vector2(bounds.uX, bounds.lY));
-				this.graham.addPoint(new THREE.Vector2(bounds.lX, bounds.lY));
-				this.graham.addPoint(new THREE.Vector2(bounds.lX, bounds.uY));
-			}
-			
-
-			let temp = this.graham.sort()
-			if (temp.length == 0){
-				return;
-			}
-
-			temp.forEach(point => {
-				this.geometry.vertices.push(new THREE.Vector3(point.x, this.y, point.y));
+		addWall(linedef : Wad.Linedef, height: number, texture: string) {
+			this.y = height;
+			this.vertices.push({
+				start: new THREE.Vector3(linedef.getFirstVertex().x, height, linedef.getFirstVertex().y),
+				end: new THREE.Vector3(linedef.getSecondVertex().x,height, linedef.getSecondVertex().y)
 			});
 
-			// console.info(temp, this.geometry.vertices);
+			this.setTexture(texture);
+		}
 
-			this.createFaces();
+		create() {
+			this.geometry.vertices = [];
+			
 
+			var materialCube : THREE.MeshBasicMaterial = new THREE.MeshBasicMaterial({ 
+				color: 0x00ff00 
+			});
+
+			const segments : Segment[] = this.vertices.map(segment => {
+				return new Segment(new Vector3(segment.start), new Vector3(segment.end));
+			});
+		
+			var wtf = new Wtf(segments);
+			const msegments = wtf.getPoints();
+			console.info(msegments);
+		
+			// var delaunay = new Delaunay();
+		
+			// msegments.forEach(segments => {
+				// delaunay.addSegments(segments);
+			// });
+		
+			// console.info(msegments);
+			// if (msegments.length > 1)
+			// 	delaunay.addHoles(msegments[1]);
+		
+			// const triangles = delaunay.start();
+			// const vertices = delaunay.vertices;
+
+			// console.info(JSON.stringify(this.vertices));
+
+			// vertices.forEach((vertex, i) => {
+			// 	this.geometry.vertices.push(new THREE.Vector3(vertex.x, this.y, vertex.y));
+			// });
+			// console.info(vertices,triangles);
+		
+			// for (var i = 0; i < triangles.length; i += 3) {
+			// 	this.geometry.faces.push(new THREE.Face3(triangles[i], triangles[i + 1], triangles[i + 2]));
+			// }
+		
+			// 
+
+			var shape = new THREE.Shape();
+
+			this.vertices.forEach((vertex, i)=>{
+				if (i == 0)
+					shape.moveTo(this.vertices[i].start.x, this.vertices[i].start.z);
+				else {
+					shape.lineTo(this.vertices[i].start.x, this.vertices[i].start.z);
+				}
+
+				shape.lineTo(this.vertices[i].end.x, this.vertices[i].end.z);
+			});
+
+			var shapePoint = shape.extractPoints(2);
+			// THREE.ShapeUtils.tri
+
+			this.geometry = new THREE.ShapeGeometry(shape);
+			
 			this.geometry.computeBoundingBox();
+		
+			var max = this.geometry.boundingBox.max,
+				min = this.geometry.boundingBox.min;
+			var offset = new THREE.Vector2(0 - min.x, 0 - min.z);
+			var range = new THREE.Vector2(max.x - min.x, max.z - min.z);
+		
+			range.x *= 0.01;
+			range.y *= 0.01;
+		
+			this.geometry.faceVertexUvs[0] = [];
+		
+			for (var i = 0; i < this.geometry.faces.length; i++) {
+		
+				var v1 = this.geometry.vertices[this.geometry.faces[i].a],
+					v2 = this.geometry.vertices[this.geometry.faces[i].b],
+					v3 = this.geometry.vertices[this.geometry.faces[i].c];
+		
+				this.geometry.faceVertexUvs[0].push([
+					new THREE.Vector2((v1.x + offset.x) / range.x, (v1.z + offset.y) / range.y),
+					new THREE.Vector2((v2.x + offset.x) / range.x, (v2.z + offset.y) / range.y),
+					new THREE.Vector2((v3.x + offset.x) / range.x, (v3.z + offset.y) / range.y)
+				]);
+			}
+			this.geometry.uvsNeedUpdate = true;
+		
+			this.geometry.computeVertexNormals();
 			this.geometry.computeFaceNormals();
 			this.geometry.computeVertexNormals();
 		}

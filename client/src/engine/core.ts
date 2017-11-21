@@ -48,7 +48,7 @@ module Engine {
 				if (intersects.length > 0) {
 					let floor : Floor = intersects[0].object.parent as Floor;
 					// let wall: Wall =  as Wall;
-
+					floor.select();
 					console.info(floor);
 				}
 			}
@@ -103,7 +103,7 @@ module Engine {
 
 		private subsector(subsector: Wad.Subsector, bounds : { uX: number; uY: number; lX: number; lY: number; }) {
 			if (subsector !== null) {
-				let sector = new Sector(subsector, this.textures, this.flats, bounds);
+				let sector = new Subsector(subsector, this.textures, this.flats, bounds);
 
 				this.scene.add(sector);
 
@@ -148,7 +148,17 @@ module Engine {
 		createWalls(map: Wad.Map, wad: Wad.Wad) {
 			this.textures = wad.getTextures();
 			this.flats = wad.getFlats();
+
+			console.info(map.getSectors());
+
 			this.node(0, map.getNode());
+
+			map.getSectors().forEach(item => {
+				let sector = new Sector(item, this.flats);
+
+				this.scene.add(sector);
+			});
+			
 		}
 	}
 }

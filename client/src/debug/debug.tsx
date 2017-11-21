@@ -13,6 +13,7 @@ import { Debug as Graphic } from './graphic.debug';
 import { Debug as ColorMap } from './colormap.debug';
 import { Debug as Nodes } from './nodes.debug';
 import { Debug as Floors } from './floor.debug';
+import { Debug as Subsectors } from './subsectors.debug';
 import { Debug as Endoom } from './endoom.debug';
 import { Debug as Map } from './map.debug';
 import { Debug as Music } from './music.debug';
@@ -60,7 +61,8 @@ module Debug {
 					{ label: "THINGS", component: <Map.Things things={map.getThings()} />, children: [] },
 					{ label: "VERTEXES", component: <Vertexes.Vertexes vertexes={map.getVertexes()} linedefs={map.getLinedefs()} />, children: [] },
 					{ label: "NODES", component: null, children: this.getNodes(map) },
-					{ label: "FLOOR", component: <Floors.Floors node={ map.getNode() } />, children: [] },
+					{ label: "SUBSECTORS", component: <Subsectors.Subsectors subsectors={ map.getSubsectors() }/>, children: [] },
+					{ label: "FLOOR", component: <Floors.Floors node={ map.getNode() } sectors={ map.getSectors() } />, children: [] },
 				];
 
 				return data;

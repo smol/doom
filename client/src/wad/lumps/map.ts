@@ -40,7 +40,7 @@ module Wad {
 		}
 
 		setSectors(lump: any, data:any){
-			this.sectors = new Sectors(lump, data, this.sidedefs.get());
+			this.sectors = new Sectors(lump, data, this.sidedefs.get(), this.linedefs.get());
 		}
 
 		setNodes(lump: any, data: any){
@@ -61,6 +61,14 @@ module Wad {
 
 		setSegs(lump: any, data: any){
 			this.segs = new Segs(lump, data, this.vertexes.get(), this.linedefs.get());
+		}
+
+		getSubsectors() : Subsector[] {
+			return this.subsectors.get();
+		}
+
+		getSectors() : Sector[] {
+			return this.sectors.get();
 		}
 
 		getLinedefs() : Linedef[] {

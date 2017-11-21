@@ -46,6 +46,9 @@ module Wad {
 		private specialSector: number;
 		private linedefsTag: number;
 
+		private sidedefs: Sidedef[];
+		private linedefs: Linedef[];
+
 		constructor(offset: number, dataView: DataView) {
 			this.floorHeight = dataView.getInt16(0 + offset, true);
 			this.ceilingHeight = dataView.getInt16(2 + offset, true);
@@ -65,29 +68,51 @@ module Wad {
 			this.lightLevel = dataView.getInt16(20 + offset, true);
 			this.specialSector = dataView.getInt16(22 + offset, true);
 			this.linedefsTag = dataView.getInt16(24 + offset, true);
+			this.sidedefs = [];
+			this.linedefs = [];
 		}
 
-		getCeilingTextureName() : string {
+		getCeilingTextureName(): string {
 			return this.ceilingTexture;
 		}
 
-		getFloorTextureName() : string {
+		getFloorTextureName(): string {
 			return this.floorTexture;
 		}
 
-		getCeilingHeight() : number {
+		getCeilingHeight(): number {
 			return this.ceilingHeight;
 		}
 
-		getFloorHeight() : number {
+		getFloorHeight(): number {
 			return this.floorHeight;
+		}
+
+		getSidedefs(): Sidedef[] {
+			return this.sidedefs;
+		}
+
+		getLinedefs() : Linedef[] {
+			return this.linedefs;
+		}
+
+		getTag(): number {
+			return this.linedefsTag;
+		}
+
+		setLinedef(linedef: Linedef) {
+			this.linedefs.push(linedef);
+		}
+
+		setSidedef(sidedef: Sidedef) {
+			this.sidedefs.push(sidedef);
 		}
 	}
 
 	export class Sectors extends Lump {
 		private sectors: Sector[];
 
-		constructor(lump: any, data: any, sidedefs: Sidedef[]) {
+		constructor(lump: any, data: any, sidedefs: Sidedef[], linedefs: Linedef[]) {
 			super(lump, data);
 
 			this.sectors = [];
@@ -96,11 +121,18 @@ module Wad {
 				this.sectors.push(sector);
 			}
 
+			linedefs.forEach(linedef => {
+				this.sectors.forEach(sector => {
+					if (sector.getTag() === linedef.getSectorTag()) {
+						sector.setLinedef(linedef);
+					}
+				});
+			})
+
 			for (var i = 0; i < sidedefs.length; i++) {
+				this.sectors[sidedefs[i].getSectorIndex()].setSidedef(sidedefs[i]);
 				sidedefs[i].setSector(this.sectors[sidedefs[i].getSectorIndex()]);
 			}
-
-			// console.info(this.sectors);
 		}
 
 		get(): Sector[] {
