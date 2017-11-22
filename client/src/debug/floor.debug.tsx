@@ -17,141 +17,125 @@ interface FloorGraphicOptions {
 
 export module Debug {
 	export class Floor {
-		private plane : Engine.PlaneGeneration;
+		private generator : Engine.PolygonGeneration;
 		// private node: Wad.Node;
-		private sidedefs: Wad.Sidedef[];
+		private linedefs: Wad.Linedef[];
 		private sector: Wad.Sector;
-		// private bounds: { uX: number, uY: number, lX: number, lY: number };
+		private bounds: { uX: number, uY: number, lX: number, lY: number };
 
 		private isSelected: boolean = false;
 		private red: number;
 		private blue: number;
 		private green: number;
 
+		private vertices : { x: number, y: number }[];
+		private faces : number[];
+		private orderedsegments : Segment[][];
+		private segments : Segment[];
+
+
 		constructor(sector: Wad.Sector) {
-			
-			// this.node = node;
 			this.sector = sector;
-			// this.bounds = bounds;
 
-			this.sidedefs = [];
-			if (sector)
-				this.sidedefs = sector.getSidedefs();
+			this.linedefs = [];
+			if (sector){
+				sector.getSidedefs().forEach(sidedef => {
+					this.linedefs.push(sidedef.getLinedef());
+				});
+			}
+				
 
-			this.plane = new Engine.PlaneGeneration(this.sidedefs);
+			this.vertices = [];
+			this.faces = [];
 
-			// this.vertices = this.generateVertices();
+			var generator = new Engine.PolygonGeneration();
+			this.linedefs.forEach(linedef => {
+				generator.addLinedef(linedef, 0);
+			});
 
-			// console.info(vertices);
+			this.orderedsegments = generator.start();
+
+			this.vertices = generator.getVertices();
+			this.faces = generator.getFaces();
+			this.segments = generator.getSegments();
+
 			this.red = Math.round(Math.random() * 255);
 			this.green = Math.round(Math.random() * 255);
 			this.blue = Math.round(Math.random() * 255);
+
+			this.bounds = {
+				lX: Infinity,
+				lY: Infinity,
+				uX: -Infinity,
+				uY: -Infinity
+			};
+
+			// found bounds for click
+			this.orderedsegments.forEach(segments => {
+				segments.forEach(segment => {
+					if (segment.start.x < this.bounds.lX)
+						this.bounds.lX = segment.start.x;
+					else if (segment.start.x > this.bounds.uX)
+						this.bounds.uX = segment.start.x;
+
+					if (segment.start.z < this.bounds.lY)
+						this.bounds.lY = segment.start.z;
+					else if (segment.start.z > this.bounds.uY)
+						this.bounds.uY = segment.start.z;
+				});
+			});
+
+			// console.info(this.bounds);
 		}
 
-		private renderSeg(seg: Wad.Seg, ctx: CanvasRenderingContext2D, scale: number, position: { x: number, y: number }) {
-			var firstVertex: Wad.Vertex = seg.getStartVertex();
-			var secondVertex: Wad.Vertex = seg.getEndVertex();
-
-			ctx.beginPath();
-			ctx.strokeStyle = 'white';
-
-			ctx.moveTo((firstVertex.x) * scale + position.x, (firstVertex.y) * scale + position.y);
-			ctx.lineTo((secondVertex.x) * scale + position.x, (secondVertex.y) * scale + position.y);
-
-			ctx.stroke();
-			ctx.closePath();
-		}
-
-		private renderFloor(ctx: CanvasRenderingContext2D, scale: number, position: { x: number, y: number }) {
-			ctx.beginPath();
-
-			ctx.strokeStyle = 'rgba(' + this.red + ',' + this.green + ',' + this.blue + ', ' + (this.isSelected ? '1' : '1') + ')';
-			ctx.fillStyle = 'rgba(' + this.red + ',' + this.green + ',' + this.blue + ', ' + (this.isSelected ? '0.2' : '0.2') + ')';
-
-			let vertices = this.plane.getVertices();
-			//console.info(vertices);
-
-			ctx.moveTo((vertices[0].x * scale) + position.x, (vertices[0].y * scale) + position.y);
-			for (var i = 2; i < vertices.length; i++) {
-				// console.info((vertices[i - 1].x * scale) + position.x, (vertices[i - 1].y * scale) + position.y);
-
-				// ctx.moveTo((vertices[0].x * scale) + position.x, (vertices[0].y * scale) + position.y);
-				ctx.lineTo((vertices[i - 1].x * scale) + position.x, (vertices[i - 1].y * scale) + position.y);
-				ctx.lineTo((vertices[i].x * scale) + position.x, (vertices[i].y * scale) + position.y);
-				// ctx.lineTo((vertices[0].x * scale) + position.x, (vertices[0].y * scale) + position.y);
+		onClick(x: number, y: number){
+			if ((x >= this.bounds.lX && x <= this.bounds.uX) && (y >= this.bounds.lY && y <= this.bounds.uY)){
+				console.info('test', this.orderedsegments, this.segments);
 			}
-
-			ctx.lineTo((vertices[0].x * scale) + position.x, (vertices[0].y * scale) + position.y);
-
-			ctx.stroke();
-			ctx.fill();
-			ctx.closePath();
-		}
-
-		// private renderBound(ctx: CanvasRenderingContext2D, scale: number, position: { x: number, y: number }) {
-		// 	ctx.beginPath();
-		// 	ctx.moveTo(this.bounds.uX * scale + position.x, this.bounds.uY * scale + position.y);
-		// 	ctx.lineTo(this.bounds.lX * scale + position.x, this.bounds.uY * scale + position.y);
-		// 	ctx.lineTo(this.bounds.lX * scale + position.x, this.bounds.lY * scale + position.y);
-		// 	ctx.lineTo(this.bounds.uX * scale + position.x, this.bounds.lY * scale + position.y);
-		// 	ctx.lineTo(this.bounds.uX * scale + position.x, this.bounds.uY * scale + position.y);
-		// 	ctx.strokeStyle = 'red';
-		// 	ctx.stroke();
-		// 	ctx.closePath();
-
-		// 	// console.info(rightBounds, leftBounds, node);
-
-		// 	// console.info(
-		// 	// 	(rightBounds.uX) * scale, (rightBounds.uY) * scale,
-		// 	// 	(rightBounds.lX) * scale, (rightBounds.lY) * scale
-		// 	// );
-
-
-
-		// 	// this.renderNode(node.getRightNode(), ctx, start, scale);
-		// 	// this.renderNode(node.getLeftNode(), ctx, start, scale);
-		// }
-
-		private pointRectangleIntersection(p, r): Boolean {
-			let left = Math.min(r.uX, r.lX);
-			let right = Math.max(r.uX, r.lX);
-			let top = Math.min(r.uY, r.lY);
-			let bottom = Math.max(r.uY, r.lY);
-
-
-			return p.x > left && p.x < right && p.y > top && p.y < bottom;
-		}
-
-		onClick(x: number, y: number): Boolean {
-			return false;
-			// this.isSelected = false;
-
-			// if (this.pointRectangleIntersection({ x: x, y: y }, this.bounds)) {
-			// 	this.debug();
-
-			// 	this.isSelected = true;
-
-			// 	return true;
-			// }
-
-			// return false;
-		}
-
-		private debug() {
-			console.info('---- DEBUG FLOOR');
-			console.info('r:', this.red, 'g: ', this.green, 'b:', this.blue);
-			console.info('subsector :', this.sector);
-			// console.info('node :', this.node);
 		}
 
 		render(ctx: CanvasRenderingContext2D, scale: number, position: { x: number, y: number }) {
-			// this.renderBound(ctx, scale, position);
+			ctx.beginPath();
+			ctx.fillStyle = 'rgba('+ this.red +', '+ this.green + ','+ this.blue +', 0.3)';
+			ctx.strokeStyle = 'white';
 
-			// this.segs.forEach(seg => {
-			// 	this.renderSeg(seg, ctx, scale, position);
+			// this.orderedsegments.forEach(segments => {
+			// 	ctx.beginPath();
+			// 	segments.forEach(segment => {
+			// 		var x = (segment.start.x + position.x) * scale;
+			// 		var y = (segment.start.z + position.y) * scale;
+			// 		ctx.lineTo(x, y);
+
+			// 		var x = (segment.end.x + position.x) * scale;
+			// 		var y = (segment.end.z + position.y) * scale;
+			// 		ctx.lineTo(x, y);
+			// 	});
+
+			// 	ctx.stroke();
+			// 	ctx.fill();
+			// 	ctx.closePath();
+			// });
+
+			for (var i = 0; i < this.faces.length; i += 3){
+				let first = { x : (this.vertices[this.faces[i]].x + position.x) * scale, y : (this.vertices[this.faces[i]].y + position.y) * scale };
+				let second = { x : (this.vertices[this.faces[i + 1]].x + position.x) * scale, y : (this.vertices[this.faces[i + 1]].y + position.y) * scale };
+				let third = { x : (this.vertices[this.faces[i + 2]].x + position.x) * scale, y : (this.vertices[this.faces[i + 2]].y + position.y) * scale };
+
+				ctx.moveTo(first.x, first.y);
+				ctx.lineTo(second.x, second.y);
+				ctx.lineTo(third.x, third.y);
+			}
+
+			// this.vertices.forEach((vertex, i) => {
+			// 	let x = (vertex.x + position.x) * scale;
+			// 	let y = (vertex.y + position.y) * scale;
+
+			// 	ctx.lineTo(x, y);
 			// })
 
-			this.renderFloor(ctx, scale, position);
+			ctx.fill();
+			ctx.stroke();
+			ctx.closePath();
 		}
 	}
 
@@ -159,7 +143,7 @@ export module Debug {
 		private position: { x: number, y: number };
 		private startPosition: { x: number, y: number };
 		private onClick: boolean = false;
-		private scale: number = 0.5;
+		private scale: number = 0.2;
 		private ctx: CanvasRenderingContext2D;
 		private floors: Floor[];
 
@@ -173,7 +157,7 @@ export module Debug {
 			this.mouseUp = this.mouseUp.bind(this);
 			this.scroll = this.scroll.bind(this);
 
-			this.position = { x: 500, y: 2000 };
+			this.position = { x: -1000, y: 3000 };
 			this.startPosition = { x: 0, y: 0 };
 		}
 
@@ -208,36 +192,13 @@ export module Debug {
 				let y: number = e.pageY - (window.innerHeight / 2);
 
 				for (var i = 0; i < this.floors.length; i++) {
-					if (this.floors[i].onClick((x - this.position.x) / this.scale, (y - this.position.y) / this.scale)) {
+					if (this.floors[i].onClick((x / this.scale) - this.position.x, (y / this.scale) - this.position.y)) {
 					}
 				}
 
 				this.update();
 			}
 		}
-
-		// private throughNode(node: Wad.Node, parent: Wad.Node) {
-		// 	if (node === null) {
-		// 		return;
-		// 	}
-
-		// 	if (node.getLeftSubsector())
-		// 		this.floors.push(new Floor(node.getLeftSubsector(), node, node.getLeftBounds()));
-
-		// 	if (node.getRightSubsector())
-		// 		this.floors.push(new Floor(node.getRightSubsector(), node, node.getRightBounds()));
-
-		// 	// if (node.getLeftSubsector() && node.getLeftSubsector().getSegs().length > 1)
-		// 	// 	this.renderBound(parent.getLeftBounds(), "green");
-		// 	// if (node.getRightSubsector() && node.getRightSubsector().getSegs().length > 1)
-		// 	// 	this.renderBound(parent.getRightBounds(), "red");
-
-		// 	// this.renderSubsector(node.getLeftSubsector());
-		// 	// this.renderSubsector(node.getRightSubsector());
-
-		// 	this.throughNode(node.getLeftNode(), node);
-		// 	this.throughNode(node.getRightNode(), node);
-		// }
 
 		private loopSectors(sectors : Wad.Sector[]){
 			sectors.forEach(sector => {
@@ -254,11 +215,7 @@ export module Debug {
 			this.floors.forEach(floor => {
 				floor.render(this.ctx, this.scale, this.position);
 			});
-
-			// 
 		}
-
-
 
 		componentWillReceiveProps(nextProps) {
 			this.props = nextProps;

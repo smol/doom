@@ -150,7 +150,7 @@ class Delaunay {
 
 			}
 
-		console.info(open);
+		// console.info(open);
 
 		/* Yay, we're done! */
 		return open;

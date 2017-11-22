@@ -38,8 +38,8 @@ export module Debug {
 		private core : Engine.Core;
 
 		private rendering(){
-			this.core = new Engine.Core(this.refs.canvas as HTMLCanvasElement);
-			this.core.createWalls(this.props.map, this.props.wad);
+			// this.core = new Engine.Core(this.refs.canvas as HTMLCanvasElement);
+			// this.core.createWalls(this.props.map, this.props.wad);
 		}
 
 		componentDidMount(){

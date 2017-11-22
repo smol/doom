@@ -1,8 +1,3 @@
-/// <reference path="./delaunay/delaunay.ts" />
-/// <reference path="./delaunay/wtf.ts" />
-
-
-
 module Engine {
 	export class Floor extends THREE.Group {
 		private mesh: THREE.Mesh;
@@ -13,7 +8,6 @@ module Engine {
 		private delaunay: Delaunay;
 		private y: number = Number.MIN_VALUE;
 		seg: Wad.Seg;
-
 		private vertices: {start: THREE.Vector3, end: THREE.Vector3}[];
 		private indices: number[];
 
@@ -22,7 +16,6 @@ module Engine {
 
 			this.textures = textures;
 			this.vertices = [];
-			this.delaunay = new Delaunay();
 
 			this.material = new THREE.MeshBasicMaterial({
 				transparent: true,
@@ -68,7 +61,7 @@ module Engine {
 			}
 			this.geometry.uvsNeedUpdate = true;
 		}
-	
+
 
 		select(){
 			console.info(JSON.stringify(this.vertices));
@@ -190,56 +183,21 @@ module Engine {
 				color: 0x00ff00 
 			});
 
-			const segments : Segment[] = this.vertices.map(segment => {
-				return new Segment(new Vector3(segment.start), new Vector3(segment.end));
+
+			let generator = new PolygonGeneration();
+			generator.start();
+			let vertices = generator.getVertices();
+			let faces = generator.getFaces();
+		
+			
+			vertices.forEach((vertex, i) => {
+				this.geometry.vertices.push(new THREE.Vector3(vertex.x, this.y, vertex.y));
 			});
+			// console.info(vertices,faces);
 		
-			var wtf = new Wtf(segments);
-			const msegments = wtf.getPoints();
-			console.info(msegments);
-		
-			// var delaunay = new Delaunay();
-		
-			// msegments.forEach(segments => {
-				// delaunay.addSegments(segments);
-			// });
-		
-			// console.info(msegments);
-			// if (msegments.length > 1)
-			// 	delaunay.addHoles(msegments[1]);
-		
-			// const triangles = delaunay.start();
-			// const vertices = delaunay.vertices;
-
-			// console.info(JSON.stringify(this.vertices));
-
-			// vertices.forEach((vertex, i) => {
-			// 	this.geometry.vertices.push(new THREE.Vector3(vertex.x, this.y, vertex.y));
-			// });
-			// console.info(vertices,triangles);
-		
-			// for (var i = 0; i < triangles.length; i += 3) {
-			// 	this.geometry.faces.push(new THREE.Face3(triangles[i], triangles[i + 1], triangles[i + 2]));
-			// }
-		
-			// 
-
-			var shape = new THREE.Shape();
-
-			this.vertices.forEach((vertex, i)=>{
-				if (i == 0)
-					shape.moveTo(this.vertices[i].start.x, this.vertices[i].start.z);
-				else {
-					shape.lineTo(this.vertices[i].start.x, this.vertices[i].start.z);
-				}
-
-				shape.lineTo(this.vertices[i].end.x, this.vertices[i].end.z);
-			});
-
-			var shapePoint = shape.extractPoints(2);
-			// THREE.ShapeUtils.tri
-
-			this.geometry = new THREE.ShapeGeometry(shape);
+			for (var i = 0; i < faces.length; i += 3) {
+				this.geometry.faces.push(new THREE.Face3(faces[i], faces[i + 1], faces[i + 2]));
+			}
 			
 			this.geometry.computeBoundingBox();
 		
