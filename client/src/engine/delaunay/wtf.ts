@@ -90,7 +90,7 @@ class Wtf {
 			}
 		}
 
-		this.orderGroups();
+		// this.orderGroups();
 	}
 
 	private getClosest(from : THREE.Vector3, first : THREE.Vector3, second: THREE.Vector3){

@@ -57,6 +57,8 @@ export module Debug {
 				y: this.props.vertexes[this.props.linedefs[0].getFirst()].y,
 			};
 
+			
+
 			start.x += this.position.x;
 			start.y += this.position.y;
 

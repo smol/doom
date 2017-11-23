@@ -24,8 +24,9 @@ module Wad {
 			this.direction = data.getInt16(offset + 8, true);
 			this.offset = data.getInt16(offset + 10, true);
 
-			this.linedef.setFirstVertex(this.startVertex);
-			this.linedef.setSecondVertex(this.endVertex);
+			
+			this.linedef.setFirstVertex(vertices[this.linedef.getFirst()]);
+			this.linedef.setSecondVertex(vertices[this.linedef.getSecond()]);
 		}
 
 		getStartVertex() : Vertex {

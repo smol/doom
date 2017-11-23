@@ -31,7 +31,10 @@ export module Debug {
 		private vertices : { x: number, y: number }[];
 		private faces : number[];
 		private orderedsegments : Segment[][];
+		// private segments : Segment[];
 		private segments : Segment[];
+
+		private triangles : poly2tri.Triangle[];
 
 
 		constructor(sector: Wad.Sector) {
@@ -47,17 +50,22 @@ export module Debug {
 
 			this.vertices = [];
 			this.faces = [];
+			this.segments = [];
 
 			var generator = new Engine.PolygonGeneration();
 			this.linedefs.forEach(linedef => {
 				generator.addLinedef(linedef, 0);
 			});
 
+			
+
 			this.orderedsegments = generator.start();
 
 			this.vertices = generator.getVertices();
+			
 			this.faces = generator.getFaces();
 			this.segments = generator.getSegments();
+			this.triangles = generator.triangles;
 
 			this.red = Math.round(Math.random() * 255);
 			this.green = Math.round(Math.random() * 255);
@@ -70,7 +78,7 @@ export module Debug {
 				uY: -Infinity
 			};
 
-			// found bounds for click
+			// // found bounds for click
 			this.orderedsegments.forEach(segments => {
 				segments.forEach(segment => {
 					if (segment.start.x < this.bounds.lX)
@@ -90,41 +98,76 @@ export module Debug {
 
 		onClick(x: number, y: number){
 			if ((x >= this.bounds.lX && x <= this.bounds.uX) && (y >= this.bounds.lY && y <= this.bounds.uY)){
-				console.info('test', this.orderedsegments, this.segments);
+				console.info(this.orderedsegments);
+
+				
+				// console.info('test', this.orderedsegments, this.segments);
 			}
 		}
 
 		render(ctx: CanvasRenderingContext2D, scale: number, position: { x: number, y: number }) {
-			ctx.beginPath();
+			
 			ctx.fillStyle = 'rgba('+ this.red +', '+ this.green + ','+ this.blue +', 0.3)';
 			ctx.strokeStyle = 'white';
 
 			// this.orderedsegments.forEach(segments => {
 			// 	ctx.beginPath();
 			// 	segments.forEach(segment => {
+					
 			// 		var x = (segment.start.x + position.x) * scale;
 			// 		var y = (segment.start.z + position.y) * scale;
+					
 			// 		ctx.lineTo(x, y);
 
 			// 		var x = (segment.end.x + position.x) * scale;
 			// 		var y = (segment.end.z + position.y) * scale;
 			// 		ctx.lineTo(x, y);
+					
 			// 	});
-
 			// 	ctx.stroke();
 			// 	ctx.fill();
 			// 	ctx.closePath();
 			// });
 
-			for (var i = 0; i < this.faces.length; i += 3){
-				let first = { x : (this.vertices[this.faces[i]].x + position.x) * scale, y : (this.vertices[this.faces[i]].y + position.y) * scale };
-				let second = { x : (this.vertices[this.faces[i + 1]].x + position.x) * scale, y : (this.vertices[this.faces[i + 1]].y + position.y) * scale };
-				let third = { x : (this.vertices[this.faces[i + 2]].x + position.x) * scale, y : (this.vertices[this.faces[i + 2]].y + position.y) * scale };
+			
 
-				ctx.moveTo(first.x, first.y);
-				ctx.lineTo(second.x, second.y);
-				ctx.lineTo(third.x, third.y);
-			}
+			// console.info(JSON.stringify(this.vertices));
+			
+			if (!this.triangles)
+				return;
+
+			this.triangles.forEach(triangle => {
+				ctx.beginPath();
+
+				triangle.getPoints().forEach(temp => {
+					let point = { x : (temp.x + position.x) * scale, y : (temp.y + position.y) * scale };
+					// console.info(point);
+					ctx.lineTo(point.x, point.y);
+				})
+
+				ctx.stroke();
+				ctx.fill();
+				ctx.closePath();
+			});
+
+			// for (var i = 0; i < this.faces.length; i += 3){
+			// 	let first = { x : (this.vertices[this.faces[i]].x + position.x) * scale, y : (this.vertices[this.faces[i]].y + position.y) * scale };
+			// 	let second = { x : (this.vertices[this.faces[i + 1]].x + position.x) * scale, y : (this.vertices[this.faces[i + 1]].y + position.y) * scale };
+			// 	let third = { x : (this.vertices[this.faces[i + 2]].x + position.x) * scale, y : (this.vertices[this.faces[i + 2]].y + position.y) * scale };
+
+			// 	ctx.beginPath();
+			// 	ctx.arc(first.x,first.y,10 * scale,0,2*Math.PI);
+			// 	ctx.arc(second.x,second.y,10 * scale,0,2*Math.PI);
+			// 	ctx.arc(third.x,first.y,10 * scale,0,2*Math.PI);
+				
+
+			// 	ctx.moveTo(first.x, first.y);
+			// 	ctx.lineTo(second.x, second.y);
+			// 	ctx.lineTo(third.x, third.y);
+
+			// 	ctx.stroke();
+			// 	ctx.closePath();
+			// }
 
 			// this.vertices.forEach((vertex, i) => {
 			// 	let x = (vertex.x + position.x) * scale;
@@ -133,9 +176,9 @@ export module Debug {
 			// 	ctx.lineTo(x, y);
 			// })
 
-			ctx.fill();
-			ctx.stroke();
-			ctx.closePath();
+			// ctx.fill();
+			// ctx.stroke();
+			// ctx.closePath();
 		}
 	}
 
@@ -158,6 +201,7 @@ export module Debug {
 			this.scroll = this.scroll.bind(this);
 
 			this.position = { x: -1000, y: 3000 };
+			// this.position = {x: 0, y: 0};
 			this.startPosition = { x: 0, y: 0 };
 		}
 
@@ -201,6 +245,7 @@ export module Debug {
 		}
 
 		private loopSectors(sectors : Wad.Sector[]){
+			console.info(sectors);
 			sectors.forEach(sector => {
 				this.floors.push(new Floor(sector));
 			});

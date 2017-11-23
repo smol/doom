@@ -129,10 +129,10 @@ module Wad {
 				});
 			})
 
-			for (var i = 0; i < sidedefs.length; i++) {
-				this.sectors[sidedefs[i].getSectorIndex()].setSidedef(sidedefs[i]);
-				sidedefs[i].setSector(this.sectors[sidedefs[i].getSectorIndex()]);
-			}
+			sidedefs.forEach(sidedef => {
+				this.sectors[sidedef.getSectorIndex()].setSidedef(sidedef);
+				sidedef.setSector(this.sectors[sidedef.getSectorIndex()]);
+			});
 		}
 
 		get(): Sector[] {

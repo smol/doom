@@ -67,7 +67,7 @@ module.exports = function (grunt) {
 
 		concat: {
 			lib: {
-				src: ['./node_modules/systemjs/dist/system-production.js', './node_modules/three/build/three.min.js', './node_modules/react/dist/react.js', './node_modules/react-dom/dist/react-dom.js', './client/sylvester.js'],
+				src: ['./node_modules/systemjs/dist/system-production.js', './client/node_modules/poly2tri/dist/poly2tri.min.js', './node_modules/three/build/three.min.js', './node_modules/react/dist/react.js', './node_modules/react-dom/dist/react-dom.js', './client/sylvester.js'],
 				dest: './client/.build/lib.js'
 			},
 			wad: {
@@ -144,6 +144,10 @@ module.exports = function (grunt) {
 		'copy:assets',
 		'sass',
 		'concurrent:dev'
+	]);
+
+	grunt.registerTask('lib', [
+		'concat:lib'
 	]);
 
 	grunt.registerTask('prod', [

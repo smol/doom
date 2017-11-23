@@ -19,9 +19,10 @@ module Engine {
 
 			this.sidedefs.forEach(sidedef => {
 				floor.addWall(sidedef.getLinedef(), sector.getFloorHeight(), sector.getFloorTextureName());
+				lower.addWall(sidedef.getLinedef(), sector.getCeilingHeight(), sector.getCeilingTextureName());
 			});
 
-			// lower.create(this.bounds);
+			lower.create();
 
 			floor.create();
 			// floor.setTexture(wall.getFloorTexture());

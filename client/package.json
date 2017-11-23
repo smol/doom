@@ -9,6 +9,7 @@
   "author": "smol",
   "license": "LGPL-3.0",
   "dependencies": {
+    "poly2tri": "^1.5.0",
     "socket.io-client": "^1.7.2"
   },
   "devDependencies": {

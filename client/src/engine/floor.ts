@@ -8,14 +8,15 @@ module Engine {
 		private delaunay: Delaunay;
 		private y: number = Number.MIN_VALUE;
 		seg: Wad.Seg;
-		private vertices: {start: THREE.Vector3, end: THREE.Vector3}[];
+		
+		private generator : PolygonGeneration;
 		private indices: number[];
 
 		constructor(textures: Wad.Flat[], invert: Boolean = false) {
 			super();
 
 			this.textures = textures;
-			this.vertices = [];
+			this.generator = new PolygonGeneration();
 
 			this.material = new THREE.MeshBasicMaterial({
 				transparent: true,
@@ -64,7 +65,7 @@ module Engine {
 
 
 		select(){
-			console.info(JSON.stringify(this.vertices));
+			// console.info(JSON.stringify(this.vertices));
 			this.children.forEach(child => {
 				let mesh = child as THREE.Mesh;
 				if (mesh.geometry.type === 'BoxGeometry'){
@@ -167,10 +168,7 @@ module Engine {
 
 		addWall(linedef : Wad.Linedef, height: number, texture: string) {
 			this.y = height;
-			this.vertices.push({
-				start: new THREE.Vector3(linedef.getFirstVertex().x, height, linedef.getFirstVertex().y),
-				end: new THREE.Vector3(linedef.getSecondVertex().x,height, linedef.getSecondVertex().y)
-			});
+			this.generator.addLinedef(linedef, 0);
 
 			this.setTexture(texture);
 		}
@@ -183,21 +181,26 @@ module Engine {
 				color: 0x00ff00 
 			});
 
-
-			let generator = new PolygonGeneration();
-			generator.start();
-			let vertices = generator.getVertices();
-			let faces = generator.getFaces();
-		
 			
-			vertices.forEach((vertex, i) => {
-				this.geometry.vertices.push(new THREE.Vector3(vertex.x, this.y, vertex.y));
+
+			let orderedsegments = this.generator.start();
+
+			
+			let triangles : poly2tri.Triangle[] = this.generator.triangles;
+			if (!triangles)
+				return;
+
+			triangles.forEach(triangle => {
+				triangle.getPoints().forEach(point => {
+					this.geometry.vertices.push(new THREE.Vector3(point.x, this.y, point.y));
+				});
+				
+				this.geometry.faces.push(new THREE.Face3(
+					this.geometry.vertices.length - 3, 
+					this.geometry.vertices.length - 2,
+					this.geometry.vertices.length - 1
+				));
 			});
-			// console.info(vertices,faces);
-		
-			for (var i = 0; i < faces.length; i += 3) {
-				this.geometry.faces.push(new THREE.Face3(faces[i], faces[i + 1], faces[i + 2]));
-			}
 			
 			this.geometry.computeBoundingBox();
 		
@@ -206,8 +209,8 @@ module Engine {
 			var offset = new THREE.Vector2(0 - min.x, 0 - min.z);
 			var range = new THREE.Vector2(max.x - min.x, max.z - min.z);
 		
-			range.x *= 0.01;
-			range.y *= 0.01;
+			range.x *= 0.5;
+			range.y *= 0.5;
 		
 			this.geometry.faceVertexUvs[0] = [];
 		
