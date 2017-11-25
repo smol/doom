@@ -25,9 +25,9 @@ module Engine {
 			});
 
 			if (invert)
-				this.material.side = THREE.DoubleSide;
+				this.material.side = THREE.FrontSide;
 			else
-				this.material.side = THREE.DoubleSide;
+				this.material.side = THREE.BackSide;
 
 			this.material.needsUpdate = true;
 			this.geometry = new THREE.Geometry();

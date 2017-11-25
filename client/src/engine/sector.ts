@@ -15,7 +15,7 @@ module Engine {
 			}
 
 			let floor = new Floor(this.flats);
-			let lower = new Floor(this.flats);
+			let lower = new Floor(this.flats, true);
 
 			this.sidedefs.forEach(sidedef => {
 				floor.addWall(sidedef.getLinedef(), sector.getFloorHeight(), sector.getFloorTextureName());
