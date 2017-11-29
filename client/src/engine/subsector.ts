@@ -22,28 +22,6 @@ module Engine {
 			segs.forEach(seg => {
 				this.add(this.createWall(seg));
 			});
-
-			this.createFloor();
-		}
-
-		private createFloor() {
-			/// get the wall left
-			/// get the wall right
-
-			// console.info('CREATE FLOOR');
-
-
-			// new THREE.Vector3(firstVertex.x / 5, lowerFloorHeight / 5, firstVertex.y / 5),
-			// new THREE.Vector3(firstVertex.x / 5, lowerCeilingHeight / 5, firstVertex.y / 5),
-			// new THREE.Vector3(secondVertex.x / 5, lowerCeilingHeight / 5, secondVertex.y / 5),
-			// new THREE.Vector3(secondVertex.x / 5, lowerFloorHeight / 5, secondVertex.y / 5),
-
-
-			
-
-			// console.info('END CREATE FLOOR');
-
-			// this.floor.create();
 		}
 
 		private createWall(seg: Wad.Seg): Engine.Wall {

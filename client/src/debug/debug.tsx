@@ -143,7 +143,7 @@ module Debug {
 
 		render() {
 			return <div>
-				<TreeView.TreeView items={this.items} select={this.selectItem} />
+				<TreeView.TreeView items={ this.items } select={this.selectItem} />
 				<div id="details">
 					{this.state.currentItem}
 				</div>

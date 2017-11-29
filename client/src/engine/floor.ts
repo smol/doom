@@ -181,8 +181,6 @@ module Engine {
 				color: 0x00ff00 
 			});
 
-			
-
 			let orderedsegments = this.generator.start();
 
 			
@@ -209,8 +207,8 @@ module Engine {
 			var offset = new THREE.Vector2(0 - min.x, 0 - min.z);
 			var range = new THREE.Vector2(max.x - min.x, max.z - min.z);
 		
-			range.x *= 0.5;
-			range.y *= 0.5;
+			range.x *= 0.15;
+			range.y *= 0.15;
 		
 			this.geometry.faceVertexUvs[0] = [];
 		

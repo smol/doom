@@ -65,7 +65,6 @@ module Wad {
 		}
 
 		getPosition() : {x: number, y :number} {
-			console.info(this.x, this.y);
 			return { x: this.x, y: this.y };
 		}
 

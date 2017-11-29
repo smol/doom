@@ -6,7 +6,7 @@ module Engine {
 		private mesh: THREE.Mesh;
 		private material: THREE.Material;
 		private texture: THREE.DataTexture;
-		private textureNames: { floor: string, ceiling: string }
+		private textureNames: { floor: string, ceiling: string };
 
 		constructor(vertices: THREE.Vector3[], direction: number, textureNames: { floor: string, ceiling: string }) {
 			super();
@@ -36,25 +36,63 @@ module Engine {
 			this.geometry.faces.push(new THREE.Face3(0, 1, 2));
 			this.geometry.faces.push(new THREE.Face3(0, 2, 3));
 
-			this.geometry.faceVertexUvs[0] = [];
-			this.geometry.faceVertexUvs[0].push([
-				new THREE.Vector2(0, 0),
-				new THREE.Vector2(0, 1),
-				new THREE.Vector2(1, 1),
-			]);
-
-			this.geometry.faceVertexUvs[0].push([
-				new THREE.Vector2(0, 0),
-				new THREE.Vector2(1, 1),
-				new THREE.Vector2(1, 0),
-			]);
-
-			this.geometry.computeBoundingBox();
 			this.geometry.computeFaceNormals();
 			this.geometry.computeVertexNormals();
 			this.mesh = new THREE.Mesh(this.geometry, this.material);
 
 			this.add(this.mesh);
+		}
+
+		private mapTexture(textureSize: { width: number, height: number }) {
+			this.geometry.computeBoundingBox();
+
+			this.geometry.faceVertexUvs[0] = [];
+
+			var max = this.geometry.boundingBox.max,
+				min = this.geometry.boundingBox.min;
+
+			let min2d = new THREE.Vector2(min.x, min.z);
+			let max2d = new THREE.Vector2(max.x, max.z);
+			// distance between min and zero;
+			let minDistance: number = min2d.distanceTo(new THREE.Vector2(0,0));
+			let length: number = max2d.distanceTo(min2d);
+
+
+			var offset = new THREE.Vector2(-minDistance, -min.y);
+			var scale = new THREE.Vector2(length, (max.y - min.y));
+
+			this.geometry.faceVertexUvs[0] = [];
+
+			for (var i = 0; i < this.geometry.faces.length; i++) {
+
+				var v1 = this.geometry.vertices[this.geometry.faces[i].a],
+					v2 = this.geometry.vertices[this.geometry.faces[i].b],
+					v3 = this.geometry.vertices[this.geometry.faces[i].c];
+
+				let v1x: number = new THREE.Vector2(v1.x, v1.z).distanceTo(min2d);
+				let v2x: number = new THREE.Vector2(v2.x, v2.z).distanceTo(min2d);
+				let v3x: number = new THREE.Vector2(v3.x, v3.z).distanceTo(min2d);
+
+				let v1y: number = (v1.y + offset.y);
+				let v2y: number = (v2.y + offset.y);
+				let v3y: number = (v3.y + offset.y);
+
+				// console.info(
+				// 	'min', offset.x, 
+				// 	'distance', distance, 
+				// 	'v1x', v1x,
+				// 	'v2x', v2x,
+				// 	'v3x', v3x
+				// );
+
+				this.geometry.faceVertexUvs[0].push([
+					new THREE.Vector2(v1x / scale.x, v1y / scale.y),
+					new THREE.Vector2(v2x / scale.x, v2y / scale.y),
+					new THREE.Vector2(v3x / scale.x, v3y / scale.y)
+				]);
+			}
+
+			this.geometry.uvsNeedUpdate = true;
 		}
 
 		private repeatedTexture(size: { width: number, height: number }) {
@@ -63,7 +101,7 @@ module Engine {
 			let z: number = bounding.max.z - bounding.min.z;
 			let x: number = bounding.max.x - bounding.min.x;
 
-			let scale : number = 1;
+			let scale: number = 1;
 			let width: number = Math.sqrt((x * x) + (z * z));
 			let height: number = bounding.max.y - bounding.min.y;
 			let result = { x: (width / size.width) * scale, y: (height / size.height) * scale }
@@ -71,7 +109,8 @@ module Engine {
 			return result;
 		}
 
-		setTexture(texture: Wad.Graphic) {
+
+		setTexture(texture: Wad.Graphic, offset: { x: number, y: number }) {
 			if (texture == null) {
 				return;
 			}
@@ -105,32 +144,10 @@ module Engine {
 				THREE.LinearEncoding
 			);
 
-			// let repeated: any = this.repeatedTexture({ width: width, height: height });
-
-			// this.texture.repeat.set(repeated.x, repeated.y);
+			this.mapTexture({ width: width, height: height });
 
 			this.texture.needsUpdate = true;
-
-			// this.material = new THREE.MeshBasicMaterial({
-			// 	transparent: true,
-			// 	map: this.texture,
-			// 	// color: 0xFF0000
-			// });
-
-			// this.material.side = THREE.DoubleSide;
-
-			// this.material.needsUpdate = true;
 			(this.mesh.material as THREE.MeshBasicMaterial).map = this.texture;
-
-
-
-			// geom.vertices.push(
-			// 	new THREE.Vector3(0, 0, 0),
-			// 	new THREE.Vector3(0, -500, 0),
-			// 	new THREE.Vector3(0, -500, 500),
-			// 	new THREE.Vector3(0, 0, 500),
-			// );
-
 
 		}
 
@@ -138,7 +155,7 @@ module Engine {
 			return this.textureNames.floor;
 		}
 
-		getCeilingTexture() : string {
+		getCeilingTexture(): string {
 			return this.textureNames.ceiling;
 		}
 
@@ -177,7 +194,7 @@ module Engine {
 
 				this.add(this.lowerSector);
 
-				this.lowerSector.setTexture(this.getTexture(rightSidedef.getLower()));
+				this.lowerSector.setTexture(this.getTexture(rightSidedef.getLower()), rightSidedef.getPosition());
 
 				this.upperSector = new WallSector([
 					new THREE.Vector3(firstVertex.x, upperFloorHeight, firstVertex.y),
@@ -188,7 +205,7 @@ module Engine {
 
 				this.add(this.upperSector);
 
-				this.upperSector.setTexture(this.getTexture(rightSidedef.getUpper()));
+				this.upperSector.setTexture(this.getTexture(rightSidedef.getUpper()), rightSidedef.getPosition());
 			} else {
 				let ceilingHeight = rightSidedef.getSector().getCeilingHeight();
 				let floorHeight = rightSidedef.getSector().getFloorHeight();
@@ -202,7 +219,7 @@ module Engine {
 
 				this.add(this.middleSector);
 
-				this.middleSector.setTexture(this.getTexture(rightSidedef.getMiddle()));
+				this.middleSector.setTexture(this.getTexture(rightSidedef.getMiddle()), rightSidedef.getPosition());
 			}
 		}
 
@@ -228,7 +245,7 @@ module Engine {
 			return this.middleSector.getFloorTexture();
 		}
 
-		getCeilingTexture() : string {
+		getCeilingTexture(): string {
 			if (this.upperSector)
 				return this.upperSector.getCeilingTexture();
 			return this.middleSector.getCeilingTexture();

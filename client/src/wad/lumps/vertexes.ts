@@ -24,7 +24,7 @@ module Wad {
 			super(lump, data);
 
 			this.x = this.dataView.getInt16(offset, true);
-			this.y = this.dataView.getInt16(offset + 2, true);
+			this.y = -this.dataView.getInt16(offset + 2, true);
 		}
 
 

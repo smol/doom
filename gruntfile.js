@@ -32,6 +32,12 @@ module.exports = function (grunt) {
 				},
 				// watch: './client/src/wad'
 			},
+			app: {
+				tsconfig: './client/src/app/tsconfig.json',
+				options: {
+					verbose: true
+				}
+			},
 			engine: {
 				tsconfig: './client/src/engine/tsconfig.json',
 				options: {
@@ -84,6 +90,13 @@ module.exports = function (grunt) {
 					atBegin: true
 				}
 			},
+			app: {
+				files: ['./client/src/app/**/*.ts'],
+				tasks: ['ts:app'],
+				options: {
+					atBegin: true
+				}
+			},
 			engine: {
 				files: ['./client/src/engine/**/*.ts'],
 				tasks: ['ts:engine'],
@@ -117,7 +130,7 @@ module.exports = function (grunt) {
 		concurrent: {
 			dev: {
 				// 'nodemon:server', 
-				tasks: ['nodemon:server', 'watch:engine', 'watch:debug', 'watch:stylesheets', 'watch:wad'],
+				tasks: ['nodemon:server', 'watch:engine', 'watch:debug', 'watch:app', 'watch:stylesheets', 'watch:wad'],
 				options: {
 					logConcurrentOutput: true
 				}

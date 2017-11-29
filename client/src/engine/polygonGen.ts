@@ -90,8 +90,6 @@ module Engine {
 			try {
 				var swctx = new poly2tri.SweepContext(contour);
 
-				console.info('contour', JSON.stringify(contour));
-
 				for (let index = 1; index < orderedSegments.length; index++) {
 					const segments = orderedSegments[index];
 					let hole = [];
@@ -101,7 +99,6 @@ module Engine {
 						// hole.push(new poly2tri.Point(segment.end.x, segment.end.z));
 					});
 
-					console.info('hole', JSON.stringify(hole));
 					swctx.addHole(hole);
 				}
 
@@ -110,7 +107,6 @@ module Engine {
 				this.triangles = swctx.getTriangles();
 
 				this.vertices = [];
-				console.warn(this.triangles);
 				this.triangles.forEach(triangle => {
 					triangle.getPoints().forEach(point => {
 						this.vertices.push({ x: point.x, y: point.y });

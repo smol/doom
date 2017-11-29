@@ -4,6 +4,7 @@
 
 /// <reference types="wad" />
 /// <reference types="engine" />
+/// <reference path="../../../node_modules/@types/three/index.d.ts" />
 
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
@@ -38,8 +39,17 @@ export module Debug {
 		private core : Engine.Core;
 
 		private rendering(){
-			this.core = new Engine.Core(this.refs.canvas as HTMLCanvasElement);
-			this.core.createWalls(this.props.map, this.props.wad);
+			this.core = new Engine.Core(this.refs.canvas as HTMLCanvasElement, null, { orbitControl: true, showFps: false });
+			this.core.createMap(this.props.map, this.props.wad);
+
+			let things : Wad.Thing[] = this.props.map.getThings().get();
+			things.forEach(thing => {
+				if (thing.getType() == 'player 1 start'){
+					let position : {x : number, y: number} = thing.getPosition();
+					this.core.setCameraPosition({ x: position.x, y: 40, z: position.y });
+
+				}
+			});
 		}
 
 		componentDidMount(){

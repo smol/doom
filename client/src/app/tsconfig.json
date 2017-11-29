@@ -1,0 +1,25 @@
+{
+	"compileOnSave": true,
+	"compilerOptions": {
+		"target": "es5",
+		"module": "system",
+		// "noImplicitAny": true,
+		"removeComments": true,
+		"declaration": true,
+		"preserveConstEnums": true,
+		"sourceMap": true,
+		// "moduleResolution": "node",
+		"outFile": "../../.build/app/index.js",
+		"lib": ["es5", "dom", "es2015.iterable"],
+		"typeRoots": [
+			"../../.build/"
+		],
+		"types": [
+			"wad",
+			"engine"
+		]
+	},
+	"include": [
+		"./**/*"
+	]
+}

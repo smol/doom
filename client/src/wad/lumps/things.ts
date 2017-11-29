@@ -185,12 +185,24 @@ module Wad {
 
 		constructor(index: number, dataView: DataView) {
 			this.x = dataView.getInt16(index, true);
-			this.y = dataView.getInt16(index + 2, true);
+			this.y = -dataView.getInt16(index + 2, true);
 			this.angle = dataView.getInt16(index + 4, true);
 			this.typeId = dataView.getInt16(index + 6, true);
 			this.options = dataView.getInt16(index + 8, true);
 			this.type = DoomThingTable[this.typeId];
 
+		}
+
+		getType() : string {
+			return this.type;
+		}
+
+		getPosition() : {x : number, y:number}{
+			return { x: this.x, y: this.y };
+		}
+
+		getAngle() : number {
+			return this.angle;
 		}
 
 		toString(): string {
