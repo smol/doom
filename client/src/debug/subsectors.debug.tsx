@@ -1,6 +1,5 @@
 import * as React from 'react';
-/// <reference types="engine" />
-
+import * as Wad from 'wad';
 
 export module Debug {
 	interface SubsectorsProps {

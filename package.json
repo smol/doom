@@ -4,7 +4,10 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build:client:dev": "npm run build:client:wad:watch & npm run build:client:engine:watch",
+    "build:client:wad": "webpack --config ./client/wad/webpack.config.js",
+    "build:client:wad:watch": "npm run build:client:wad -- --watch"
   },
   "author": "smol",
   "license": "LGPL-3.0",
@@ -25,12 +28,11 @@
   "dependencies": {
     "@types/react": "^15.0.35",
     "@types/react-dom": "^15.5.1",
-    "@types/sylvester": "^0.1.5",
-    "@types/three": "^0.84.17",
     "react": "^15.6.1",
     "react-dom": "^15.6.1",
     "sylvester": "0.0.21",
     "systemjs": "^0.20.15",
-    "three": "^0.86.0"
+    "three": "^0.86.0",
+    "ts-loader": "^3.2.0"
   }
 }

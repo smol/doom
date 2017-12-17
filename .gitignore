@@ -6,3 +6,5 @@ client/build
 client/.build
 tscommand-6fa04b01.tmp.txt
 npm-debug.log
+.build
+client/.awcache

@@ -25,13 +25,6 @@ module.exports = function (grunt) {
 		},
 
 		ts: {
-			wad: {
-				tsconfig: './client/src/wad/tsconfig.json',
-				options: {
-					verbose: true
-				},
-				// watch: './client/src/wad'
-			},
 			app: {
 				tsconfig: './client/src/app/tsconfig.json',
 				options: {
@@ -83,13 +76,6 @@ module.exports = function (grunt) {
 		},
 
 		watch: {
-			wad: {
-				files: ['./client/src/wad/**/*.ts'],
-				tasks: ['ts:wad'],
-				options: {
-					atBegin: true
-				}
-			},
 			app: {
 				files: ['./client/src/app/**/*.ts'],
 				tasks: ['ts:app'],
@@ -130,7 +116,7 @@ module.exports = function (grunt) {
 		concurrent: {
 			dev: {
 				// 'nodemon:server', 
-				tasks: ['nodemon:server', 'watch:engine', 'watch:debug', 'watch:app', 'watch:stylesheets', 'watch:wad'],
+				tasks: ['nodemon:server', 'watch:engine', 'watch:debug', 'watch:app', 'watch:stylesheets'],
 				options: {
 					logConcurrentOutput: true
 				}
@@ -149,7 +135,6 @@ module.exports = function (grunt) {
 	grunt.loadNpmTasks('grunt-webpack');
 
 	grunt.registerTask('dev', [
-		'ts:wad',
 		'ts:engine',
 		'concat:lib',
 		'ts:debug',
@@ -164,7 +149,6 @@ module.exports = function (grunt) {
 	]);
 
 	grunt.registerTask('prod', [
-		'ts:wad',
 		'ts:engine',
 		'concat:lib',
 		'ts:debug',

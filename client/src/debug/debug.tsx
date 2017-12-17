@@ -1,4 +1,4 @@
-/// <reference types="wad" />
+
 // / <reference path="./playpal.debug.ts" />
 // / <reference path="./graphics.debug.ts" />
 // / <reference path="./colormap.debug.ts" />
@@ -19,6 +19,7 @@ import { Debug as Map } from './map.debug';
 import { Debug as Music } from './music.debug';
 import { Debug as Vertexes } from './vertexes.debug';
 
+import * as Wad from 'wad';
 import * as React from "react";
 import * as ReactDOM from "react-dom";
 

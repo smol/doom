@@ -1,0 +1,19 @@
+{
+	"compileOnSave": true,
+	"compilerOptions": {
+		"target": "es5",
+		"module": "commonjs",
+		"removeComments": true,
+		"declaration": true,
+		"preserveConstEnums": true,
+		"sourceMap": true,
+		"lib": ["es5", "dom", "es2015.iterable"],
+		"paths": {
+			"wad": ["../.build/wad/index.d.ts"]
+		},
+		"baseUrl": "."
+	},
+	"include": [
+		"./src/core.ts"
+	]
+}

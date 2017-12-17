@@ -1,0 +1,21 @@
+{
+  "name": "doom-engine",
+  "version": "0.0.1",
+  "description": "DoomEngine is a library for rendering Wad file with ThreeJS",
+  "main": "webpack.config.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "smol",
+  "license": "LGPL-3.0",
+  "devDependencies": {
+    "declaration-bundler-webpack-plugin": "git://github.com/smol/declaration-bundler-webpack-plugin.git",
+    "ts-loader": "^3.2.0",
+    "webpack": "^3.10.0"
+  },
+  "dependencies": {
+    "@types/poly2tri": "^1.4.0",
+    "@types/sylvester": "^0.1.5",
+    "@types/three": "^0.84.17"
+  }
+}

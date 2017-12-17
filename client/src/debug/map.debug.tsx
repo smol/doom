@@ -2,10 +2,9 @@
 
 // import Map from 'wad/lumps/Map';
 
-/// <reference types="wad" />
-/// <reference types="engine" />
-/// <reference path="../../../node_modules/@types/three/index.d.ts" />
 
+import * as Wad from 'wad';
+import * as Engine from 'engine';
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
 

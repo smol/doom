@@ -1,5 +1,7 @@
 import * as React from 'react';
 
+import * as Wad from 'wad';
+
 interface NodesProps {
 	node : Wad.Node;
 	linedefs : Wad.Linedef[];

@@ -8,12 +8,18 @@
 		"declaration": false,
 		"preserveConstEnums": true,
 		"sourceMap": true,
-		"outDir": "../../.build/debug/",
+		"outDir": "../../../.build/debug/",
 		// "rootDir": "./",
 		"typeRoots": [
-			"../../.build/"
-			// "../../../node_modules/@types/"
+			"../../../.build/",
+			"./node_modules/@types/"
 		],
+		"baseUrl": ".",
+		"paths": {
+			// "wad": ["../../../.build/wad/index.d.ts"],
+			// "engine": ["../../../.build/engine/index.d.ts"]
+		},
+		
 		"types": [
 			"wad",
 			"react",
@@ -21,11 +27,11 @@
 		],
 		"lib": ["es5", "dom", "es2015.iterable"]
 	},
-	"exclude": [
-		"three/*.d.ts"
-	],
 	"include": [
-		"./**/*.ts",
-		"./**/*.tsx"
+		"./**/*"
+	],
+	"exclude": [
+		"**/index.d.ts",
+		"**/node_modules/*"
 	]
 }

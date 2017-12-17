@@ -1,6 +1,6 @@
 // import Graphic from 'wad/lumps/Graphic';
-/// <reference types="wad" />
 
+import * as Wad from 'wad';
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
 

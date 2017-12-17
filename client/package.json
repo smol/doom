@@ -10,9 +10,12 @@
   "license": "LGPL-3.0",
   "dependencies": {
     "poly2tri": "^1.5.0",
-    "socket.io-client": "^1.7.2"
+    "typescript": "^2.6.2"
   },
   "devDependencies": {
-    "grunt-contrib-clean": "^1.1.0"
+    "grunt-contrib-clean": "^1.1.0",
+    "declaration-bundler-webpack-plugin": "^1.0.3",
+    "socket.io-client": "^1.7.2",
+    "ts-loader": "^3.2.0"
   }
 }

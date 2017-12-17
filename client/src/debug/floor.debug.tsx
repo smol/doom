@@ -1,5 +1,6 @@
 import * as React from 'react';
-/// <reference types="engine" />
+import * as Wad from 'wad';
+import * as Engine from 'engine';
 
 
 interface NodesProps {
