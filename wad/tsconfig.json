@@ -2,21 +2,16 @@
 	"compileOnSave": true,
 	"compilerOptions": {
 		"target": "es5",
-		"module": "commonjs",
-		"moduleResolution": "classic",
+		"moduleResolution": "node",
+		"module": "es2015",
 		"removeComments": true,
 		"declaration": true,
-		"preserveConstEnums": true,
-		"allowSyntheticDefaultImports": true,
 		"sourceMap": true,
-		"outDir": "../.build/wad/",
-		"lib": ["es5", "dom", "es2015.iterable"],
+		"allowSyntheticDefaultImports": true,
+		"declarationDir": "../src/",
 		"baseUrl": "."
 	},
-	"exclude": [
-		"node_modules"
-	],
-	"files": [
-		"src/index.ts"
+	"include": [
+		"./src/**/*"
 	]
 }

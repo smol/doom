@@ -2,11 +2,12 @@
   "name": "wad",
   "version": "0.1.0",
   "description": "Wad is a Typescript library to read Wad files from DoomEngine",
-  "main": "webpack.config.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "webpack"
   },
+  "main": "./index.js",
+  "types": "./index.d.ts",
   "keywords": [
     "wad",
     "doom",
@@ -16,8 +17,8 @@
   "author": "Smol",
   "license": "LGPL-3.0",
   "devDependencies": {
+    "dts-bundle": "^0.7.3",
     "ts-loader": "^3.2.0",
-    "webpack": "^3.10.0",
-    "declaration-bundler-webpack-plugin": "git://github.com/smol/declaration-bundler-webpack-plugin.git"
+    "webpack": "^3.10.0"
   }
 }

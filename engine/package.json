@@ -9,7 +9,10 @@
   "author": "smol",
   "license": "LGPL-3.0",
   "devDependencies": {
+    "babel-loader": "^7.1.2",
     "declaration-bundler-webpack-plugin": "git://github.com/smol/declaration-bundler-webpack-plugin.git",
+    "dts-bundle": "^0.7.3",
+    "ignore-loader": "^0.1.2",
     "ts-loader": "^3.2.0",
     "webpack": "^3.10.0"
   },

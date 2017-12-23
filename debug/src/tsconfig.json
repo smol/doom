@@ -8,20 +8,20 @@
 		"declaration": false,
 		"preserveConstEnums": true,
 		"sourceMap": true,
-		"outDir": "../../../.build/debug/",
-		// "rootDir": "./",
+		"traceResolution": true,
+		"outDir": "../../.build/debug/",
 		"typeRoots": [
-			"../../../.build/",
+			"../../.build/",
 			"./node_modules/@types/"
 		],
 		"baseUrl": ".",
 		"paths": {
-			// "wad": ["../../../.build/wad/index.d.ts"],
-			// "engine": ["../../../.build/engine/index.d.ts"]
+			"engine": ["../../.build/engine"],
+			"wad": ["../../.build/wad"]
 		},
-		
 		"types": [
 			"wad",
+			"engine",
 			"react",
 			"react-dom"
 		],

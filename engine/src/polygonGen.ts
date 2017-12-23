@@ -41,43 +41,7 @@ export class PolygonGeneration {
   start() {
     var wtf = new Wtf(this.segments.slice());
     const orderedSegments = wtf.getPoints();
-    // console.info(orderedSegments);
-
-    // --- DELAUNAY
-    // var delaunay = new Delaunay();
-
-    // orderedSegments.forEach(segments => {
-    // 	delaunay.addSegments(segments);
-    // });
-
-    // if (orderedSegments.length > 1)
-    // 	delaunay.addHoles(orderedSegments[1]);
-
-    // this.faces = delaunay.start();
-    // this.vertices = delaunay.vertices;
-    // --- END DELAUNAY
-
-    // --- EARCUT
-
-    // let vertices = [];
-
-    // orderedSegments.forEach(segments => {
-    // 	segments.forEach(segment => {
-    // 		this.vertices.push({x: segment.start.x, y: segment.start.z}, {x: segment.end.x, y: segment.end.z});
-    // 		vertices.push(segment.start.x, segment.start.z, segment.end.x, segment.end.z);
-    // 	})
-    // });
-
-    // console.info(this.vertices, vertices);
-
-    // let earcut = new Earcut(vertices, [], 2);
-    // this.faces = earcut.triangles;
-
-    // --- END EARCUT
-
-    // --- POLY2TRI
-
-    console.info(poly2tri);
+   
     var contour: poly2tri.Point[] = [];
 
     // orderedSegments.forEach(segments => {

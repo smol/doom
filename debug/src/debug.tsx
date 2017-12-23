@@ -1,18 +1,8 @@
-
-// / <reference path="./playpal.debug.ts" />
-// / <reference path="./graphics.debug.ts" />
-// / <reference path="./colormap.debug.ts" />
-// / <reference path="./maps.debug.ts" />
-
-// import * as Wad from 'Wad';
-// import { WadBuilder } from 'builder';
-
 import { Debug as TreeView } from './treeview';
 import { Debug as Playpal } from './playpal.debug';
 import { Debug as Graphic } from './graphic.debug';
 import { Debug as ColorMap } from './colormap.debug';
 import { Debug as Nodes } from './nodes.debug';
-import { Debug as Floors } from './floor.debug';
 import { Debug as Subsectors } from './subsectors.debug';
 import { Debug as Endoom } from './endoom.debug';
 import { Debug as Map } from './map.debug';
@@ -62,8 +52,7 @@ module Debug {
 					{ label: "THINGS", component: <Map.Things things={map.getThings()} />, children: [] },
 					{ label: "VERTEXES", component: <Vertexes.Vertexes vertexes={map.getVertexes()} linedefs={map.getLinedefs()} />, children: [] },
 					{ label: "NODES", component: null, children: this.getNodes(map) },
-					{ label: "SUBSECTORS", component: <Subsectors.Subsectors subsectors={ map.getSubsectors() }/>, children: [] },
-					{ label: "FLOOR", component: <Floors.Floors node={ map.getNode() } sectors={ map.getSectors() } />, children: [] },
+					{ label: "SUBSECTORS", component: <Subsectors.Subsectors subsectors={ map.getSubsectors() }/>, children: [] }
 				];
 
 				return data;
@@ -153,10 +142,9 @@ module Debug {
 	}
 }
 
-var parser = new Wad.Parser();
-var builder = new Wad.Builder(parser);
+var builder = new Wad.Builder();
 
-parser.onLoad = () => {
+builder.getParser().onLoad = () => {
 	builder.go();
 
 	ReactDOM.render(
@@ -167,6 +155,6 @@ parser.onLoad = () => {
 	// new Debug.Debug(builder.getWad(), builder);
 };
 
-parser.loadFile('/client/assets/doom.wad');
+builder.getParser().loadFile('/client/assets/doom.wad');
 
 

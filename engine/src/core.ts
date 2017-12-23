@@ -1,11 +1,13 @@
 import * as THREE from 'three';
 import * as Wad from 'wad';
 
-
 import { Camera } from './camera';
 import { InputManager } from './input';
 import { Subsector } from './subsector';
 import { Sector } from './sector';
+
+let subsector : Subsector;
+let sector : Sector;
 
 export interface Config {
   showFps: boolean;
@@ -58,6 +60,14 @@ export class Core {
 
   getCamera(): Camera {
     return this.camera;
+  }
+
+  getInputManager() : InputManager {
+    return this.inputManager;
+  }
+
+  getType() : {subsector: Subsector, sector: Sector}[]{
+    return null;
   }
 
   private render() {

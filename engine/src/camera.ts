@@ -3,6 +3,7 @@ import { OrbitControls } from './orbitcontrols';
 
 export class Camera extends THREE.PerspectiveCamera {
   private canvas: HTMLCanvasElement;
+  position: THREE.Vector3;
 
   // -- USE FOR FPS
   private angle: number; // in radian
@@ -25,6 +26,10 @@ export class Camera extends THREE.PerspectiveCamera {
     this.raycaster = new THREE.Raycaster();
     this.raycaster.params.Points.threshold = 0.1;
     this.canvas.addEventListener('mousedown', this.onDocumentMouseDown);
+  }
+
+  lookAt(target: THREE.Vector3){
+    super.lookAt(target);
   }
 
   rotate(degree: number) {

@@ -9,10 +9,14 @@ export interface Input {
 }
 
 export class Inputs {
-  static LEFT_ARROW: Input = { keyCode: 37, state: InputState.Released };
-  static UP_ARROW: Input = { keyCode: 38, state: InputState.Released };
-  static RIGHT_ARROW: Input = { keyCode: 39, state: InputState.Released };
-  static DOWN_ARROW: Input = { keyCode: 40, state: InputState.Released };
+  public static LEFT_ARROW: Input = { keyCode: 37, state: InputState.Released };
+  public static UP_ARROW: Input = { keyCode: 38, state: InputState.Released };
+  public static RIGHT_ARROW: Input = { keyCode: 39, state: InputState.Released };
+  public static DOWN_ARROW: Input = { keyCode: 40, state: InputState.Released };
+
+  static instance() : Inputs{
+    return new Inputs;
+  }
 }
 
 export class InputManager {

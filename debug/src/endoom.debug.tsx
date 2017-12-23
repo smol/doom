@@ -1,7 +1,7 @@
-/// <reference types="wad" />
-
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
+
+import * as Wad from 'wad';
 
 interface EndoomProps {
 	endoom : Wad.Endoom;

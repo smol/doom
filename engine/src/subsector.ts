@@ -34,7 +34,7 @@ export class Subsector extends THREE.Group {
     });
   }
 
-  private createWall(seg: Wad.Seg): Wall {
+  createWall(seg: Wad.Seg): Wall {
     let linedef: Wad.Linedef = seg.getLinedef();
     let rightSidedef: Wad.Sidedef = linedef.getRightSidedef();
     let leftSidedef: Wad.Sidedef = linedef.getLeftSidedef();

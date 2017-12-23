@@ -1,0 +1,31 @@
+{
+	"compileOnSave": true,
+	"compilerOptions": {
+		"target": "es5",
+		"moduleResolution": "node",
+		"removeComments": true,
+		"declaration": false,
+		"preserveConstEnums": true,
+		"sourceMap": true,
+		"outDir": "../.build/app/",
+		"typeRoots": [
+			"../.build/",
+			"./node_modules/@types/"
+		],
+		"baseUrl": ".",
+		"paths": {
+			"wad": ["../.build/wad"],
+			"engine": ["../.build/engine"]
+		},
+		"types": [
+			"wad"
+		],
+		"lib": ["es5", "dom", "es2015.iterable"]
+	},
+	"include": [
+		"./src/**/*"
+	],
+	"exclude": [
+		"node_modules"
+	]
+}

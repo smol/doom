@@ -1,77 +1,74 @@
-import WadParser from './engine/wad/Parser';
-import WadBuilder from './engine/wad/Builder';
-import Core from './engine/Core';
+import * as Engine from 'engine';
+import * as Wad from 'wad';
 
-import Debug from './debug/Debug';
+console.info(Wad, Engine.Inputs.LEFT_ARROW);
 
-class App extends Core {
-	private socket: any;
+class App implements Engine.CoreDelegate {
+  private canvas: HTMLCanvasElement;
+  private builder: Wad.Builder;
+  private camera: Engine.Camera;
+  private inputManager: Engine.InputManager;
 
-	constructor() {
-		super('canvas', 1);
+  constructor() {
+    this.canvas = document.getElementById('canvas') as HTMLCanvasElement;
 
-		var parser: WadParser = new WadParser();
-		var builder: WadBuilder = new WadBuilder(parser);
+    this.onLoaded = this.onLoaded.bind(this);
 
-		parser.onLoad = () => {
-			builder.go();
-			// var temp = parser.getLumpByName("TEXTURE1");
-			// console.warn(temp);
-			// var dv = new DataView(temp);
-			// // var colormaps = [];
-			// // for (var i = 0; i < 34; i++) {
-			// // 	var cm = [];
-			// // 	for (var j = 0; j < 256; j++) {
-			// // 		cm.push(dv.getUint8((i * 256) + j));
-			// // 	}
-			// // 	colormaps.push(cm);
-			// // }
+    this.builder = new Wad.Builder();
+    this.builder.parser.onLoad = this.onLoaded;
 
-			// console.warn(dv);
-		};
+    this.builder.parser.loadFile('.build/assets/doom.wad');
+  }
 
-		parser.loadFile('/client/assets/doom.wad');
+  update() {
+    if (Engine.Inputs.LEFT_ARROW.state == Engine.InputState.Pressed){
+    	this.camera.rotate(2);
+    } else if (Engine.Inputs.RIGHT_ARROW.state == Engine.InputState.Pressed){
+    	this.camera.rotate(-2);
+    }
+    if (Engine.Inputs.UP_ARROW.state == Engine.InputState.Pressed){
+    	this.camera.moveForward(5);
+    }
+  }
 
-	}
+  private onLoaded() {
+    this.builder.go();
+
+    let wad = this.builder.getWad();
+    this.loadMap(wad.getMaps()[0], wad);
+  }
+
+  private loadMap(map: Wad.Map, wad: Wad.Wad) {
+    let core = new Engine.Core(this.canvas, this);
+    this.camera = core.getCamera();
+    this.inputManager = core.getInputManager();
+
+    core.createMap(map, wad);
+
+    console.info(Wad);
+
+    let things: Wad.Thing[] = map.getThings().get();
+    things.forEach(thing => {
+      if (thing.getType() == 'player 1 start') {
+        this.setPlayer(thing);
+      }
+    });
+  }
+
+  private setPlayer(thing: Wad.Thing) {
+    let position: { x: number; y: number } = thing.getPosition();
+
+    this.camera.position.x = position.x;
+    this.camera.position.z = position.y;
+    this.camera.position.y = 40;
+
+    // this.camera.lookAt(new THREE.Vector3(this.camera.position.x + 100, this.camera.position.y, this.camera.position.z));
+
+    this.camera.rotate(thing.getAngle());
+    console.info(this.camera);
+  }
 }
 
-(function () {
-
-	var ready = function (fn) {
-
-		// Sanity check
-		if (typeof fn !== 'function') return;
-
-		// If document is already loaded, run method
-		if (document.readyState === 'complete') {
-			return fn();
-		}
-
-		// Otherwise, wait until document is loaded
-		// The document has finished loading and the document has been parsed but sub-resources such as images, stylesheets and frames are still loading. The state indicates that the DOMContentLoaded event has been fired.
-		document.addEventListener('DOMContentLoaded', fn, false);
-
-		// Alternative: The document and all sub-resources have finished loading. The state indicates that the load event has been fired.
-		// document.addEventListener( 'complete', fn, false );
-
-	};
-
-	// Example
-	ready(function () {
-		if (window.location.href.indexOf('debug') !== -1) {
-			var parser: WadParser = new WadParser();
-			var builder: WadBuilder = new WadBuilder(parser);
-
-			parser.onLoad = () => {
-				builder.go();
-
-				new Debug(builder.getWad(), builder);
-			};
-
-			parser.loadFile('/client/assets/doom.wad');
-		} else {
-			new App();
-		}
-
-	});
-})();;
+(function() {
+  new App();
+})();

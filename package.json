@@ -5,9 +5,16 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build:client:dev": "npm run build:client:wad:watch & npm run build:client:engine:watch",
-    "build:client:wad": "webpack --config ./client/wad/webpack.config.js",
-    "build:client:wad:watch": "npm run build:client:wad -- --watch"
+    "build:client": "npm run build:wad && npm run build:engine && npm run build:app",
+    "build:client:dev": "npm run build:wad:watch & npm run build:engine:watch & npm run build:app:watch",
+    "build:wad": "webpack --config ./wad/webpack.config.js",
+    "build:wad:watch": "npm run build:wad -- --watch",
+    "build:engine": "webpack --config ./engine/webpack.config.js",
+    "build:engine:watch": "npm run build:engine -- --watch",
+    "build:app": "webpack --config ./client/webpack.config.js",
+    "build:app:watch": "npm run build:app -- --watch",
+    "build:debug": "webpack --config ./debug/webpack.config.js",
+    "build:debug:watch": "npm run build:debug -- --watch"
   },
   "author": "smol",
   "license": "LGPL-3.0",

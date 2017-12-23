@@ -1,8 +1,3 @@
-// import * as React from 'react';
-
-// import Map from 'wad/lumps/Map';
-
-
 import * as Wad from 'wad';
 import * as Engine from 'engine';
 import * as React from 'react';
