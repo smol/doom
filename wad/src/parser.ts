@@ -9,7 +9,7 @@ export class Parser {
 
   constructor() {}
 
-  loadFile(filePath: string) {
+  public loadFile(filePath: string) {
     console.warn('Load WAD FILE', filePath);
     var self = this;
 

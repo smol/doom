@@ -1,0 +1,11 @@
+{
+    "defaultSeverity": "error",
+    "extends": [
+        "tslint:recommended"
+    ],
+    "jsRules": {
+        "indent": [true, "tabs", 2]
+    },
+    "rules": {},
+    "rulesDirectory": []
+}
