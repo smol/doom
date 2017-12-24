@@ -21,13 +21,13 @@ class App implements Engine.CoreDelegate {
   }
 
   update() {
-    if (Engine.Inputs.LEFT_ARROW.state == Engine.InputState.Pressed){
-    	this.camera.rotate(2);
-    } else if (Engine.Inputs.RIGHT_ARROW.state == Engine.InputState.Pressed){
-    	this.camera.rotate(-2);
+    if (Engine.Inputs.LEFT_ARROW.state == Engine.InputState.Pressed) {
+      this.camera.rotate(2);
+    } else if (Engine.Inputs.RIGHT_ARROW.state == Engine.InputState.Pressed) {
+      this.camera.rotate(-2);
     }
-    if (Engine.Inputs.UP_ARROW.state == Engine.InputState.Pressed){
-    	this.camera.moveForward(5);
+    if (Engine.Inputs.UP_ARROW.state == Engine.InputState.Pressed) {
+      this.camera.moveForward(5);
     }
   }
 
