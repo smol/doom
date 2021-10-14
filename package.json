@@ -7,39 +7,16 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "build:client": "npm run build:wad && npm run build:engine && npm run build:app",
     "build:client:dev": "npm run build:wad:watch & npm run build:engine:watch & npm run build:app:watch",
-    "build:wad": "webpack --config ./wad/webpack.config.js",
+    "build:wad": "npm run build --prefix ./wad/",
     "build:wad:watch": "npm run build:wad -- --watch",
-    "build:engine": "webpack --config ./engine/webpack.config.js",
+    "build:engine": "npm run build --prefix ./engine/",
     "build:engine:watch": "npm run build:engine -- --watch",
     "build:app": "webpack --config ./client/webpack.config.js",
     "build:app:watch": "npm run build:app -- --watch",
-    "build:debug": "webpack --config ./debug/webpack.config.js",
-    "build:debug:watch": "npm run build:debug -- --watch"
+    "build:debug": "npm run build --prefix ./debug/",
+    "build:debug:watch": "npm run build:debug -- -- --watch"
   },
   "author": "smol",
   "license": "LGPL-3.0",
-  "devDependencies": {
-    "awesome-typescript-loader": "^3.2.1",
-    "grunt": "^0.4.5",
-    "grunt-concurrent": "^2.3.1",
-    "grunt-contrib-concat": "^1.0.1",
-    "grunt-contrib-copy": "^1.0.0",
-    "grunt-contrib-sass": "^1.0.0",
-    "grunt-contrib-watch": "^1.0.0",
-    "grunt-nodemon": "^0.4.2",
-    "grunt-ts": "^6.0.0-beta.16",
-    "grunt-webpack": "^3.0.2",
-    "typescript": "^2.3.4",
-    "webpack": "^3.2.0"
-  },
-  "dependencies": {
-    "@types/react": "^15.0.35",
-    "@types/react-dom": "^15.5.1",
-    "react": "^15.6.1",
-    "react-dom": "^15.6.1",
-    "sylvester": "0.0.21",
-    "systemjs": "^0.20.15",
-    "three": "^0.86.0",
-    "ts-loader": "^3.2.0"
-  }
+  "devDependencies": {}
 }

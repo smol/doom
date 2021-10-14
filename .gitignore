@@ -8,3 +8,5 @@ tscommand-6fa04b01.tmp.txt
 npm-debug.log
 .build
 client/.awcache
+wad/.nyc_output
+wad/coverage

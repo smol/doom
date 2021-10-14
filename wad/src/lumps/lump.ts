@@ -13,14 +13,18 @@ var groups: { [name: string]: string } = {
   'DS.*': 'DSs'
 };
 
+export class LumpData {
+  public name : string;
+  public pos : number;
+  public size : number;
+}
+
 export class Lump {
-  protected lump: any;
+  protected lump: LumpData;
   protected data: any;
   protected dataView: DataView;
 
-  protected debugContainer: HTMLElement;
-
-  constructor(lump: any, data: any) {
+  constructor(lump: LumpData, data: any) {
     this.lump = lump;
     this.data = data;
 

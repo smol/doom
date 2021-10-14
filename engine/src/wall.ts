@@ -1,12 +1,14 @@
-import * as THREE from 'three';
-import * as Wad from 'wad';
+import * as THREE from "three";
+import * as Wad from "wad";
 
 export class WallSector extends THREE.Group {
-  private geometry: THREE.Geometry;
+  private geometry: THREE.BufferGeometry;
   private mesh: THREE.Mesh;
   private material: THREE.Material;
   private texture: THREE.DataTexture;
   private textureNames: { floor: string; ceiling: string };
+
+  private indices: number[];
 
   constructor(
     vertices: THREE.Vector3[],
@@ -16,10 +18,11 @@ export class WallSector extends THREE.Group {
     super();
 
     this.textureNames = textureNames;
+    this.indices = [];
 
-    this.geometry = new THREE.Geometry();
+    this.geometry = new THREE.BufferGeometry();
     this.material = new THREE.MeshBasicMaterial({
-      transparent: true
+      transparent: true,
       // map: this.texture,
       // color: 0x002200
     });
@@ -31,16 +34,20 @@ export class WallSector extends THREE.Group {
     this.material.side = THREE.DoubleSide;
 
     this.material.needsUpdate = true;
+    const floatVertices = [];
 
-    vertices.forEach(vertex => {
-      this.geometry.vertices.push(vertex);
+    vertices.forEach((vertex) => {
+      floatVertices.push(vertex.x, vertex.y, vertex.z);
     });
 
-    this.geometry.faces.push(new THREE.Face3(0, 1, 2));
-    this.geometry.faces.push(new THREE.Face3(0, 2, 3));
+    this.indices = [0, 1, 2, 0, 2, 3];
 
-    this.geometry.computeFaceNormals();
-    this.geometry.computeVertexNormals();
+    this.geometry.setIndex(this.indices);
+    this.geometry.setAttribute(
+      "position",
+      new THREE.BufferAttribute(new Float32Array(floatVertices), 3)
+    );
+
     this.mesh = new THREE.Mesh(this.geometry, this.material);
 
     this.add(this.mesh);
@@ -49,51 +56,82 @@ export class WallSector extends THREE.Group {
   private mapTexture(textureSize: { width: number; height: number }) {
     this.geometry.computeBoundingBox();
 
-    this.geometry.faceVertexUvs[0] = [];
+    this.indices = [];
+    // this.geometry.faceVertexUvs[0] = [];
 
     var max = this.geometry.boundingBox.max,
       min = this.geometry.boundingBox.min;
 
     let min2d = new THREE.Vector2(min.x, min.z);
     let max2d = new THREE.Vector2(max.x, max.z);
+
     // distance between min and zero;
     let minDistance: number = min2d.distanceTo(new THREE.Vector2(0, 0));
     let length: number = max2d.distanceTo(min2d);
 
     var offset = new THREE.Vector2(-minDistance, -min.y);
-    var scale = new THREE.Vector2(length, max.y - min.y);
+    let height = max.y - min.y;
+    const refHeight = 72;
+    var scale = new THREE.Vector2(
+      length / (length / 72),
+      height / (height / refHeight)
+    );
 
-    this.geometry.faceVertexUvs[0] = [];
+    // this.geometry.faceVertexUvs[0] = [];
+    const positions = this.geometry.getAttribute("position").array;
+    const uvAttribute = this.geometry.getAttribute("uv");
 
-    for (var i = 0; i < this.geometry.faces.length; i++) {
-      var v1 = this.geometry.vertices[this.geometry.faces[i].a],
-        v2 = this.geometry.vertices[this.geometry.faces[i].b],
-        v3 = this.geometry.vertices[this.geometry.faces[i].c];
+    for (let i = 0; i < this.indices.length; i += 3) {
+      const v1 = [
+          positions[this.indices[i + 0] + 0],
+          positions[this.indices[i + 0] + 1],
+          positions[this.indices[i + 0] + 2],
+        ],
+        v2 = [
+          positions[this.indices[i + 1] + 0],
+          positions[this.indices[i + 1] + 1],
+          positions[this.indices[i + 1] + 2],
+        ],
+        v3 = [
+          positions[this.indices[i + 2] + 0],
+          positions[this.indices[i + 2] + 1],
+          positions[this.indices[i + 2] + 2],
+        ];
 
-      let v1x: number = new THREE.Vector2(v1.x, v1.z).distanceTo(min2d);
-      let v2x: number = new THREE.Vector2(v2.x, v2.z).distanceTo(min2d);
-      let v3x: number = new THREE.Vector2(v3.x, v3.z).distanceTo(min2d);
+      let v1x: number = new THREE.Vector2(v1[0], v1[2]).distanceTo(min2d);
+      let v2x: number = new THREE.Vector2(v2[0], v2[2]).distanceTo(min2d);
+      let v3x: number = new THREE.Vector2(v3[0], v3[2]).distanceTo(min2d);
 
-      let v1y: number = v1.y + offset.y;
-      let v2y: number = v2.y + offset.y;
-      let v3y: number = v3.y + offset.y;
+      let v1y: number = v1[1] + offset.y;
+      let v2y: number = v2[1] + offset.y;
+      let v3y: number = v3[1] + offset.y;
 
-      // console.info(
-      // 	'min', offset.x,
-      // 	'distance', distance,
-      // 	'v1x', v1x,
-      // 	'v2x', v2x,
-      // 	'v3x', v3x
-      // );
-
-      this.geometry.faceVertexUvs[0].push([
-        new THREE.Vector2(v1x / scale.x, v1y / scale.y),
-        new THREE.Vector2(v2x / scale.x, v2y / scale.y),
-        new THREE.Vector2(v3x / scale.x, v3y / scale.y)
-      ]);
+      uvAttribute.setXY(i + 0, v1x / scale.x, v1y / scale.y);
+      uvAttribute.setXY(i + 1, v2x / scale.x, v2y / scale.y);
+      uvAttribute.setXY(i + 2, v3x / scale.x, v3y / scale.y);
     }
 
-    this.geometry.uvsNeedUpdate = true;
+    // for (var i = 0; i < this.geometry.faces.length; i++) {
+    //   var v1 = this.geometry.vertices[this.geometry.faces[i].a],
+    //     v2 = this.geometry.vertices[this.geometry.faces[i].b],
+    //     v3 = this.geometry.vertices[this.geometry.faces[i].c];
+
+    //   let v1x: number = new THREE.Vector2(v1.x, v1.z).distanceTo(min2d);
+    //   let v2x: number = new THREE.Vector2(v2.x, v2.z).distanceTo(min2d);
+    //   let v3x: number = new THREE.Vector2(v3.x, v3.z).distanceTo(min2d);
+
+    //   let v1y: number = v1.y + offset.y;
+    //   let v2y: number = v2.y + offset.y;
+    //   let v3y: number = v3.y + offset.y;
+
+    //   this.geometry.faceVertexUvs[0].push([
+    //     new THREE.Vector2(v1x / scale.x, v1y / scale.y),
+    //     new THREE.Vector2(v2x / scale.x, v2y / scale.y),
+    //     new THREE.Vector2(v3x / scale.x, v3y / scale.y),
+    //   ]);
+    // }
+
+    // this.geometry.uvsNeedUpdate = true;
   }
 
   private repeatedTexture(size: { width: number; height: number }) {
@@ -106,8 +144,8 @@ export class WallSector extends THREE.Group {
     let width: number = Math.sqrt(x * x + z * z);
     let height: number = bounding.max.y - bounding.min.y;
     let result = {
-      x: width / size.width * scale,
-      y: height / size.height * scale
+      x: (width / size.width) * scale,
+      y: (height / size.height) * scale,
     };
     // console.info('width', width, 'height', height, 'size', size, 'result', result);
     return result;
@@ -164,7 +202,8 @@ export class WallSector extends THREE.Group {
   }
 
   getVertexes(): THREE.Vector3[] {
-    return this.geometry.vertices;
+    // return this.geometry.vertices;
+    return [];
   }
 }
 
@@ -200,12 +239,12 @@ export class Wall extends THREE.Group {
           new THREE.Vector3(firstVertex.x, lowerFloorHeight, firstVertex.y),
           new THREE.Vector3(firstVertex.x, lowerCeilingHeight, firstVertex.y),
           new THREE.Vector3(secondVertex.x, lowerCeilingHeight, secondVertex.y),
-          new THREE.Vector3(secondVertex.x, lowerFloorHeight, secondVertex.y)
+          new THREE.Vector3(secondVertex.x, lowerFloorHeight, secondVertex.y),
         ],
         seg.getDirection(),
         {
           floor: rightSector.getFloorTextureName(),
-          ceiling: leftSector.getCeilingTextureName()
+          ceiling: leftSector.getCeilingTextureName(),
         }
       );
 
@@ -221,12 +260,12 @@ export class Wall extends THREE.Group {
           new THREE.Vector3(firstVertex.x, upperFloorHeight, firstVertex.y),
           new THREE.Vector3(firstVertex.x, upperCeilingHeight, firstVertex.y),
           new THREE.Vector3(secondVertex.x, upperCeilingHeight, secondVertex.y),
-          new THREE.Vector3(secondVertex.x, upperFloorHeight, secondVertex.y)
+          new THREE.Vector3(secondVertex.x, upperFloorHeight, secondVertex.y),
         ],
         seg.getDirection(),
         {
           floor: leftSector.getFloorTextureName(),
-          ceiling: rightSector.getCeilingTextureName()
+          ceiling: rightSector.getCeilingTextureName(),
         }
       );
 
@@ -245,12 +284,12 @@ export class Wall extends THREE.Group {
           new THREE.Vector3(firstVertex.x, floorHeight, firstVertex.y),
           new THREE.Vector3(firstVertex.x, ceilingHeight, firstVertex.y),
           new THREE.Vector3(secondVertex.x, ceilingHeight, secondVertex.y),
-          new THREE.Vector3(secondVertex.x, floorHeight, secondVertex.y)
+          new THREE.Vector3(secondVertex.x, floorHeight, secondVertex.y),
         ],
         seg.getDirection(),
         {
           floor: rightSector.getFloorTextureName(),
-          ceiling: rightSector.getCeilingTextureName()
+          ceiling: rightSector.getCeilingTextureName(),
         }
       );
 

@@ -1,0 +1,26 @@
+{
+  "compilerOptions": {
+    "jsx": "react-jsx",
+    "module": "commonjs",
+    "noResolve": false,
+    "target": "es6",
+    "removeComments": true,
+    "declaration": false,
+    "preserveConstEnums": true,
+    "allowSyntheticDefaultImports": true,
+    "sourceMap": true,
+    "outDir": "../.build/",
+    "typeRoots": ["../.build/", "./node_modules/@types/"],
+    "baseUrl": ".",
+    "paths": {
+      "engine": ["../../.build/engine"],
+      "wad": ["../../.build/wad"],
+      "react": ["node_modules/react"],
+      "react-dom": ["node_modules/react-dom"]
+    },
+    "types": ["wad", "engine", "react", "react-dom"],
+    "lib": ["es5", "dom", "es2015.iterable"]
+  },
+  "include": ["./**/*"],
+  "exclude": ["**/index.d.ts", "**/node_modules/*"]
+}

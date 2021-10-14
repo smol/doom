@@ -33,9 +33,13 @@ export class Sector extends THREE.Group {
       );
     });
 
-    lower.create();
+    try {
+      lower.create();
 
-    floor.create();
+      floor.create();
+    } catch (e) {
+      console.info(sector);
+    }
     // floor.setTexture(wall.getFloorTexture());
     this.add(floor);
     this.add(lower);

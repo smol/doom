@@ -23,7 +23,7 @@
 //   While the light-amplification goggles power-up is in effect, everything
 // in the display uses colormap 0, regardless of sector brightness.
 
-import { Lump } from './lump';
+import { Lump, LumpData } from './lump';
 import { Playpal } from './playpal';
 
 export class ColorMap extends Lump {
@@ -32,7 +32,7 @@ export class ColorMap extends Lump {
 
   private colors: { r: number; g: number; b: number }[];
 
-  constructor(playpal: Playpal, lump: any, data: any) {
+  constructor(playpal: Playpal, lump: LumpData, data: any) {
     super(lump, data);
 
     this.playpal = playpal;

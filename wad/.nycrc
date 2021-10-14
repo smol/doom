@@ -1,0 +1,10 @@
+{
+  "extension": [".ts"],
+  "include": ["src/**/*.ts"],
+  "reporter": ["text"],
+  "require": ["ts-node"],
+  "cache": true,
+  "sourceMap": false,
+  "instrument": false,
+  "all": true
+}

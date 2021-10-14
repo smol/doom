@@ -275,11 +275,11 @@ export class Delaunay {
 	}
 
 
-	private getSuperTriangle(vertices: any): [{ x: number, y: number }] {
-		var xmin = Number.POSITIVE_INFINITY,
-			ymin = Number.POSITIVE_INFINITY,
-			xmax = Number.NEGATIVE_INFINITY,
-			ymax = Number.NEGATIVE_INFINITY,
+	private getSuperTriangle(vertices: any): { x: number, y: number }[] {
+		var xmin : number = Number.POSITIVE_INFINITY,
+			ymin : number = Number.POSITIVE_INFINITY,
+			xmax : number = Number.NEGATIVE_INFINITY,
+			ymax : number = Number.NEGATIVE_INFINITY,
 			i, dx, dy, dmax, xmid, ymid;
 
 		for (i = vertices.length; i--;) {

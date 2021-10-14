@@ -1,27 +1,28 @@
-import * as React from 'react';
-import * as ReactDOM from 'react-dom';
+import { useContext, useEffect, useRef } from "react";
+import { Wad } from "wad";
+import { WadContext } from "./contextes";
 
-import * as Wad from 'wad';
+export const Endoom = () => {
+  const canvasRef = useRef(null);
+  const { Endoom } = useContext<Wad>(WadContext);
+  const data = Endoom.getData();
 
-interface EndoomProps {
-	endoom : Wad.Endoom;
-}
+  useEffect(() => {
+    const canvas = canvasRef.current as HTMLCanvasElement;
 
-export module Debug {
-	export class Endoom extends React.Component<EndoomProps, {}> {
-		componentDidMount(){
-			var canvas: HTMLCanvasElement = this.refs.canvas as HTMLCanvasElement;
+    const ctx: CanvasRenderingContext2D = canvas.getContext("2d");
+    const idata: ImageData = ctx.createImageData(canvas.width, canvas.height);
+    idata.data.set(data);
 
-			var ctx: CanvasRenderingContext2D = canvas.getContext('2d');
-			var idata: ImageData = ctx.createImageData(canvas.width, canvas.height);
+    ctx.putImageData(idata, 0, 0);
+  });
 
-			idata.data.set(this.props.endoom.getData());
-
-			ctx.putImageData(idata, 0, 0);
-		}
-
-		render() {
-			return <canvas ref="canvas" className="debug-container endoom" height={ 25 * 16 } width={80 * 8 }></canvas>;
-		}
-	}
-}
+  return (
+    <canvas
+      ref={canvasRef}
+      className="debug-container endoom"
+      height={25 * 16}
+      width={80 * 8}
+    ></canvas>
+  );
+};

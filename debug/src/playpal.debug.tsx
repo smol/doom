@@ -1,38 +1,52 @@
-// import Playpal from 'wad/lumps/Playpal';
-import * as Wad from 'wad';
+import { useContext } from "react";
+import { WadContext } from "./contextes";
 
-import * as React from "react";
-import * as ReactDOM from "react-dom";
+export const Playpal = () => {
+  const { playpal } = useContext(WadContext);
 
-interface PlaypalProps {
-	playpal: Wad.Playpal;
-	// onClick: (e) => void;
-}
+  return (
+    <div id="preview" className="playpal">
+      {playpal.getColors().map((element, index) => (
+        <Swatch
+          key={`swatch-${index}`}
+          swatchId={index}
+          colors={element as [{ r: number; g: number; b: number }]}
+        />
+      ))}
+    </div>
+  );
+};
 
-export module Debug {
-	export class Playpal extends React.Component<PlaypalProps, {}> {
-		render() {
-			var i = 0;
-			var swatches = this.props.playpal.getColors().map(element => {
-				return <Swatch key={'swatch-' + i} swatchId={i++} colors={element as [{ r: number, g: number, b: number }]}></Swatch>
-			});
+const Swatch = (props: {
+  colors: [{ r: number; g: number; b: number }];
+  swatchId: number;
+}) => {
+  const { colors, swatchId } = props;
+  const style = {
+    display: "inline-block",
+    verticalAlign: "top",
+    width: "calc(100% / 16)",
+    height: "16px",
+  };
 
-			return <div id="preview" className="playpal">
-				{swatches}
-			</div>;
-		}
-	}
-}
-
-class Swatch extends React.Component<{ colors: [{ r: number, g: number, b: number }], swatchId: number }, {}> {
-	render() {
-		var i = 0;
-		var colors = this.props.colors.map(color => {
-			return <div key={'#' + this.props.swatchId + '-' + color.r + ',' + color.g + ',' + color.b + '-' + i++ } className="item" style={{ backgroundColor: 'rgba(' + color.r + ',' + color.g + ',' + color.b + ', 1)' }}></div>
-		});
-
-		return <div className="swatch">
-			{colors}
-		</div>;
-	}
-}
+  return (
+    <div
+      style={{
+        margin: "10px",
+        width: "calc(50% - 20px)",
+        display: "inline-block",
+      }}
+    >
+      {colors.map((color, index) => (
+        <div
+          key={`#${swatchId}-${color.r},${color.g},${color.b}-${index}`}
+          className="item"
+          style={{
+            ...style,
+            backgroundColor: `rgba(${color.r},${color.g},${color.b}, 1)`,
+          }}
+        />
+      ))}
+    </div>
+  );
+};

@@ -1,102 +1,111 @@
-import * as Wad from 'wad';
-import * as Engine from 'engine';
-import * as React from 'react';
-import * as ReactDOM from 'react-dom';
+import * as Wad from "wad";
+import * as Engine from "engine";
+import * as React from "react";
+import * as ReactDOM from "react-dom";
 
 interface ThingsProps {
-	things : Wad.Things;
+  things: Wad.Things;
 }
 
 interface MapProps {
-	map : Wad.Map;
-	wad: Wad.Wad;
+  map: Wad.Map;
+  wad: Wad.Wad;
 }
 
-export module Debug {
-	export class Things extends React.Component<ThingsProps> {
-		render() {
-			var i = 0;
-			var things : JSX.Element[] = this.props.things.get().map(thing => {
-				return <li key={i++}>{ thing.toString() }</li>;
-			});
+export namespace Debug {
+  export class Things extends React.Component<ThingsProps> {
+    render() {
+      var i = 0;
+      var things: JSX.Element[] = this.props.things.get().map((thing) => {
+        return <li key={i++}>{thing.toString()}</li>;
+      });
 
+      return (
+        <div id="infos">
+          <ul>{things}</ul>
+        </div>
+      );
+    }
+  }
 
-			return <div id="infos">
-				<ul>
-					{ things }
-				</ul>
-			</div>;
-		}
-	}
+  export class Map extends React.Component<MapProps> {
+    private core: Engine.Core;
 
-	export class Map extends React.Component<MapProps> {
-		private core : Engine.Core;
+    private rendering() {
+      console.info(this.refs.canvas);
+      this.core = new Engine.Core(this.refs.canvas as HTMLCanvasElement, null, {
+        orbitControl: true,
+        showFps: false,
+      });
+      this.core.createMap(this.props.map, this.props.wad);
 
-		private rendering(){
-			this.core = new Engine.Core(this.refs.canvas as HTMLCanvasElement, null, { orbitControl: true, showFps: false });
-			this.core.createMap(this.props.map, this.props.wad);
+      let things: Wad.Thing[] = this.props.map.getThings().get();
+      things.forEach((thing) => {
+        if (thing.getType() == "player 1 start") {
+          let position: { x: number; y: number } = thing.getPosition();
+          this.core.setCameraPosition({ x: position.x, y: 40, z: position.y });
+        }
+      });
+    }
 
-			let things : Wad.Thing[] = this.props.map.getThings().get();
-			things.forEach(thing => {
-				if (thing.getType() == 'player 1 start'){
-					let position : {x : number, y: number} = thing.getPosition();
-					this.core.setCameraPosition({ x: position.x, y: 40, z: position.y });
+    componentDidMount() {
+      this.rendering();
+    }
 
-				}
-			});
-		}
+    render() {
+      return (
+        <canvas
+          ref="canvas"
+          width={window.innerWidth}
+          height={window.innerHeight / (1 / 0.8)}
+          style={{ backgroundColor: "black" }}
+        />
+      );
+    }
+  }
 
-		componentDidMount(){
-			this.rendering();
-		}
+  // export class Maps {
+  // 	private maps: Wad.Map[];
 
-		render(){
-			return <canvas ref="canvas" width={ window.innerWidth } height={ window.innerHeight / 2 } style={{ backgroundColor: 'black' }} />;
-		}
-	}
+  // 	constructor(maps: Wad.Map[], container: HTMLElement) {
+  // 		this.maps = maps;
+  // 		var self = this;
 
-	// export class Maps {
-	// 	private maps: Wad.Map[];
+  // 		var li: HTMLLIElement = document.createElement('li') as HTMLLIElement;
+  // 		li.innerHTML = 'MAPS';
+  // 		li.onclick = () => {
+  // 			self.setMaps();
+  // 		};
 
-	// 	constructor(maps: Wad.Map[], container: HTMLElement) {
-	// 		this.maps = maps;
-	// 		var self = this;
+  // 		container.appendChild(li);
+  // 	}
 
-	// 		var li: HTMLLIElement = document.createElement('li') as HTMLLIElement;
-	// 		li.innerHTML = 'MAPS';
-	// 		li.onclick = () => {
-	// 			self.setMaps();
-	// 		};
+  // 	private setMaps() {
+  // 		var subtree = document.getElementsByClassName('subtree');
 
-	// 		container.appendChild(li);
-	// 	}
+  // 		if (subtree.length > 0) {
+  // 			subtree[0].remove();
+  // 		}
 
-	// 	private setMaps() {
-	// 		var subtree = document.getElementsByClassName('subtree');
+  // 		var ul: HTMLUListElement = document.createElement('ul') as HTMLUListElement;
+  // 		ul.className = 'subtree';
 
-	// 		if (subtree.length > 0) {
-	// 			subtree[0].remove();
-	// 		}
+  // 		this.maps.forEach((item) => {
+  // 			var li = document.createElement('li');
+  // 			li.innerHTML = item.getName();
+  // 			li.onclick = () => {
+  // 				console.warn(item.getThings());
+  // 			};
+  // 			ul.appendChild(li);
+  // 		});
 
-	// 		var ul: HTMLUListElement = document.createElement('ul') as HTMLUListElement;
-	// 		ul.className = 'subtree';
+  // 		document.getElementById('treeview').appendChild(ul);
+  // 	}
+  // }
 
-	// 		this.maps.forEach((item) => {
-	// 			var li = document.createElement('li');
-	// 			li.innerHTML = item.getName();
-	// 			li.onclick = () => {
-	// 				console.warn(item.getThings());
-	// 			};
-	// 			ul.appendChild(li);
-	// 		});
+  // class MapDebug {
+  // 	constructor() {
 
-	// 		document.getElementById('treeview').appendChild(ul);
-	// 	}
-	// }
-
-	// class MapDebug {
-	// 	constructor() {
-
-	// 	}
-	// }
+  // 	}
+  // }
 }

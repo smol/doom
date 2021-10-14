@@ -1,5 +1,7 @@
-import * as Engine from 'engine';
-import * as Wad from 'wad';
+import * as Engine from "engine";
+import * as Wad from "wad";
+
+import Debug from "./canvas.debug";
 
 console.info(Wad, Engine.Inputs.LEFT_ARROW);
 
@@ -10,14 +12,14 @@ class App implements Engine.CoreDelegate {
   private inputManager: Engine.InputManager;
 
   constructor() {
-    this.canvas = document.getElementById('canvas') as HTMLCanvasElement;
+    this.canvas = document.getElementById("canvas") as HTMLCanvasElement;
 
     this.onLoaded = this.onLoaded.bind(this);
 
     this.builder = new Wad.Builder();
     this.builder.parser.onLoad = this.onLoaded;
 
-    this.builder.parser.loadFile('.build/assets/doom.wad');
+    this.builder.parser.loadFile("/wads/doom.wad");
   }
 
   update() {
@@ -35,7 +37,7 @@ class App implements Engine.CoreDelegate {
     this.builder.go();
 
     let wad = this.builder.getWad();
-    this.loadMap(wad.getMaps()[0], wad);
+    this.loadMap(wad.getMaps()[2], wad);
   }
 
   private loadMap(map: Wad.Map, wad: Wad.Wad) {
@@ -48,8 +50,8 @@ class App implements Engine.CoreDelegate {
     console.info(Wad);
 
     let things: Wad.Thing[] = map.getThings().get();
-    things.forEach(thing => {
-      if (thing.getType() == 'player 1 start') {
+    things.forEach((thing) => {
+      if (thing.getType() == "player 1 start") {
         this.setPlayer(thing);
       }
     });
@@ -60,7 +62,7 @@ class App implements Engine.CoreDelegate {
 
     this.camera.position.x = position.x;
     this.camera.position.z = position.y;
-    this.camera.position.y = 40;
+    this.camera.position.y = 80;
 
     // this.camera.lookAt(new THREE.Vector3(this.camera.position.x + 100, this.camera.position.y, this.camera.position.z));
 
@@ -69,6 +71,7 @@ class App implements Engine.CoreDelegate {
   }
 }
 
-(function() {
-  new App();
+(function () {
+  new Debug();
+  // new App();
 })();

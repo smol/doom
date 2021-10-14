@@ -1,13 +1,13 @@
-import { Playpal } from './lumps/playpal';
-import { ColorMap } from './lumps/colormap';
-import { Endoom } from './lumps/endoom';
-import { Map } from './lumps/map';
-import { Graphic } from './lumps/graphic';
-import { Music } from './lumps/music';
-import { Textures } from './lumps/textures';
-import { Flat } from './lumps/flat';
-import { Pnames } from './lumps/pnames';
-import { Parser } from './parser';
+import { Playpal } from "./lumps/playpal";
+import { ColorMap } from "./lumps/colormap";
+import { Endoom } from "./lumps/endoom";
+import { Map } from "./lumps/map";
+import { Graphic } from "./lumps/graphic";
+import { Music } from "./lumps/music";
+import { Textures } from "./lumps/textures";
+import { Flat } from "./lumps/flat";
+import { Pnames } from "./lumps/pnames";
+import { Parser } from "./parser";
 
 export class Wad {
   private playpal: Playpal;
@@ -81,13 +81,15 @@ export class Wad {
     this.textures.push(textures);
   }
 
+  public get ColorMap() {
+    return this.colorMap;
+  }
+
   getPlaypal(): Playpal {
     return this.playpal;
   }
-  getColorMap(): ColorMap {
-    return this.colorMap;
-  }
-  getEndoom(): Endoom {
+
+  public get Endoom(): Endoom {
     return this.endoom;
   }
   getGraphics(): Graphic[] {

@@ -1,8 +1,6 @@
 import * as THREE from 'three';
 import * as Wad from 'wad';
 
-
-
 import { Segment, Wtf } from './delaunay/wtf';
 import { Delaunay } from './delaunay/delaunay';
 
@@ -13,7 +11,7 @@ export class PolygonGeneration {
   private vertices: { x: number; y: number }[];
   private segments: Segment[];
   private faces: number[];
-  triangles: poly2tri.Triangle[];
+  triangles: poly2tri.Triangle[][];
 
   constructor() {
     this.delaunay = new Delaunay();
@@ -38,26 +36,28 @@ export class PolygonGeneration {
     this.segments.push(new Segment(start, end));
   }
 
+  addSegments(segs: Segment[]) {
+    this.segments = segs.slice();
+  }
+
   start() {
-    var wtf = new Wtf(this.segments.slice());
-    const orderedSegments = wtf.getPoints();
-   
-    var contour: poly2tri.Point[] = [];
+    this.vertices = [];
+    this.triangles = [];
 
-    // orderedSegments.forEach(segments => {
-    orderedSegments[0].forEach(segment => {
-      let start = new poly2tri.Point(segment.start.x, segment.start.z);
-      let end = new poly2tri.Point(segment.end.x, segment.end.z);
+    const wtf = new Wtf();
+    wtf.orderGraph(this.segments);
+    const orderedSegments = wtf.getSegments();
+    // console.info('orderedSegment', this.segments, orderedSegments);
+    if (!orderedSegments[0]) return [];
 
-      for (var i = 0; i < contour.length; i++) {
-        if (contour[i].x == start.x && contour[i].y == start.y) return;
-      }
+    const contour = this.createContour(orderedSegments[0]);
 
-      contour.push(start);
-    });
-
+    // console.info(contour);
     try {
-      var swctx = new poly2tri.SweepContext(contour);
+      // contours.forEach((contour, index) => {
+      if (contour.length === 0) return;
+
+      const swctx = new poly2tri.SweepContext(contour);
 
       for (let index = 1; index < orderedSegments.length; index++) {
         const segments = orderedSegments[index];
@@ -65,29 +65,79 @@ export class PolygonGeneration {
 
         segments.forEach(segment => {
           hole.push(new poly2tri.Point(segment.start.x, segment.start.z));
-          // hole.push(new poly2tri.Point(segment.end.x, segment.end.z));
         });
 
         swctx.addHole(hole);
       }
 
       swctx.triangulate();
-      this.triangles = swctx.getTriangles();
-
-      this.vertices = [];
-      this.triangles.forEach(triangle => {
-        triangle.getPoints().forEach(point => {
-          this.vertices.push({ x: point.x, y: point.y });
-        });
-      });
+      this.triangles.push(swctx.getTriangles());
+      // this.createVertices(this.triangles);
+      // });
     } catch (e) {
       console.error(e);
+      console.warn('-------');
+
+      console.warn(JSON.stringify(orderedSegments));
+      // orderedSegments[0].forEach((segment, i) => {
+      //   console.warn(i, segment.start, segment.end);
+      // });
+
+      console.warn('-------');
+      throw {};
     }
     // console.info(this.vertices);
 
     // --- END POLY2TRI
 
     return orderedSegments;
+  }
+
+  private createVertices(triangles: poly2tri.Triangle[]) {
+    this.triangles[0].forEach(triangle => {
+      triangle.getPoints().forEach(point => {
+        this.vertices.push({ x: point.x, y: point.y });
+      });
+    });
+  }
+
+  private createContour(segments: Segment[]): poly2tri.Point[] {
+    var contours: poly2tri.Point[][] = [];
+    var c = 0;
+
+    contours.push([]);
+
+    return segments.map(segment => {
+      return new poly2tri.Point(segment.start.x, segment.start.z);
+    });
+
+    // for (var i = 0; i < segments.length; i++) {
+    //   const segment = segments[i];
+
+    //   let start = new poly2tri.Point(segment.start.x, segment.start.z);
+    //   let end = new poly2tri.Point(segment.end.x, segment.end.z);
+
+    //   // let alreadyExist = false;
+    //   // for (var y = 0; y < contours[c].length; y++) {
+    //   //   if (contours[c][y].x == start.x && contours[c][y].y == start.y) {
+    //   //     alreadyExist = true;
+    //   //     break;
+    //   //   }
+    //   // }
+
+    //   // if (alreadyExist) continue;
+
+    //   contours[c].push(start);
+    //   // if (
+    //   //   segments[0].start.x === segment.end.x &&
+    //   //   segments[0].start.z === segment.end.z
+    //   // ) {
+    //   //   c++;
+    //   //   contours.push([]);
+    //   // }
+    // }
+
+    // return contours;
   }
 
   getSegments(): Segment[] {

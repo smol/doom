@@ -1,11 +1,22 @@
 {
-    "defaultSeverity": "error",
-    "extends": [
-        "tslint:recommended"
-    ],
-    "jsRules": {
-        "indent": [true, "tabs", 2]
+  "defaultSeverity": "error",
+  "extends": ["tslint:recommended"],
+  "jsRules": {
+    "indent": [true, "spaces", 4]
+  },
+  "rules": {
+    "max-line-length": {
+      "options": [120]
     },
-    "rules": {},
-    "rulesDirectory": []
+    "new-parens": true,
+    "no-arg": true,
+    "no-any": true,
+    "no-bitwise": true,
+    "no-conditional-assignment": true,
+    "no-consecutive-blank-lines": false,
+    "no-console": {
+      "options": ["debug", "info", "log", "time", "timeEnd", "trace"]
+    }
+  },
+  "rulesDirectory": []
 }

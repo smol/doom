@@ -73,6 +73,16 @@ export class Node {
     if (this.nodeLeft) this.nodeLeft.nodeParent = this;
   }
 
+  getPartitionLine(): {
+    to: { x: number; y: number };
+    from: { x: number; y: number };
+  } {
+    return {
+      from: { x: this.x, y: this.y },
+      to: { x: this.x + this.dX, y: this.y + this.dY }
+    };
+  }
+
   getRightBounds(): { uX: number; uY: number; lX: number; lY: number } {
     return {
       uX: this.rightUpperX,

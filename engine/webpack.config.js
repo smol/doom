@@ -1,48 +1,36 @@
-const path = require('path');
-const webpack = require('webpack');
+const path = require("path");
+const webpack = require("webpack");
+
+const modules = [path.resolve(__dirname, "node_modules"), "node_modules"];
 
 module.exports = {
-  entry: path.resolve(__dirname, './src/index.ts'),
-  devtool: 'inline-source-map',
+  entry: path.resolve(__dirname, "./src/index.ts"),
+  devtool: "inline-source-map",
+  mode: "development",
   output: {
-    filename: 'index.js',
-    path: path.resolve(__dirname + '/../.build/engine/'),
-    library: ['Engine'],
-    libraryTarget: 'window',
-    umdNamedDefine: true
+    filename: "index.js",
+    path: path.resolve(__dirname + "/../.build/engine/"),
+    library: ["Engine"],
   },
   resolve: {
-    extensions: ['.ts', '.js']
+    extensions: [".ts", ".js"],
+  },
+  resolveLoader: {
+    modules,
   },
   watchOptions: {
-    ignored: /(node_modules|\.build)/
+    ignored: /(node_modules|\.build)/,
   },
   module: {
-    loaders: [
+    rules: [
       {
         test: /\.ts$/,
-        loader: 'ts-loader',
-        exclude: /(node_modules|\.build)/
-      }
-    ]
+        loader: "ts-loader",
+        exclude: /(node_modules|\.build)/,
+      },
+    ],
   },
   externals: {
-    wad: 'Wad'
+    wad: "Wad",
   },
-  plugins: [new DtsBundlePlugin()]
-};
-
-function DtsBundlePlugin() {}
-DtsBundlePlugin.prototype.apply = function(compiler) {
-  compiler.plugin('done', function() {
-    var dts = require('dts-bundle');
-
-    dts.bundle({
-      name: 'Engine',
-      main: path.resolve(__dirname, '../.build/engine/src/index.d.ts'),
-      out: path.resolve(__dirname, '../.build/engine/index.d.ts'),
-      // removeSource: true,
-      outputAsModuleFolder: true // to use npm in-package typings
-    });
-  });
 };

@@ -1,171 +1,200 @@
-import * as React from 'react';
+import * as React from "react";
 
-import * as Wad from 'wad';
+import * as Wad from "wad";
+import { WadContext } from "./contextes";
 
 interface NodesProps {
-	node : Wad.Node;
-	linedefs : Wad.Linedef[];
-	vertexes: Wad.Vertex[];
+  // node: Wad.Node;
+  // linedefs: Wad.Linedef[];
+  // vertexes: Wad.Vertex[];
 }
 
+export class Node extends React.Component<NodesProps> {
+  constructor(props: NodesProps) {
+    super(props);
+  }
+}
 
-export module Debug {
-	export class Node extends React.Component<NodesProps> {
-		constructor(props : NodesProps){
-			super(props);
-		}
-	}
+export class Nodes extends React.Component<NodesProps> {
+  private position: { x: number; y: number };
+  private startPosition: { x: number; y: number };
+  private scale: number = 0.5;
+  static contextType = WadContext;
 
-	export class Nodes extends React.Component<NodesProps> {
-		private position: { x: number, y: number };
-		private startPosition: { x: number, y: number };
-		private scale : number = 0.3;
+  constructor(props: NodesProps) {
+    super(props);
 
-		constructor(props : NodesProps){
-			super(props);
+    this.mouseMove = this.mouseMove.bind(this);
+    this.mouseDown = this.mouseDown.bind(this);
+    this.scroll = this.scroll.bind(this);
 
-			this.mouseMove = this.mouseMove.bind(this);
-			this.mouseDown = this.mouseDown.bind(this);
-			this.scroll = this.scroll.bind(this);
+    this.position = { x: 700, y: 700 };
+    this.startPosition = { x: 0, y: 0 };
+  }
 
-			
-			
-			this.position = { x: 700, y: 700 };
-			this.startPosition = { x: 0, y: 0 };
-		}
+  scroll(e) {
+    console.info(e);
+  }
 
-		scroll(e){
-			console.info(e);
-		}
+  mouseMove(e) {
+    if (e.buttons === 0) {
+      return;
+    }
 
-		mouseMove(e) {
-			if (e.buttons === 0){
-				return;
-			}
+    this.position = {
+      x:
+        this.position.x + (e.screenX - this.startPosition.x) * (1 / this.scale),
+      y:
+        this.position.y + (e.screenY - this.startPosition.y) * (1 / this.scale),
+    };
 
-			this.position = {
-				x: this.position.x + ((e.screenX - this.startPosition.x) * (1 / this.scale)),
-				y: this.position.y + ((e.screenY - this.startPosition.y) * (1 / this.scale))
-			};
+    this.update();
 
-			this.update();
+    this.startPosition = { x: e.screenX, y: e.screenY };
+  }
 
-			this.startPosition = { x: e.screenX, y: e.screenY };
+  mouseDown(e) {
+    this.startPosition = { x: e.screenX, y: e.screenY };
+  }
 
-		}
+  private update() {
+    console.info(this.context);
 
-		mouseDown(e) {
-			this.startPosition = { x: e.screenX, y: e.screenY };
-		}
+    var canvas: HTMLCanvasElement = this.refs.canvas as HTMLCanvasElement;
+    var ctx: CanvasRenderingContext2D = canvas.getContext("2d");
 
-		private update() {
-			var canvas: HTMLCanvasElement = this.refs.canvas as HTMLCanvasElement;
-			var ctx: CanvasRenderingContext2D = canvas.getContext("2d");
+    ctx.beginPath();
 
-			// console.warn('vertexes', this.props.vertexes, 'linedefs', this.props.linedefs);
+    // var start: { x: number; y: number } = {
+    //   x: this.props.vertexes[this.props.linedefs[0].getFirst()].x,
+    //   y: this.props.vertexes[this.props.linedefs[0].getFirst()].y,
+    // };
 
-			ctx.beginPath();
+    // start.x += this.position.x;
+    // start.y += this.position.y;
 
-			
-			var start: { x: number, y: number } = {
-				x: this.props.vertexes[this.props.linedefs[0].getFirst()].x,
-				y: this.props.vertexes[this.props.linedefs[0].getFirst()].y,
-			};
+    // ctx.clearRect(0, 0, canvas.width, canvas.height);
+    // for (var i = 0; i < this.props.linedefs.length; i++) {
+    //   var firstVertexIndex: number = this.props.linedefs[i].getFirst();
+    //   var secondVertexIndex: number = this.props.linedefs[i].getSecond();
+    //   var firstVertex: Wad.Vertex = this.props.vertexes[firstVertexIndex];
+    //   var secondVertex: Wad.Vertex = this.props.vertexes[secondVertexIndex];
 
-			start.x += this.position.x;
-			start.y += this.position.y;
+    //   ctx.beginPath();
+    //   if (this.props.linedefs[i].getFlag() === "Secret") {
+    //     ctx.strokeStyle = "red";
+    //   } else {
+    //     ctx.strokeStyle = "white";
+    //   }
 
-			// console.warn('start', start);
+    //   ctx.moveTo(
+    //     (start.x - firstVertex.x) * this.scale,
+    //     (start.y - firstVertex.y) * this.scale
+    //   );
+    //   ctx.lineTo(
+    //     (start.x - secondVertex.x) * this.scale,
+    //     (start.y - secondVertex.y) * this.scale
+    //   );
 
-			ctx.clearRect(0,0,canvas.width, canvas.height);
-			// ctx.moveTo((start.x - this.props.vertexes[0].y) * scale, (start.y - this.props.vertexes[0].y) * scale);
-			for (var i = 0; i < this.props.linedefs.length; i++) {
-				var firstVertexIndex: number = this.props.linedefs[i].getFirst();
-				var secondVertexIndex: number = this.props.linedefs[i].getSecond();
-				var firstVertex: Wad.Vertex = this.props.vertexes[firstVertexIndex];
-				var secondVertex: Wad.Vertex = this.props.vertexes[secondVertexIndex];
+    //   ctx.stroke();
+    //   ctx.closePath();
+    // }
 
-				
-				// console.warn("first", firstVertex.x, firstVertex.y);
-				// console.warn("second", secondVertex.x, secondVertex.y);
-				ctx.beginPath();
-				if (this.props.linedefs[i].getFlag() === 'Secret'){
-					ctx.strokeStyle = 'red';
-				} else {
-					ctx.strokeStyle = 'white';
-				}
-				
-				ctx.moveTo((start.x - firstVertex.x) * this.scale, (start.y - firstVertex.y) * this.scale);
-				ctx.lineTo((start.x - secondVertex.x) * this.scale, (start.y - secondVertex.y) * this.scale);
+    // this.renderNode(this.props.node, ctx, start, this.scale);
+  }
 
-				
-				ctx.stroke();
-				ctx.closePath();
-			}
-			console.info('RENDER NODE', this.props.node);
-			this.renderNode(this.props.node, ctx, start, this.scale);
-		}
+  private renderNode(
+    node: Wad.Node,
+    ctx: CanvasRenderingContext2D,
+    start: { x: number; y: number },
+    scale: number
+  ) {
+    if (node === null) {
+      return;
+    }
 
-		private renderNode(node : Wad.Node, ctx : CanvasRenderingContext2D, start : {x: number, y: number}, scale: number){
-			if (node === null){
-				return
-			}
+    // console.info('RENDER NODE', this.props.node);
 
-			let rightBounds : { lX: number, lY: number, uX: number, uY: number } = node.getRightBounds();
+    this.renderBounds(ctx, scale, node.getRightBounds(), start, "blue");
+    this.renderBounds(ctx, scale, node.getLeftBounds(), start, "green");
 
-			ctx.beginPath();
-			ctx.moveTo((start.x - rightBounds.uX) * scale, (start.y - rightBounds.uY) * scale);
-			ctx.lineTo((start.x - rightBounds.lX) * scale, (start.y - rightBounds.uY) * scale);
-			ctx.lineTo((start.x - rightBounds.lX) * scale, (start.y - rightBounds.lY) * scale);
-			ctx.lineTo((start.x - rightBounds.uX) * scale, (start.y - rightBounds.lY) * scale);
-			ctx.lineTo((start.x - rightBounds.uX) * scale, (start.y - rightBounds.uY) * scale);
-			ctx.strokeStyle = "blue";
-			ctx.stroke();
-			ctx.closePath();
+    let partitionLine: {
+      to: { x: number; y: number };
+      from: { x: number; y: number };
+    } = node.getPartitionLine();
 
-			let leftBounds : { lX: number, lY: number, uX: number, uY: number } = node.getLeftBounds();
+    this.renderPartitionLine(
+      ctx,
+      scale,
+      partitionLine.from,
+      partitionLine.to,
+      start
+    );
+  }
 
-			ctx.beginPath();
-			ctx.moveTo((start.x - leftBounds.uX) * scale, (start.y - leftBounds.uY) * scale);
-			ctx.lineTo((start.x - leftBounds.lX) * scale, (start.y - leftBounds.uY) * scale);
-			ctx.lineTo((start.x - leftBounds.lX) * scale, (start.y - leftBounds.lY) * scale);
-			ctx.lineTo((start.x - leftBounds.uX) * scale, (start.y - leftBounds.lY) * scale);
-			ctx.lineTo((start.x - leftBounds.uX) * scale, (start.y - leftBounds.uY) * scale);
-			ctx.strokeStyle = "green";
-			ctx.stroke();
-			ctx.closePath();
+  private renderPartitionLine(
+    ctx: CanvasRenderingContext2D,
+    scale: number,
+    from: { x: number; y: number },
+    to: { x: number; y: number },
+    start: { x: number; y: number }
+  ) {
+    ctx.beginPath();
+    ctx.moveTo((start.x - from.x) * scale, (start.y + from.y) * scale);
+    ctx.lineTo((start.x - to.x) * scale, (start.y + to.y) * scale);
+    ctx.strokeStyle = "red";
+    ctx.stroke();
+    ctx.closePath();
+  }
 
-			// console.info(rightBounds, leftBounds, node);
+  private renderBounds(
+    ctx: CanvasRenderingContext2D,
+    scale: number,
+    bounds: { uX: number; uY: number; lX: number; lY: number },
+    start: { x: number; y: number },
+    style: string
+  ) {
+    ctx.beginPath();
+    ctx.moveTo((start.x - bounds.uX) * scale, (start.y + bounds.uY) * scale);
+    ctx.lineTo((start.x - bounds.lX) * scale, (start.y + bounds.uY) * scale);
+    ctx.lineTo((start.x - bounds.lX) * scale, (start.y + bounds.lY) * scale);
+    ctx.lineTo((start.x - bounds.uX) * scale, (start.y + bounds.lY) * scale);
+    ctx.lineTo((start.x - bounds.uX) * scale, (start.y + bounds.uY) * scale);
+    ctx.strokeStyle = style;
+    ctx.stroke();
+    ctx.closePath();
+  }
 
-			// console.info(
-			// 	(rightBounds.uX) * scale, (rightBounds.uY) * scale,
-			// 	(rightBounds.lX) * scale, (rightBounds.lY) * scale
-			// );
+  componentWillReceiveProps(nextProps) {
+    this.update();
+  }
 
+  componentDidMount() {
+    (this.refs.canvas as HTMLCanvasElement).addEventListener(
+      "scroll",
+      this.scroll
+    );
+    this.update();
+    // ctx.scale(0.1, 0.1);
+  }
 
+  componentWillUnmount() {
+    (this.refs.canvas as HTMLCanvasElement).removeEventListener(
+      "scroll",
+      this.scroll
+    );
+  }
 
-			// this.renderNode(node.getRightNode(), ctx, start, scale);
-			// this.renderNode(node.getLeftNode(), ctx, start, scale);
-		}
-
-		componentWillReceiveProps(nextProps) {
-			this.props = nextProps;
-			this.update();
-		}
-
-
-		componentDidMount() {
-			(this.refs.canvas as HTMLCanvasElement).addEventListener('scroll', this.scroll);
-			this.update();
-			// ctx.scale(0.1, 0.1);
-		}
-
-		componentWillUnmount(){
-			(this.refs.canvas as HTMLCanvasElement).removeEventListener('scroll', this.scroll);
-		}
-
-		render() {
-			return <canvas ref="canvas" width={window.innerWidth} height={window.innerHeight / 2} onScroll={ this.scroll } onMouseMove={this.mouseMove} onMouseDown={this.mouseDown} />;
-		}
-	}
+  render() {
+    return (
+      <canvas
+        ref="canvas"
+        width={window.innerWidth}
+        height={window.innerHeight / 2}
+        onScroll={this.scroll}
+        onMouseMove={this.mouseMove}
+        onMouseDown={this.mouseDown}
+      />
+    );
+  }
 }

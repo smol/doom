@@ -1,39 +1,66 @@
 // import ColorMap from 'wad/lumps/ColorMap';
-import * as Wad from 'wad';
-import * as React from 'react';
-import * as ReactDOM from 'react-dom';
 
-interface ColorMapProps {
-	colorMap: Wad.ColorMap;
-}
+import { useContext } from "react";
+import { Wad } from "wad";
+import { WadContext } from "./contextes";
 
-export module Debug {
-	export class ColorMap extends React.Component<ColorMapProps, {}> {
-		render() {
-			var swatches: JSX.Element[] = [];
+export const ColorMap = () => {
+  const { ColorMap } = useContext<Wad>(WadContext);
+  const swatches: JSX.Element[] = [];
 
-			for (var i = 0; i < 256; i++) {
-				swatches.push(<ColorMapSwatch key={ i } index={i} colorMap={this.props.colorMap.getColors()} />);
-			}
+  for (var i = 0; i < 256; i++) {
+    swatches.push(
+      <ColorMapSwatch
+        key={`swatch-${i}`}
+        index={i}
+        colorMap={ColorMap.getColors()}
+      />
+    );
+  }
 
-			return <div id="preview" className="colormap">
-				{swatches}
-			</div>;
-		}
-	}
-}
+  return (
+    <div id="preview" className="colormap">
+      {swatches}
+    </div>
+  );
+};
 
-class ColorMapSwatch extends React.Component<{ index: number, colorMap: { r: number, g: number, b: number }[] }, {}> {
-	render() {
-		var colors: JSX.Element[] = [];
+const style: { swatch: React.CSSProperties; item: React.CSSProperties } = {
+  swatch: {
+    float: "left",
+    verticalAlign: "top",
 
-		for (var i = 0; i < 34; i++) {
-			var color: { r: number, g: number, b: number } = this.props.colorMap[(i * 256) + this.props.index];
-			colors.push(<div key={ (i * 256) + this.props.index }  className="item" style={{ backgroundColor: 'rgba(' + color.r + ',' + color.g + ',' + color.b + ', 1)' }}></div>);
-		}
+    boxSizing: "border-box",
+  },
+  item: {
+    width: 8,
+    height: 8,
+  },
+};
 
-		return <div className="swatch">
-			{colors}
-		</div>;
-	}
-}
+const ColorMapSwatch = ({
+  colorMap,
+  index,
+}: {
+  index: number;
+  colorMap: { r: number; g: number; b: number }[];
+}) => {
+  var colors: JSX.Element[] = [];
+
+  for (var i = 0; i < 34; i++) {
+    const color = colorMap[i * 256 + index];
+
+    colors.push(
+      <div
+        key={i * 256 + index}
+        style={{
+          ...style.item,
+          backgroundColor:
+            "rgba(" + color.r + "," + color.g + "," + color.b + ", 1)",
+        }}
+      />
+    );
+  }
+
+  return <div style={style.swatch}>{colors}</div>;
+};

@@ -22,12 +22,12 @@
 
 //   Unknown: what palettes 1 and 9 are for.
 
-import { Lump } from './lump';
+import { Lump, LumpData} from './lump';
 
 export class Playpal extends Lump {
   private colors: { r: number; g: number; b: number }[][];
 
-  constructor(lump: any, data: any) {
+  constructor(lump: LumpData, data: any) {
     super(lump, data);
 
     this.colors = [];

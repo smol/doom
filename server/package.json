@@ -9,6 +9,7 @@
   "author": "smol",
   "license": "LGPL-3.0",
   "dependencies": {
+    "cors": "^2.8.5",
     "express": "^4.14.1"
   }
 }

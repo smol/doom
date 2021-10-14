@@ -1,160 +1,233 @@
-import { Debug as TreeView } from './treeview';
-import { Debug as Playpal } from './playpal.debug';
-import { Debug as Graphic } from './graphic.debug';
-import { Debug as ColorMap } from './colormap.debug';
-import { Debug as Nodes } from './nodes.debug';
-import { Debug as Subsectors } from './subsectors.debug';
-import { Debug as Endoom } from './endoom.debug';
-import { Debug as Map } from './map.debug';
-import { Debug as Music } from './music.debug';
-import { Debug as Vertexes } from './vertexes.debug';
+import { TreeView, TreeData } from "./treeview";
+import { Playpal } from "./playpal.debug";
+import { Debug as Graphic } from "./graphic.debug";
+import { ColorMap } from "./colormap.debug";
+import { Nodes } from "./nodes.debug";
+import { Debug as Subsectors } from "./subsectors.debug";
+import { Endoom } from "./endoom.debug";
+import { Debug as Map } from "./map.debug";
+import { Debug as Music } from "./music.debug";
+import { Debug as Vertexes } from "./vertexes.debug";
+import { Debug as Wtf } from "./wtf.debug";
 
-import * as Wad from 'wad';
+import styled from "styled-components";
+
+import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
+
+import * as Wad from "wad";
 import * as React from "react";
-import * as ReactDOM from "react-dom";
 
 interface DebugProps {
-	wad: Wad.Wad;
-	builder: Wad.Builder;
+  builder: Wad.Builder;
 }
 
-module Debug {
-	export class Debug extends React.Component<DebugProps, { currentItem: JSX.Element }> {
-		private items: [TreeView.TreeData];
+const Container = styled.div`
+  height: 100vh;
+`;
 
-		constructor(props: DebugProps) {
-			super(props);
-			this.state = { currentItem: null };
+const Viewer = styled.div`
+  background: #292929;
+  height: 80vh;
+  overflow: auto;
+`;
 
-			this.items = [
-				{ label: "PLAYPAL", component: <Playpal.Playpal playpal={this.props.wad.getPlaypal()} />, children: [] },
-				{ label: "COLORMAP", component: <ColorMap.ColorMap colorMap={this.props.wad.getColorMap()} />, children: [] },
-				{ label: "ENDOOM", component: <Endoom.Endoom endoom={this.props.wad.getEndoom()} />, children: [] },
-				{ label: "GRAPHICS", component: null, children: this.getGraphics() },
-				{ label: "MUSICS", component: null, children: this.getMusics() },
-				{ label: "MAPS", component: null, children: this.getMaps() }
-			];
+export class Debug extends React.Component<
+  DebugProps,
+  { currentItem: JSX.Element }
+> {
+  private items: (TreeData & { Component?: () => JSX.Element })[];
 
-			this.selectItem = this.selectItem.bind(this);
-		}
+  constructor(props: DebugProps) {
+    super(props);
+    this.state = { currentItem: null };
 
-		private getMaps(): TreeView.TreeData[] {
-			var datas: TreeView.TreeData[] = [];
+    this.items = [
+      {
+        label: "PLAYPAL",
+        url: "playpal",
+        children: [],
+        Component: () => <Playpal />,
+      },
+      {
+        label: "COLORMAP",
+        url: "colormap",
+        Component: () => <ColorMap />,
+        children: [],
+      },
+      {
+        label: "ENDOOM",
+        url: "endoom",
+        Component: () => <Endoom />,
+        children: [],
+      },
+      { label: "GRAPHICS", url: "graphics", children: [] },
+      { label: "MUSICS", url: "musics", children: [] },
+      { label: "MAPS", url: "maps", children: [] },
+    ];
+  }
 
-			datas = this.props.wad.getMaps().map(map => {
-				var data: TreeView.TreeData = {
-					label: map.getName(),
-					component: <Map.Map map={map} wad={this.props.wad} />,
-					children: []
-				};
+  // private getMaps(): TreeData[] {
+  //   var datas: TreeData[] = [];
 
-				data.children = [
-					{ label: "THINGS", component: <Map.Things things={map.getThings()} />, children: [] },
-					{ label: "VERTEXES", component: <Vertexes.Vertexes vertexes={map.getVertexes()} linedefs={map.getLinedefs()} />, children: [] },
-					{ label: "NODES", component: null, children: this.getNodes(map) },
-					{ label: "SUBSECTORS", component: <Subsectors.Subsectors subsectors={ map.getSubsectors() }/>, children: [] }
-				];
+  //   datas = this.props.wad.getMaps().map((map) => {
+  //     var data: TreeData = {
+  //       label: map.getName(),
+  //       component: <Map.Map map={map} wad={this.props.wad} />,
+  //       children: [],
+  //     };
 
-				return data;
-			});
+  //     data.children = [
+  //       {
+  //         label: "THINGS",
+  //         component: <Map.Things things={map.getThings()} />,
+  //         children: [],
+  //       },
+  //       {
+  //         label: "VERTEXES",
+  //         component: (
+  //           <Vertexes.Vertexes
+  //             vertexes={map.getVertexes()}
+  //             linedefs={map.getLinedefs()}
+  //           />
+  //         ),
+  //         children: [],
+  //       },
+  //       { label: "NODES", component: null, children: this.getNodes(map) },
 
-			return datas;
-		}
+  //       {
+  //         label: "SUBSECTORS",
+  //         component: <Subsectors.Subsectors subsectors={map.getSubsectors()} />,
+  //         children: [],
+  //       },
+  //       {
+  //         label: "SECTORS",
+  //         component: <Wtf.Wtf sectors={map.getSectors()} />,
+  //         children: this.getSectors(map),
+  //       },
+  //     ];
 
-		private getNodes(map: Wad.Map) : TreeView.TreeData[] {
-			var datas : TreeView.TreeData[] = [];
-			var nodes : Wad.Node[] = map.getNodes();
+  //     return data;
+  //   });
 
-			for (var i = 0; i < nodes.length; i++) {
-				datas.push({ label: "NODE " + i, component: <Nodes.Nodes vertexes={map.getVertexes()} linedefs={map.getLinedefs()} node={ nodes[i] } />, children: [] });
-			}
+  //   return datas;
+  // }
 
-			return datas;
-		}
+  // private getSectors(map: Wad.Map): TreeData[] {
+  //   return map.getSectors().map((sector, index) => {
+  //     return {
+  //       label: `SECTOR ${index}`,
+  //       component: <Wtf.Wtf sectors={[sector]} />,
+  //       children: [],
+  //     };
+  //   });
+  // }
 
-		private getMusics() : TreeView.TreeData[] {
-			var data : TreeView.TreeData[] = [];
+  // private getNodes(map: Wad.Map): TreeData[] {
+  //   var datas: TreeData[] = [];
+  //   var nodes: Wad.Node[] = map.getNodes();
 
-			data = this.props.wad.getMusics().map(music => {
-				return { label: music.getName(), component: <Music.Music music={ music } />, children: [] };
-			});
+  //   for (var i = 0; i < nodes.length; i++) {
+  //     datas.push({
+  //       label: "NODE " + i,
+  //       component: (
+  //         <Nodes.Nodes
+  //           vertexes={map.getVertexes()}
+  //           linedefs={map.getLinedefs()}
+  //           node={nodes[i]}
+  //         />
+  //       ),
+  //       children: [],
+  //     });
+  //   }
 
-			return data;
-		}
+  //   return datas;
+  // }
 
-		private getGraphics(): TreeView.TreeData[] {
-			var datasGraphics: TreeView.TreeData[] = [];
-			var graphics: Wad.Graphic[] = this.props.wad.getGraphics();
+  // private getMusics(): TreeData[] {
+  //   var data: TreeData[] = [];
 
-			for (var i = 0; i < graphics.length; i++) {
-				datasGraphics.push({ label: graphics[i].getName(), component: <Graphic.Graphic graphic={graphics[i]} />, children: null });
-			}
+  //   data = this.props.wad.getMusics().map((music) => {
+  //     return {
+  //       label: music.getName(),
+  //       component: <Music.Music music={music} />,
+  //       children: [],
+  //     };
+  //   });
 
-			return [
-				{ label: "GRAPHICS", component: null, children: datasGraphics },
-				{ label: "TEXTURES", component: null, children: this.getTextures() },
-				{ label: "FLATS", component: null, children: this.getFlats() }
-			];
-		}
+  //   return data;
+  // }
 
-		private getFlats(): TreeView.TreeData[] {
-			var dataFlats: TreeView.TreeData[] = [];
-			var flats: Wad.Flat[] = this.props.wad.getFlats();
-			for (var i = 0; i < flats.length; i++) {
-				dataFlats.push({ label: flats[i].getName(), component: <Graphic.Flat flat={flats[i]} />, children: null });
-			}
+  // private getGraphics(): TreeData[] {
+  //   var datasGraphics: TreeData[] = [];
+  //   var graphics: Wad.Graphic[] = this.props.wad.getGraphics();
 
-			return dataFlats;
-		}
+  //   for (var i = 0; i < graphics.length; i++) {
+  //     datasGraphics.push({
+  //       label: graphics[i].getName(),
+  //       component: <Graphic.Graphic graphic={graphics[i]} />,
+  //       children: null,
+  //     });
+  //   }
 
-		private getTextures(): TreeView.TreeData[] {
-			var dataTextures: TreeView.TreeData[] = [];
-			var textures: Wad.Textures[] = this.props.wad.getTextures();
+  //   return [
+  //     { label: "GRAPHICS", component: null, children: datasGraphics },
+  //     { label: "TEXTURES", component: null, children: this.getTextures() },
+  //     { label: "FLATS", component: null, children: this.getFlats() },
+  //   ];
+  // }
 
-			for (var i = 0; i < textures.length; i++) {
-				var dataTexture : TreeView.TreeData = { label: textures[i].getName(), component: null, children: [] };
-				var texturesList : Wad.Texture[] = textures[i].getTextures();
+  // private getFlats(): TreeData[] {
+  //   var flats: Wad.Flat[] = this.props.wad.getFlats();
 
-				for (var j = 0; j < texturesList.length; j++){
-					dataTexture.children.push({ label: texturesList[j].getName(), component: null, children: null });
-				}
+  //   return flats.map((flat) => ({
+  //     label: flat.getName(),
+  //     component: <Graphic.Flat flat={flat} />,
+  //     children: null,
+  //   }));
+  // }
 
-				dataTextures.push(dataTexture);
-			}
+  // private getTextures(): TreeData[] {
+  //   var dataTextures: TreeData[] = [];
+  //   var textures: Wad.Textures[] = this.props.wad.getTextures();
 
-			return dataTextures;
-		}
+  //   for (var i = 0; i < textures.length; i++) {
+  //     var dataTexture: TreeData = {
+  //       label: textures[i].getName(),
+  //       component: null,
+  //       children: [],
+  //     };
+  //     var texturesList: Wad.Texture[] = textures[i].getTextures();
 
-		selectItem(item: JSX.Element) {
-			this.setState(prevState => ({
-				currentItem: item
-			}));
-		}
+  //     for (var j = 0; j < texturesList.length; j++) {
+  //       dataTexture.children.push({
+  //         label: texturesList[j].getName(),
+  //         component: null,
+  //         children: null,
+  //       });
+  //     }
 
-		render() {
-			return <div>
-				<TreeView.TreeView items={ this.items } select={this.selectItem} />
-				<div id="details">
-					{this.state.currentItem}
-				</div>
-			</div>;
-		}
-	}
+  //     dataTextures.push(dataTexture);
+  //   }
+
+  //   return dataTextures;
+  //}
+
+  render() {
+    return (
+      <Router>
+        <Container>
+          <TreeView items={this.items} />
+          <Viewer style={{}}>
+            <Switch>
+              {this.items.map(({ url, Component }) => (
+                <Route key={url} path={`/debug/${url}`}>
+                  {Component ? <Component /> : null}
+                </Route>
+              ))}
+            </Switch>
+          </Viewer>
+        </Container>
+      </Router>
+    );
+  }
 }
-
-var builder = new Wad.Builder();
-
-builder.getParser().onLoad = () => {
-	builder.go();
-
-	ReactDOM.render(
-		<Debug.Debug wad={builder.getWad()} builder={builder} />,
-		document.getElementById("debug")
-	);
-
-	// new Debug.Debug(builder.getWad(), builder);
-};
-
-builder.getParser().loadFile('/client/assets/doom.wad');
-
-

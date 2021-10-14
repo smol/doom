@@ -1,17 +1,16 @@
 {
-	"compileOnSave": true,
-	"compilerOptions": {
-		"target": "es5",
-		"moduleResolution": "node",
-		"module": "es2015",
-		"removeComments": true,
-		"declaration": true,
-		"sourceMap": true,
-		"allowSyntheticDefaultImports": true,
-		"declarationDir": "../src/",
-		"baseUrl": "."
-	},
-	"include": [
-		"./src/**/*"
-	]
+  "compileOnSave": true,
+  "compilerOptions": {
+    "target": "es5",
+    "moduleResolution": "node",
+    "module": "es6",
+    "removeComments": true,
+    "declaration": true,
+    "noResolve": false,
+    "sourceMap": true,
+    "allowSyntheticDefaultImports": true,
+    "declarationDir": "../.build/wad/",
+    "baseUrl": "."
+  },
+  "include": ["./src/**/*", "index.d.ts"]
 }

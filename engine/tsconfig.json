@@ -1,20 +1,18 @@
 {
-	"compileOnSave": true,
-	"compilerOptions": {
-		"target": "es5",
-		"moduleResolution": "node",
-		"module": "es2015",
-		"removeComments": true,
-		"declaration": true,
-		"sourceMap": true,
-		"allowSyntheticDefaultImports": true,
-		"declarationDir": "../src/",
-		"baseUrl": ".",
-		"paths": {
-			"wad": ["../.build/wad"]
-		}
-	},
-	"include": [
-		"./src/**/*"
-	]
+  "compileOnSave": true,
+  "compilerOptions": {
+    "target": "es6",
+    "moduleResolution": "node",
+    "module": "es6",
+    "removeComments": true,
+    "declaration": true,
+    "sourceMap": true,
+    "allowSyntheticDefaultImports": true,
+    "declarationDir": "../.build/engine/",
+    "types": ["three", "wad"],
+    "paths": {
+      "wad": ["../.build/wad"]
+    }
+  },
+  "include": ["./src/**/*"]
 }

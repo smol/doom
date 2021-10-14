@@ -22,6 +22,8 @@
 // very low-level info can be found in many ancient PC programming books,
 // but otherwise it might be hard to locate...
 
+import dos from "./dos.png";
+
 var DOS: { r: number; g: number; b: number }[] = [
   { r: 0, g: 0, b: 0 }, // black
   { r: 0, g: 0, b: 128 }, // blue
@@ -38,10 +40,10 @@ var DOS: { r: number; g: number; b: number }[] = [
   { r: 255, g: 0, b: 0 }, // light red
   { r: 255, g: 0, b: 255 }, // light purple
   { r: 255, g: 255, b: 0 }, // light yellow
-  { r: 255, g: 255, b: 255 } // light white
+  { r: 255, g: 255, b: 255 }, // light white
 ];
 
-import { Lump } from './lump';
+import { Lump } from "./lump";
 
 export class Endoom extends Lump {
   private text: number[];
@@ -57,8 +59,8 @@ export class Endoom extends Lump {
     this.buffer = new Uint8Array(640 * 400 * 4);
 
     this.dosImage = new Image();
-    this.dosImage.src = '/client/assets/dos.png';
-    this.dosImage.onload = function() {
+
+    this.dosImage.onload = function () {
       self.loadAscii(this as HTMLImageElement);
 
       for (var i = 0; i < 2000; i++) {
@@ -73,14 +75,16 @@ export class Endoom extends Lump {
         self.buffer = self.drawPixel(i, self.buffer, fb);
       }
     };
+
+    this.dosImage.src = dos;
   }
 
   private loadAscii(image: HTMLImageElement) {
-    var canvas = document.createElement('canvas');
-    canvas.className = 'debug-container endoom';
+    var canvas = document.createElement("canvas");
+    canvas.className = "debug-container endoom";
     canvas.width = 256;
     canvas.height = 128;
-    var ctx = canvas.getContext('2d');
+    var ctx = canvas.getContext("2d");
 
     ctx.drawImage(image, 0, 0);
 
@@ -92,13 +96,11 @@ export class Endoom extends Lump {
     return this.buffer;
   }
 
-  private getColor(
-    color: number
-  ): {
+  private getColor(color: number): {
     f: { r: number; b: number; g: number };
     b: { r: number; b: number; g: number };
   } {
-    var foreground = color & parseInt('00001111', 2);
+    var foreground = color & parseInt("00001111", 2);
     var background = color >> 4;
     var blink = false;
     if (background >= 8) {

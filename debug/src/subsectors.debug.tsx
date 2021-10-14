@@ -1,169 +1,191 @@
-import * as React from 'react';
-import * as Wad from 'wad';
+import * as React from "react";
+import * as Wad from "wad";
 
 export module Debug {
-	interface SubsectorsProps {
-		subsectors : Wad.Subsector[];
-	}
+  interface SubsectorsProps {
+    subsectors: Wad.Subsector[];
+  }
 
-	export class Subsector {
-		private subsector : Wad.Subsector;
+  export class Subsector {
+    private subsector: Wad.Subsector;
 
-		constructor(subsector : Wad.Subsector){
-			this.subsector = subsector;
-		}
+    constructor(subsector: Wad.Subsector) {
+      this.subsector = subsector;
+    }
 
-		// private renderBound(ctx: CanvasRenderingContext2D, scale: number, position: { x: number, y: number }) {
-		// 	ctx.beginPath();
-		// 	ctx.moveTo(this.bounds.uX * scale + position.x, this.bounds.uY * scale + position.y);
-		// 	ctx.lineTo(this.bounds.lX * scale + position.x, this.bounds.uY * scale + position.y);
-		// 	ctx.lineTo(this.bounds.lX * scale + position.x, this.bounds.lY * scale + position.y);
-		// 	ctx.lineTo(this.bounds.uX * scale + position.x, this.bounds.lY * scale + position.y);
-		// 	ctx.lineTo(this.bounds.uX * scale + position.x, this.bounds.uY * scale + position.y);
-		// 	ctx.strokeStyle = 'red';
-		// 	ctx.stroke();
-		// 	ctx.closePath();
+    // private renderBound(ctx: CanvasRenderingContext2D, scale: number, position: { x: number, y: number }) {
+    // 	ctx.beginPath();
+    // 	ctx.moveTo(this.bounds.uX * scale + position.x, this.bounds.uY * scale + position.y);
+    // 	ctx.lineTo(this.bounds.lX * scale + position.x, this.bounds.uY * scale + position.y);
+    // 	ctx.lineTo(this.bounds.lX * scale + position.x, this.bounds.lY * scale + position.y);
+    // 	ctx.lineTo(this.bounds.uX * scale + position.x, this.bounds.lY * scale + position.y);
+    // 	ctx.lineTo(this.bounds.uX * scale + position.x, this.bounds.uY * scale + position.y);
+    // 	ctx.strokeStyle = 'red';
+    // 	ctx.stroke();
+    // 	ctx.closePath();
 
-		// 	// console.info(rightBounds, leftBounds, node);
+    // 	// console.info(rightBounds, leftBounds, node);
 
-		// 	// console.info(
-		// 	// 	(rightBounds.uX) * scale, (rightBounds.uY) * scale,
-		// 	// 	(rightBounds.lX) * scale, (rightBounds.lY) * scale
-		// 	// );
+    // 	// console.info(
+    // 	// 	(rightBounds.uX) * scale, (rightBounds.uY) * scale,
+    // 	// 	(rightBounds.lX) * scale, (rightBounds.lY) * scale
+    // 	// );
 
+    // 	// this.renderNode(node.getRightNode(), ctx, start, scale);
+    // 	// this.renderNode(node.getLeftNode(), ctx, start, scale);
+    // }
 
+    private renderSeg(
+      seg: Wad.Seg,
+      ctx: CanvasRenderingContext2D,
+      scale: number,
+      position: { x: number; y: number }
+    ) {
+      var firstVertex: Wad.Vertex = seg.getStartVertex();
+      var secondVertex: Wad.Vertex = seg.getEndVertex();
 
-		// 	// this.renderNode(node.getRightNode(), ctx, start, scale);
-		// 	// this.renderNode(node.getLeftNode(), ctx, start, scale);
-		// }
+      ctx.beginPath();
+      ctx.strokeStyle = "white";
 
-		private renderSeg(seg: Wad.Seg, ctx: CanvasRenderingContext2D, scale: number, position: { x: number, y: number }) {
-			var firstVertex: Wad.Vertex = seg.getStartVertex();
-			var secondVertex: Wad.Vertex = seg.getEndVertex();
+      ctx.moveTo(
+        firstVertex.x * scale + position.x,
+        firstVertex.y * scale + position.y
+      );
+      ctx.lineTo(
+        secondVertex.x * scale + position.x,
+        secondVertex.y * scale + position.y
+      );
 
-			ctx.beginPath();
-			ctx.strokeStyle = 'white';
+      ctx.stroke();
+      ctx.closePath();
+    }
 
-			ctx.moveTo((firstVertex.x) * scale + position.x, (firstVertex.y) * scale + position.y);
-			ctx.lineTo((secondVertex.x) * scale + position.x, (secondVertex.y) * scale + position.y);
+    render(
+      ctx: CanvasRenderingContext2D,
+      scale: number,
+      position: { x: number; y: number }
+    ) {
+      // this.renderBound(ctx, scale, position);
 
-			ctx.stroke();
-			ctx.closePath();
-		}
+      let segs: Wad.Seg[] = this.subsector.getSegs();
 
-		render(ctx: CanvasRenderingContext2D, scale: number, position: { x: number, y: number }) {
-			// this.renderBound(ctx, scale, position);
+      // if (segs.length > 2){
+      // 	return;
+      // }
 
-			let segs : Wad.Seg[] = this.subsector.getSegs();
+      segs.forEach((seg) => {
+        this.renderSeg(seg, ctx, scale, position);
+      });
 
-			// if (segs.length > 2){
-			// 	return;
-			// }
+      // this.renderFloor(ctx, scale, position);
+    }
+  }
 
-			segs.forEach(seg => {
-				this.renderSeg(seg, ctx, scale, position);
-			});
+  export class Subsectors extends React.Component<SubsectorsProps> {
+    private position: { x: number; y: number };
+    private startPosition: { x: number; y: number };
+    private onClick: boolean = false;
+    private scale: number = 0.5;
+    private ctx: CanvasRenderingContext2D;
+    private subsectors: Subsector[];
 
-			// this.renderFloor(ctx, scale, position);
-		}
-	}
+    constructor(props) {
+      super(props);
 
-	export class Subsectors extends React.Component<SubsectorsProps> {
-		private position: { x: number, y: number };
-		private startPosition: { x: number, y: number };
-		private onClick: boolean = false;
-		private scale: number = 0.5;
-		private ctx: CanvasRenderingContext2D;
-		private subsectors : Subsector[];
+      this.subsectors = [];
 
-		constructor(props){
-			super(props);
+      this.mouseMove = this.mouseMove.bind(this);
+      this.mouseDown = this.mouseDown.bind(this);
+      this.mouseUp = this.mouseUp.bind(this);
 
-			this.subsectors = [];
+      this.position = { x: 500, y: 2000 };
+      this.startPosition = { x: 0, y: 0 };
+    }
 
-			this.mouseMove = this.mouseMove.bind(this);
-			this.mouseDown = this.mouseDown.bind(this);
-			this.mouseUp = this.mouseUp.bind(this);
+    mouseMove(e) {
+      this.onClick = false;
+      if (e.buttons === 0) {
+        return;
+      }
 
-			this.position = { x: 500, y: 2000 };
-			this.startPosition = { x: 0, y: 0 };
-		}
+      this.position = {
+        x:
+          this.position.x +
+          (e.screenX - this.startPosition.x) * (1 / this.scale),
+        y:
+          this.position.y +
+          (e.screenY - this.startPosition.y) * (1 / this.scale),
+      };
 
-		mouseMove(e) {
-			this.onClick = false;
-			if (e.buttons === 0) {
-				return;
-			}
+      this.update();
 
-			this.position = {
-				x: this.position.x + ((e.screenX - this.startPosition.x) * (1 / this.scale)),
-				y: this.position.y + ((e.screenY - this.startPosition.y) * (1 / this.scale))
-			};
+      this.startPosition = { x: e.screenX, y: e.screenY };
+    }
 
-			this.update();
+    mouseDown(e) {
+      this.onClick = true;
+      this.startPosition = { x: e.screenX, y: e.screenY };
+    }
 
-			this.startPosition = { x: e.screenX, y: e.screenY };
-		}
+    mouseUp(e) {
+      if (this.onClick) {
+        // let x: number = e.pageX;
+        // let y: number = e.pageY - (window.innerHeight / 2);
+        // for (var i = 0; i < this.subsectors.length; i++) {
+        // 	if (this.subsectors[i].onClick((x - this.position.x) / this.scale, (y - this.position.y) / this.scale)) {
+        // 	}
+        // }
+        // this.update();
+      }
+    }
 
-		mouseDown(e) {
-			this.onClick = true;
-			this.startPosition = { x: e.screenX, y: e.screenY };
-		}
+    private update() {
+      var canvas: HTMLCanvasElement = this.refs.canvas as HTMLCanvasElement;
+      this.ctx = canvas.getContext("2d");
 
-		mouseUp(e) {
-			if (this.onClick) {
-				// let x: number = e.pageX;
-				// let y: number = e.pageY - (window.innerHeight / 2);
+      this.ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-				// for (var i = 0; i < this.subsectors.length; i++) {
-				// 	if (this.subsectors[i].onClick((x - this.position.x) / this.scale, (y - this.position.y) / this.scale)) {
-				// 	}
-				// }
+      this.subsectors.forEach((subsector) => {
+        subsector.render(this.ctx, this.scale, this.position);
+      });
 
-				// this.update();
-			}
-		}
+      //
+    }
 
-		private update() {
-			var canvas: HTMLCanvasElement = this.refs.canvas as HTMLCanvasElement;
-			this.ctx = canvas.getContext('2d');
+    private loopSubsectors(subsectors: Wad.Subsector[]) {
+      subsectors.forEach((subsector) => {
+        this.subsectors.push(new Subsector(subsector));
+      });
+    }
 
-			this.ctx.clearRect(0, 0, canvas.width, canvas.height);
+    componentWillReceiveProps(nextProps) {
+      this.subsectors = [];
+      this.loopSubsectors(this.props.subsectors);
 
-			this.subsectors.forEach(subsector => {
-				subsector.render(this.ctx, this.scale, this.position);
-			});
+      this.update();
+    }
 
-			// 
-		}
+    componentDidMount() {
+      // (this.refs.canvas as HTMLCanvasElement).addEventListener('scroll', this.scroll);
 
-		private loopSubsectors(subsectors : Wad.Subsector[]){
-			subsectors.forEach(subsector => {
-				this.subsectors.push(new Subsector(subsector));
-			});
-		}
+      this.subsectors = [];
+      this.loopSubsectors(this.props.subsectors);
 
-		componentWillReceiveProps(nextProps) {
-			this.props = nextProps;
+      this.update();
+      // ctx.scale(0.1, 0.1);
+    }
 
-			this.subsectors = [];
-			this.loopSubsectors(this.props.subsectors);
-
-			this.update();
-		}
-
-		componentDidMount() {
-			// (this.refs.canvas as HTMLCanvasElement).addEventListener('scroll', this.scroll);
-
-			this.subsectors = [];
-			this.loopSubsectors(this.props.subsectors);
-
-			this.update();
-			// ctx.scale(0.1, 0.1);
-		}
-
-		render(){
-			return <canvas ref="canvas" width={window.innerWidth} height={window.innerHeight / 2} onMouseMove={this.mouseMove} onMouseDown={this.mouseDown} onMouseUp={this.mouseUp} />;
-		}
-	}
+    render() {
+      return (
+        <canvas
+          ref="canvas"
+          width={window.innerWidth}
+          height={window.innerHeight / 2}
+          onMouseMove={this.mouseMove}
+          onMouseDown={this.mouseDown}
+          onMouseUp={this.mouseUp}
+        />
+      );
+    }
+  }
 }

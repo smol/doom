@@ -4,20 +4,27 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "build": "webpack",
+    "dev": "webpack serve --mode development"
   },
   "author": "smol",
   "license": "LGPL-3.0",
   "dependencies": {
-    "poly2tri": "^1.5.0",
-    "typescript": "^2.6.2"
+    "engine": "file:../.build/engine",
+    "react": "^17.0.2",
+    "react-dom": "^17.0.2",
+    "react-router-dom": "^5.3.0",
+    "styled-components": "^5.3.1",
+    "wad": "file:../.build/wad"
   },
   "devDependencies": {
-    "declaration-bundler-webpack-plugin": "^1.0.3",
-    "grunt-contrib-clean": "^1.1.0",
-    "react": "^16.2.0",
-    "react-dom": "^16.2.0",
-    "socket.io-client": "^1.7.2",
-    "ts-loader": "^3.2.0"
+    "@types/react": "^17.0.30",
+    "@types/react-dom": "^17.0.9",
+    "html-webpack-plugin": "^5.3.2",
+    "source-map-loader": "^3.0.0",
+    "ts-loader": "^9.2.6",
+    "webpack": "^5.58.2",
+    "webpack-cli": "^4.9.0",
+    "webpack-dev-server": "^4.3.1"
   }
 }
