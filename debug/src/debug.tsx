@@ -1,6 +1,5 @@
 import { TreeView, TreeData } from "./treeview";
 import { Playpal } from "./playpal.debug";
-import { Debug as Graphic } from "./graphic.debug";
 import { ColorMap } from "./colormap.debug";
 import { Nodes } from "./nodes.debug";
 import { Debug as Subsectors } from "./subsectors.debug";
@@ -16,54 +15,33 @@ import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
 
 import * as Wad from "wad";
 import * as React from "react";
+import treedata from "./actions/treedata";
+import { WadContext } from "./contextes";
 
-interface DebugProps {
-  builder: Wad.Builder;
-}
-
-const Container = styled.div`
-  height: 100vh;
-`;
+const Container = styled.div``;
 
 const Viewer = styled.div`
   background: #292929;
-  height: 80vh;
+  height: 100vh;
   overflow: auto;
 `;
 
 export class Debug extends React.Component<
-  DebugProps,
-  { currentItem: JSX.Element }
+  {},
+  { currentItem: JSX.Element; items: any[] }
 > {
   private items: (TreeData & { Component?: () => JSX.Element })[];
 
-  constructor(props: DebugProps) {
-    super(props);
-    this.state = { currentItem: null };
+  static contextType = WadContext;
 
-    this.items = [
-      {
-        label: "PLAYPAL",
-        url: "playpal",
-        children: [],
-        Component: () => <Playpal />,
-      },
-      {
-        label: "COLORMAP",
-        url: "colormap",
-        Component: () => <ColorMap />,
-        children: [],
-      },
-      {
-        label: "ENDOOM",
-        url: "endoom",
-        Component: () => <Endoom />,
-        children: [],
-      },
-      { label: "GRAPHICS", url: "graphics", children: [] },
-      { label: "MUSICS", url: "musics", children: [] },
-      { label: "MAPS", url: "maps", children: [] },
-    ];
+  constructor(props) {
+    super(props);
+    this.state = { currentItem: null, items: [] };
+  }
+
+  componentDidMount() {
+    console.info(this.context);
+    this.setState({ items: treedata(this.context) });
   }
 
   // private getMaps(): TreeData[] {
@@ -158,22 +136,7 @@ export class Debug extends React.Component<
   // }
 
   // private getGraphics(): TreeData[] {
-  //   var datasGraphics: TreeData[] = [];
-  //   var graphics: Wad.Graphic[] = this.props.wad.getGraphics();
 
-  //   for (var i = 0; i < graphics.length; i++) {
-  //     datasGraphics.push({
-  //       label: graphics[i].getName(),
-  //       component: <Graphic.Graphic graphic={graphics[i]} />,
-  //       children: null,
-  //     });
-  //   }
-
-  //   return [
-  //     { label: "GRAPHICS", component: null, children: datasGraphics },
-  //     { label: "TEXTURES", component: null, children: this.getTextures() },
-  //     { label: "FLATS", component: null, children: this.getFlats() },
-  //   ];
   // }
 
   // private getFlats(): TreeData[] {
@@ -213,13 +176,14 @@ export class Debug extends React.Component<
   //}
 
   render() {
+    const { items } = this.state;
     return (
       <Router>
         <Container>
-          <TreeView items={this.items} />
+          <TreeView items={[items]} />
           <Viewer style={{}}>
             <Switch>
-              {this.items.map(({ url, Component }) => (
+              {items.map(({ url, Component }) => (
                 <Route key={url} path={`/debug/${url}`}>
                   {Component ? <Component /> : null}
                 </Route>

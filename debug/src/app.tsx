@@ -1,32 +1,38 @@
-import { useEffect, useState } from "react";
+import { Component, useEffect, useState } from "react";
 import { Debug } from "./debug";
 import * as Wad from "wad";
 import { WadContext } from "./contextes";
 
-export default () => {
-  const [builder, setBuilder] = useState<Wad.Builder>(null);
-  const [wad, setWad] = useState(null);
+export default class App extends Component<{}, { wad: Wad.Wad }> {
+  constructor(props) {
+    super(props);
 
-  useEffect(() => {
-    var builder = new Wad.Builder();
-    setBuilder(builder);
+    this.state = {
+      wad: null,
+    };
+  }
 
+  componentDidMount() {
+    const builder = new Wad.Builder();
     builder.getParser().onLoad = () => {
       builder.go();
-
-      setWad(builder.wad);
+      this.setState({ wad: builder.wad });
     };
 
     builder.getParser().loadFile("http://localhost:8080/doom.wad");
-  }, []);
+  }
 
-  if (!builder || !wad) return null;
+  render() {
+    const { wad } = this.state;
 
-  console.info({ wad });
+    if (!wad) {
+      return null;
+    }
 
-  return (
-    <WadContext.Provider value={wad}>
-      <Debug builder={builder} />;
-    </WadContext.Provider>
-  );
-};
+    return (
+      <WadContext.Provider value={wad}>
+        <Debug />;
+      </WadContext.Provider>
+    );
+  }
+}

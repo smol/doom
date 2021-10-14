@@ -3,18 +3,16 @@ const webpack = require("webpack");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 
 module.exports = {
+  target: "web",
   entry: {
     debug: path.resolve(__dirname, "src/index.tsx"),
   },
   mode: "development",
   output: {
-    filename: "[name].js",
-    publicPath: "/public",
+    filename: "[name].bundle.js",
     path: path.resolve(__dirname, "../.build/"),
+    clean: true,
   },
-
-  // Enable sourcemaps for debugging webpack's output.
-  devtool: "source-map",
 
   resolve: {
     // Add '.ts' and '.tsx' as resolvable extensions.
@@ -31,14 +29,15 @@ module.exports = {
       },
     ],
   },
+  devtool: "inline-source-map",
   plugins: [
     new HtmlWebpackPlugin({
-      template: "index.html",
-      // inject: true,
+      template: path.resolve(__dirname, "index.html"),
+      inject: true,
     }),
-    new webpack.HotModuleReplacementPlugin({
-      multiStep: true,
-    }),
+    // new webpack.HotModuleReplacementPlugin({
+    //   multiStep: true,
+    // }),
   ],
 
   // When importing a module whose path matches one of the following, just
@@ -48,32 +47,19 @@ module.exports = {
   externals: {
     wad: "Wad",
     engine: "Engine",
-    react: "React",
-    "react-dom": "ReactDOM",
   },
   watchOptions: {
     ignored: /node_modules|index\.html/,
   },
   devServer: {
     historyApiFallback: true,
-    hot: false,
-    // liveReload: true,
+    hot: true,
     client: {
-      logging: "info",
+      logging: "verbose",
     },
 
-    // publicPath
     static: [
       { directory: path.resolve(__dirname, "../.build/"), watch: false },
-      {
-        directory: path.resolve(__dirname, "../.build/"),
-        publicPath: "/public/",
-      },
-      {
-        directory: path.resolve(__dirname, "node_modules/"),
-        publicPath: "/library/",
-        watch: false,
-      },
     ],
     port: 9000, // Defaults to 8080,
   },

@@ -3,7 +3,7 @@ import * as ReactDOM from "react-dom";
 import { Link } from "react-router-dom";
 
 export interface TreeViewProps {
-  items: TreeData[];
+  items: TreeData[][];
 }
 
 export interface TreeData {
@@ -12,14 +12,9 @@ export interface TreeData {
   children: TreeData[];
 }
 
-export class TreeView extends React.Component<
-  TreeViewProps,
-  { items: [TreeData[]] }
-> {
+export class TreeView extends React.Component<TreeViewProps> {
   constructor(props: TreeViewProps) {
     super(props);
-
-    this.state = { items: [this.props.items] };
   }
 
   private buildTreeView(items: TreeData[], level: number): JSX.Element {
@@ -62,7 +57,7 @@ export class TreeView extends React.Component<
   }
 
   render() {
-    const { items } = this.state;
+    const { items } = this.props;
 
     return (
       <div
