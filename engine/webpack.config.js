@@ -14,19 +14,31 @@ module.exports = {
   },
   resolve: {
     extensions: [".ts", ".js"],
+    fallback: {
+      fs: false,
+    },
   },
   resolveLoader: {
     modules,
   },
   watchOptions: {
-    ignored: /(node_modules|\.build)/,
+    ignored: /node_modules/,
   },
+
   module: {
     rules: [
       {
         test: /\.ts$/,
         loader: "ts-loader",
-        exclude: /(node_modules|\.build)/,
+        exclude: /node_modules/,
+      },
+      {
+        test: /\.pat$/i,
+        loader: "file-loader",
+        options: {
+          name: "[path][name].ext",
+        },
+        exclude: /node_modules/,
       },
     ],
   },

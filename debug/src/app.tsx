@@ -31,7 +31,7 @@ export default class App extends Component<{}, { wad: Wad.Wad }> {
 
     return (
       <WadContext.Provider value={wad}>
-        <Debug />;
+        <Debug />
       </WadContext.Provider>
     );
   }

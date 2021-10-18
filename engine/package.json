@@ -14,8 +14,10 @@
   },
   "dependencies": {
     "@types/three": "^0.133.1",
+    "mus2midi": "^1.0.8",
     "poly2tri": "^1.5.0",
     "three": "^0.133.1",
-    "wad": "file:../.build/wad/"
+    "wad": "file:../.build/wad/",
+    "webaudio-tinysynth": "^1.1.3"
   }
 }

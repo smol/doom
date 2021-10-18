@@ -1,74 +1,60 @@
-import * as React from 'react';
-import * as Wad from 'wad';
+import { MusicPlayer } from "engine";
+import * as React from "react";
+import * as Wad from "wad";
 
 interface MusicProps {
-	music: Wad.Music;
+  music: Wad.Music;
 }
 
-export module Debug {
-	export class Music extends React.Component<MusicProps> {
-		private audioContext : AudioContext;
-		private node: AudioBufferSourceNode;
+export class Music extends React.Component<MusicProps> {
+  private musicPlayer: MusicPlayer;
 
-		constructor(props: MusicProps) {
-			super(props);
+  constructor(props: MusicProps) {
+    super(props);
 
-			this.audioContext = new AudioContext();
-			this.node = this.audioContext.createBufferSource();
+    this.start = this.start.bind(this);
+    this.stop = this.stop.bind(this);
 
-			// let temp : Uint8Array = this.props.music.getBuffer();
+    // let temp = music.getBuffer();
 
-			// console.info(temp);
+    this.musicPlayer = new MusicPlayer();
 
-			// let buffer: AudioBuffer = this.audioContext.createBuffer(1, temp.length, this.audioContext.sampleRate);
-			// let data: Float32Array = buffer.getChannelData(0);
+    // console.info(temp);
+  }
 
-			// for (var i = 0; i < temp.length; i++) {
-			// 	console.info(temp[i]);
-			// 	data[i] = temp[i];
-			// }
+  componentDidMount() {
+    const { music } = this.props;
+    this.musicPlayer.setMusic(music);
+  }
 
-			// this.node.buffer = buffer;
-			// this.node.loop = true;
-			// this.node.connect(this.audioContext.destination);
+  componentDidUpdate(prevProps) {
+    const { music } = this.props;
+    this.musicPlayer.pause();
 
-			// this.start = this.start.bind(this);
-			// this.stop = this.stop.bind(this);
-			// this.node.start(0);
+    this.musicPlayer.setMusic(music);
+    this.musicPlayer.play();
+  }
 
-			// this.audioContext.suspend();
+  start() {
+    this.musicPlayer.play();
+  }
 
-			// context.decodeAudioData(this.props.music.getBuffer(), (buffer : AudioBuffer) => {
-			// 	source.buffer = buffer;
-			// 	source.connect(context.destination);
-			// 	source.start(0);
-			// }, (error : DOMException) => {
-			// 	console.info('ERROR BUFFER', error);
-			// });
-		}
+  stop() {
+    this.musicPlayer.pause();
+  }
 
-		componentDidMount(){
+  componentWillUnmount() {
+    this.musicPlayer.pause();
+  }
 
-		}
-
-		start(){
-			this.audioContext.resume();
-		}
-
-		stop(){
-			this.audioContext.suspend();
-		}
-
-		componentWillUnmount() {
-			this.node.stop();
-		}
-
-		render() {
-			return <div>
-				<div>{this.props.music.getName()}</div>
-				<button onClick={ this.start }>START</button>
-				<button onClick={ this.stop }>STOP</button>
-			</div>;
-		}
-	}
+  render() {
+    return (
+      <div>
+        TEST
+        <div>{this.props.music.getName()}</div>
+        <button onClick={this.start}>START</button>
+        <button onClick={this.stop}>STOP</button>
+      </div>
+    );
+  }
 }
