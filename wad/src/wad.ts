@@ -34,6 +34,12 @@ export class Wad {
     this.musics = [];
   }
 
+  onEnded() {
+    this.textures.forEach((textures) => {
+      textures.setPnames(this.pnames.get());
+    });
+  }
+
   setPlaypal(lump: any, data: any) {
     this.playpal = new Playpal(lump, data);
   }
@@ -53,7 +59,7 @@ export class Wad {
   }
 
   setPnames(lump: any, data: any) {
-    this.pnames = new Pnames(lump, data, this.textures);
+    this.pnames = new Pnames(lump, data);
   }
 
   setFlat(lump: any, data: any) {

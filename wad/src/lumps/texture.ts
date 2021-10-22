@@ -161,8 +161,8 @@
 // perhaps related to the way that "middle" textures of sidedefs do not
 // animate.
 
-import { Pname } from './pnames';
-import { Playpal } from './playpal';
+import { Pname } from "./pnames";
+import { Playpal } from "./playpal";
 
 export class TexturePatch {
   x: number;
@@ -175,16 +175,20 @@ export class TexturePatch {
 
 export class Texture {
   private dataView: DataView;
+
   private name: string;
   private width: number;
   private height: number;
   private offset: number = 0;
   private patches: TexturePatch[];
+  private data: Uint8Array;
+  private alphaMapData: Uint8Array;
+  private dataSize: { width: number; height: number };
 
   constructor(playpal: Playpal, data: any) {
     this.dataView = new DataView(data);
 
-    this.name = '';
+    this.name = "";
 
     for (; this.offset < 8; this.offset++) {
       let charcode = this.dataView.getUint8(this.offset);
@@ -217,7 +221,7 @@ export class Texture {
       var y = this.dataView.getUint8(this.offset);
       this.offset += 2;
 
-      var index: number = this.dataView.getUint8(this.offset);
+      var pnameIndex: number = this.dataView.getUint8(this.offset);
       this.offset += 2;
 
       var stepdir: number = this.dataView.getUint8(this.offset);
@@ -227,14 +231,79 @@ export class Texture {
       this.offset += 2;
 
       this.patches.push({
-        x: x,
-        y: y,
-        pnameIndex: index,
-        stepdir: stepdir,
-        colormap: colormap,
-        pname: null
+        x,
+        y,
+        pnameIndex,
+        stepdir,
+        colormap,
+        pname: null,
       });
     }
+
+    // let width = 0;
+    // let height = this.patches[0].pname.getGraphics().getHeight();
+  }
+
+  setPnames(pnames: Pname[]) {
+    this.patches.forEach((patch) => {
+      patch.pname = pnames[patch.pnameIndex];
+    });
+
+    this.updatePatches();
+  }
+
+  private updatePatches() {
+    this.dataSize = { width: 0, height: 0 };
+
+    this.patches.forEach(({ pname, x, y }) => {
+      const graphic = pname.getGraphics();
+      this.dataSize.width = Math.max(
+        this.dataSize.width,
+        graphic.getWidth() + x
+      );
+      this.dataSize.height = Math.max(
+        this.dataSize.height,
+        graphic.getHeight() + y
+      );
+    });
+
+    let data = new Uint8Array(this.dataSize.width * this.dataSize.height * 4);
+    // for (let i = 0; i < data.length; i++) {
+    //   data[i] = 0;
+    // }
+
+    this.patches.forEach(({ pname, x, y }) => {
+      const graphic = pname.getGraphics();
+      const original = graphic.getImageData();
+
+      const oldWidth = graphic.getWidth() * 4;
+      const oldHeight = graphic.getHeight();
+
+      for (let i = 0; i < original.length; i++) {
+        const oldX = Math.floor(i % oldWidth) + x * 4;
+        const oldY = Math.floor(i / oldWidth) + y;
+        const newI = oldX + this.dataSize.width * 4 * oldY;
+
+        data[newI] = original[i];
+      }
+    });
+
+    this.data = data;
+  }
+
+  getImageData(): { data: Uint8Array; width: number; height: number } {
+    return {
+      data: this.data,
+      ...this.dataSize,
+    };
+  }
+
+  getHeight() {
+    return this.height;
+  }
+
+  getWidth() {
+    return this.width;
   }
 
   getName(): string {
@@ -250,7 +319,7 @@ export class Texture {
     // return this.patches
   }
 
-  getSize(): number {
+  getOffset(): number {
     return this.offset;
   }
 }

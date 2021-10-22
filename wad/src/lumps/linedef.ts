@@ -1,18 +1,6 @@
-import { Lump } from './lump';
-import { Sidedef } from './sidedefs';
-import { Vertex } from './vertexes';
-
-const flagsType = [
-  'Impassible',
-  'Block Monster',
-  'Two-Sided',
-  'Upper Unpegged',
-  'Lower Unpegged',
-  'Secret',
-  'Block Sound',
-  'Not on map',
-  'Already on map'
-];
+import { Lump } from "./lump";
+import { Sidedef } from "./sidedefs";
+import { Vertex } from "./vertexes";
 
 export class Linedefs extends Lump {
   private linedefs: Linedef[];
@@ -23,13 +11,27 @@ export class Linedefs extends Lump {
     this.linedefs = [];
 
     for (var i = 0; i < this.dataView.byteLength; i += 14) {
-      this.linedefs.push(new Linedef(lump, data, i));
+      const linedef = new Linedef(lump, data, i);
+      linedef.setIndex(this.linedefs.length);
+      this.linedefs.push(linedef);
     }
   }
 
   get(): Linedef[] {
     return this.linedefs;
   }
+}
+
+export enum LinedefFlag {
+  Impassible = 0,
+  BlockMonsters = 1,
+  TwoSided = 2,
+  Upper = 3,
+  Lower = 4,
+  Secret = 5,
+  BlockSound = 6,
+  NotOnMap = 7,
+  AlreayOnMap = 8,
 }
 
 export class Linedef extends Lump {
@@ -40,9 +42,10 @@ export class Linedef extends Lump {
   private tag: number;
   private right: number;
   private left: number;
-  private flags: string;
+  private flag: LinedefFlag;
   private rightSidedef: Sidedef;
   private leftSidedef: Sidedef;
+  private index: number = 0;
 
   private firstVertex: Vertex;
   private secondVertex: Vertex;
@@ -58,12 +61,17 @@ export class Linedef extends Lump {
     this.right = this.dataView.getInt16(offset + 10, true);
     this.left = this.dataView.getInt16(offset + 12, true);
 
-    this.flags = 'NOTHING';
+    this.flag = LinedefFlag[LinedefFlag[this.flagsIndex]];
 
-    if (this.flagsIndex < flagsType.length) {
-      this.flags = flagsType[this.flagsIndex];
-    }
     // console.warn('linedefs', firstVertexIndex, secondVertexIndex, flagsString, types, tag, right, left);
+  }
+
+  setIndex(index: number) {
+    this.index = index;
+  }
+
+  getIndex() {
+    return this.index;
   }
 
   setSidedef(rightSidedef: Sidedef, leftSidedef: Sidedef) {
@@ -115,8 +123,8 @@ export class Linedef extends Lump {
     return this.secondVertexIndex;
   }
 
-  getFlag(): string {
-    return this.flags;
+  getFlag(): LinedefFlag {
+    return this.flag;
   }
 
   getSectorTag(): number {

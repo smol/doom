@@ -32,11 +32,9 @@ export const Viewer = ({ items }: { items: TreeData[] }) => {
 
   const item = getItem(itemUrls, items);
 
-  console.info({ itemUrls, item });
-
   return (
     <Div>
-      {item && item.Component && item.Component()}
+      {item && item.Component && <item.Component />}
       {/* {items.map(({ url, Component }) => (Component ? <Component /> : null))} */}
     </Div>
   );

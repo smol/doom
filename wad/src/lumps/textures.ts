@@ -1,7 +1,8 @@
-import { Texture } from './texture';
-import { Lump } from './lump';
-import { Parser } from '../parser';
-import { Playpal } from './playpal';
+import { Texture } from "./texture";
+import { Lump } from "./lump";
+import { Parser } from "../parser";
+import { Playpal } from "./playpal";
+import { Pname } from "./pnames";
 
 export class Textures extends Lump {
   private count: number;
@@ -26,20 +27,16 @@ export class Textures extends Lump {
       let texture = new Texture(playpal, data);
       this.textures.push(texture);
 
-      tempOffset += texture.getSize();
+      tempOffset += texture.getOffset();
     }
 
     // console.info('TEXTURE', lump.name, this.count, this.offset);
   }
 
-  setPnames(pnames: string[]) {
-    // for (var i = 0; i < pnames.length; i++){
-    // 	for (var j = 0; j < this.textures.length; j++){
-    // 		if (pnames[i] === this.textures[j].getName()){
-    // 			this.textures[j].setPnames(p)
-    // 		}
-    // 	}
-    // }
+  setPnames(pnames: Pname[]) {
+    this.textures.forEach((texture) => {
+      texture.setPnames(pnames);
+    });
   }
 
   getTextureByName(name: string): Texture {

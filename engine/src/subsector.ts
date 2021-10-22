@@ -1,8 +1,8 @@
-import * as THREE from 'three';
-import * as Wad from 'wad';
+import * as THREE from "three";
+import * as Wad from "wad";
 
-import { Floor } from './floor';
-import { Wall } from './wall';
+import { Floor } from "./floor";
+import { Wall } from "./wall";
 
 export class Subsector extends THREE.Group {
   private floors: Floor[];
@@ -29,8 +29,21 @@ export class Subsector extends THREE.Group {
 
     var segs: Wad.Seg[] = subsector.getSegs();
 
-    segs.forEach(seg => {
-      this.add(this.createWall(seg));
+    const filter = segs.filter(
+      (seg) => seg.getLinedef().getIndex() === 326
+    ).length;
+    if (filter > 0) {
+      console.info({ filter, subsector });
+    }
+
+    segs.forEach((seg) => {
+      if (
+        this.walls.filter(
+          (wall) => wall.getLinedef().getIndex() === seg.getLinedef().getIndex()
+        ).length == 0
+      ) {
+        this.add(this.createWall(seg));
+      }
     });
   }
 
@@ -49,7 +62,13 @@ export class Subsector extends THREE.Group {
     );
 
     let wall = new Wall(this.textures);
-    wall.setVertexes(startVertex, endVertex, rightSidedef, leftSidedef, seg);
+    wall.setVertexes(
+      startVertex,
+      endVertex,
+      rightSidedef,
+      leftSidedef,
+      linedef
+    );
 
     this.walls.push(wall);
     return wall;

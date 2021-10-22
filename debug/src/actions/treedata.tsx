@@ -3,33 +3,25 @@ import { Endoom } from "../endoom.debug";
 import { Playpal } from "../playpal.debug";
 import { TreeData } from "../treeview";
 import { Graphic, Flat } from "../graphic.debug";
+import { Texture } from "../texture.debug";
 import { Music } from "../music.debug";
+import { Map, Things } from "../map.debug";
+import { Vertexes } from "../vertexes.debug";
+import { Subsector } from "../subsector.debug";
+import { Node } from "../nodes.debug";
+import { Linedefs } from "../linedefs.debug";
 import { Wad } from "wad";
 
 export default (wad: Wad): TreeData[] => {
-  //  var datasGraphics: TreeData[] = [];
-  //   var graphics: Wad.Graphic[] = this.props.;
-
-  //   for (var i = 0; i < graphics.length; i++) {
-  //     datasGraphics.push({
-  //       label: graphics[i].getName(),
-  //       component: <Graphic.Graphic graphic={graphics[i]} />,
-  //       children: null,
-  //     });
-  //   }
-
-  //   return [
-  //     { label: "GRAPHICS", component: null, children: datasGraphics },
-  //     { label: "TEXTURES", component: null, children: this.getTextures() },
-  //     { label: "FLATS", component: null, children: this.getFlats() },
-  //   ];
-
-  const graphics = wad.getGraphics().map((graphic) => ({
-    label: graphic.getName(),
-    url: graphic.getName(),
-    Component: () => <Graphic graphic={graphic} />,
-    children: null,
-  }));
+  const graphics = wad
+    .getGraphics()
+    .sort((a, b) => a.getName().localeCompare(b.getName()))
+    .map((graphic) => ({
+      label: graphic.getName(),
+      url: graphic.getName(),
+      Component: () => <Graphic graphic={graphic} />,
+      children: null,
+    }));
 
   const textures = wad.getTextures().map<TreeData>((texture) => ({
     label: texture.getName(),
@@ -37,6 +29,7 @@ export default (wad: Wad): TreeData[] => {
     children: texture.getTextures().map((texture) => ({
       label: texture.getName(),
       url: texture.getName(),
+      Component: () => <Texture texture={texture} colormaps={wad.ColorMap} />,
       children: [],
     })),
   }));
@@ -86,7 +79,79 @@ export default (wad: Wad): TreeData[] => {
         children: [],
       })),
     },
-    { label: "MAPS", url: "maps", children: [] },
+    {
+      label: "MAPS",
+      url: "maps",
+      children: wad.getMaps().map((map) => ({
+        label: map.getName(),
+        url: map.getName(),
+        Component: () => <Map map={map} wad={wad} />,
+        children: [
+          {
+            label: "LINEDEFS",
+            url: "linedefs",
+            children: map.getLinedefs().map((linedef, index) => ({
+              url: `linedef-${index}`,
+              label: `LINEDEF-${index}`,
+              children: [],
+              Component: () => (
+                <Linedefs
+                  current={linedef}
+                  linedefs={map.getLinedefs()}
+                  vertexes={map.getVertexes()}
+                />
+              ),
+            })),
+          },
+          {
+            label: "THINGS",
+            url: "things",
+            Component: () => <Things things={map.getThings()} />,
+            children: [],
+          },
+          {
+            label: "VERTEXES",
+            url: "vertexes",
+            Component: () => (
+              <Vertexes
+                vertexes={map.getVertexes()}
+                linedefs={map.getLinedefs()}
+              />
+            ),
+            children: [],
+          },
+          {
+            label: "NODES",
+            url: "nodes",
+
+            children: map.getNodes().map((node, index) => ({
+              label: `NODE-${index}`,
+              url: `node-${index}`,
+              Component: () => (
+                <Node
+                  vertexes={map.getVertexes()}
+                  linedefs={map.getLinedefs()}
+                  node={node}
+                />
+              ),
+              children: [],
+            })),
+          },
+
+          {
+            label: "SUBSECTORS",
+            url: "subsectors",
+
+            children: map.getSubsectors().map((subsector, index) => ({
+              label: `SUBSECTOR-${index}`,
+              url: `subsector-${index}`,
+              Component: () => <Subsector subsector={subsector} />,
+              children: [],
+            })),
+          },
+        ],
+      })),
+    },
   ];
 };
 

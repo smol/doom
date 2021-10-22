@@ -1,13 +1,13 @@
-import { Graphic } from './graphic';
-import { Lump } from './lump';
-import { Textures } from './textures';
+import { Graphic } from "./graphic";
+import { Lump } from "./lump";
+import { Textures } from "./textures";
 
 export class Pname {
   private name: string;
   private graphic: Graphic;
 
   constructor(offset: number, data: DataView) {
-    this.name = '';
+    this.name = "";
 
     for (var b = 0; b < 8; b++) {
       let charcode = data.getUint8(offset + b);
@@ -42,7 +42,7 @@ export class Pname {
 export class Pnames extends Lump {
   private pnames: Pname[];
 
-  constructor(lump: any, data: any, textures: Textures[]) {
+  constructor(lump: any, data: any) {
     super(lump, data);
 
     let count: number = this.dataView.getUint32(0, true);
@@ -53,27 +53,12 @@ export class Pnames extends Lump {
 
       this.pnames.push(new Pname(offset, this.dataView));
     }
-
-    textures.forEach(textures => {
-      textures.getTextures().forEach(texture => {
-        texture.getPatches().forEach(patch => {
-          patch.pname = this.pnames[patch.pnameIndex];
-        });
-      });
-    });
   }
 
   setGraphic(graphic: Graphic) {
-    this.pnames.forEach(pname => {
-      // if (pname.getName()
-
+    this.pnames.forEach((pname) => {
       if (graphic.getName() == pname.getName()) {
         pname.setGraphic(graphic);
-
-        if (graphic.getName() === 'DOOR3_6') {
-          console.info(graphic.getName(), pname.getName(), pname);
-        }
-        return;
       }
     });
   }

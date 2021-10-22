@@ -1,21 +1,20 @@
-import { Map } from "./map";
-import { Graphic } from "./graphic";
-import { Texture } from "./texture";
-import { Flat } from "./flat";
-import { Textures } from "./textures";
-import { Nodes, Node } from "./nodes";
 import { ColorMap } from "./colormap";
 import { Endoom } from "./endoom";
-import { Things, Thing } from "./things";
+import { Flat } from "./flat";
+import { Graphic } from "./graphic";
+import { Linedef, LinedefFlag } from "./linedef";
+import { Map } from "./map";
 import { Music } from "./music";
-import { Vertex, Vertexes } from "./vertexes";
+import { Node, Nodes } from "./nodes";
 import { Playpal } from "./playpal";
-
-import { Subsector } from "./subsector";
 import { Sector } from "./sectors";
 import { Seg } from "./segs";
-import { Linedef } from "./linedef";
 import { Sidedef } from "./sidedefs";
+import { Subsector } from "./subsector";
+import { Texture } from "./texture";
+import { Textures } from "./textures";
+import { Thing, Things } from "./things";
+import { Vertex, Vertexes } from "./vertexes";
 
 export {
   Endoom,
@@ -34,6 +33,7 @@ export {
   Sector,
   Seg,
   Linedef,
+  LinedefFlag,
   Sidedef,
   Vertex,
   Playpal,

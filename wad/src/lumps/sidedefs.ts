@@ -1,6 +1,6 @@
-import { Sector } from './sectors';
-import { Linedef } from './linedef';
-import { Lump } from './lump';
+import { Sector } from "./sectors";
+import { Linedef } from "./linedef";
+import { Lump } from "./lump";
 
 export class Sidedef {
   private x: number;
@@ -13,12 +13,12 @@ export class Sidedef {
   private sectorIndex: number;
 
   constructor(offset: number, data: DataView) {
-    this.x = data.getInt16(offset + 0, true);
-    this.y = data.getInt16(offset + 2, true);
+    this.x = data.getInt8(offset + 0);
+    this.y = data.getInt8(offset + 2);
 
-    this.upper = '';
-    this.lower = '';
-    this.middle = '';
+    this.upper = "";
+    this.lower = "";
+    this.middle = "";
 
     var i = 4;
     for (i = 4; i < 12; i++) {

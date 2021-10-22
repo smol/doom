@@ -78,7 +78,8 @@ class OrbitControls extends EventDispatcher {
 
   constructor(
     object: THREE.PerspectiveCamera | THREE.OrthographicCamera,
-    domElement: HTMLCanvasElement
+    domElement: HTMLCanvasElement,
+    target: Vector3 = new Vector3()
   ) {
     super();
 
@@ -95,7 +96,7 @@ class OrbitControls extends EventDispatcher {
     this.enabled = true;
 
     // "target" sets the location of focus, where the object orbits around
-    this.target = new Vector3();
+    this.target = target;
 
     // How far you can dolly in and out ( PerspectiveCamera only )
     this.minDistance = 0;
@@ -765,7 +766,6 @@ class OrbitControls extends EventDispatcher {
     //
 
     function onPointerDown(event) {
-      console.info("pointer down", { scope });
       if (scope.enabled === false) return;
 
       if (pointers.length === 0) {
@@ -823,8 +823,6 @@ class OrbitControls extends EventDispatcher {
 
     function onMouseDown(event) {
       let mouseAction;
-
-      console.info("mouse down");
       switch (event.button) {
         case 0:
           mouseAction = scope.mouseButtons.LEFT;

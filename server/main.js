@@ -42,7 +42,7 @@ app.get("/debug/*", function (req, res) {
 });
 
 app.get("/doom.wad", function (req, res) {
-  res.sendFile(__dirname + "/doom.wad");
+  res.sendFile(__dirname + "/DoomUltimate.wad");
 });
 
 http.listen(8080, function () {

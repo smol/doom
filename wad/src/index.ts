@@ -1,30 +1,30 @@
+import { Builder } from "./builder";
 import {
-  Map,
-  Sector,
-  Sidedef,
-  Linedef,
-  Seg,
-  Subsector,
-  Nodes,
-  Textures,
-  Flat,
-  Texture,
-  Graphic,
-  Node,
   ColorMap,
   Endoom,
+  Flat,
+  Graphic,
+  Linedef,
+  LinedefFlag,
+  Map,
   Music,
-  Thing,
-  Vertexes,
-  Vertex,
-  Things,
+  Node,
+  Nodes,
   Playpal,
+  Sector,
+  Seg,
+  Sidedef,
+  Subsector,
+  Texture,
+  Textures,
+  Thing,
+  Things,
+  Vertex,
+  Vertexes,
 } from "./lumps";
-
 import { Parser } from "./parser";
-import { Wad } from "./wad";
 import { Type } from "./type";
-import { Builder } from "./builder";
+import { Wad } from "./wad";
 
 export {
   Parser,
@@ -35,6 +35,7 @@ export {
   Sector,
   Sidedef,
   Linedef,
+  LinedefFlag,
   Seg,
   Subsector,
   Nodes,

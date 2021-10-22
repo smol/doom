@@ -1,7 +1,6 @@
 import * as Wad from "wad";
 import * as Engine from "engine";
-import * as React from "react";
-import * as ReactDOM from "react-dom";
+import { RefObject, Component, createRef } from "react";
 
 interface ThingsProps {
   things: Wad.Things;
@@ -12,100 +11,128 @@ interface MapProps {
   wad: Wad.Wad;
 }
 
-export namespace Debug {
-  export class Things extends React.Component<ThingsProps> {
-    render() {
-      var i = 0;
-      var things: JSX.Element[] = this.props.things.get().map((thing) => {
-        return <li key={i++}>{thing.toString()}</li>;
-      });
+export class Things extends Component<ThingsProps> {
+  render() {
+    var i = 0;
+    var things: JSX.Element[] = this.props.things.get().map((thing) => {
+      return <li key={i++}>{thing.toString()}</li>;
+    });
 
-      return (
-        <div id="infos">
-          <ul>{things}</ul>
-        </div>
-      );
-    }
+    return (
+      <div id="infos">
+        <ul>{things}</ul>
+      </div>
+    );
   }
-
-  export class Map extends React.Component<MapProps> {
-    private core: Engine.Core;
-
-    private rendering() {
-      console.info(this.refs.canvas);
-      this.core = new Engine.Core(this.refs.canvas as HTMLCanvasElement, null, {
-        orbitControl: true,
-        showFps: false,
-      });
-      this.core.createMap(this.props.map, this.props.wad);
-
-      let things: Wad.Thing[] = this.props.map.getThings().get();
-      things.forEach((thing) => {
-        if (thing.getType() == "player 1 start") {
-          let position: { x: number; y: number } = thing.getPosition();
-          this.core.setCameraPosition({ x: position.x, y: 40, z: position.y });
-        }
-      });
-    }
-
-    componentDidMount() {
-      this.rendering();
-    }
-
-    render() {
-      return (
-        <canvas
-          ref="canvas"
-          width={window.innerWidth}
-          height={window.innerHeight / (1 / 0.8)}
-          style={{ backgroundColor: "black" }}
-        />
-      );
-    }
-  }
-
-  // export class Maps {
-  // 	private maps: Wad.Map[];
-
-  // 	constructor(maps: Wad.Map[], container: HTMLElement) {
-  // 		this.maps = maps;
-  // 		var self = this;
-
-  // 		var li: HTMLLIElement = document.createElement('li') as HTMLLIElement;
-  // 		li.innerHTML = 'MAPS';
-  // 		li.onclick = () => {
-  // 			self.setMaps();
-  // 		};
-
-  // 		container.appendChild(li);
-  // 	}
-
-  // 	private setMaps() {
-  // 		var subtree = document.getElementsByClassName('subtree');
-
-  // 		if (subtree.length > 0) {
-  // 			subtree[0].remove();
-  // 		}
-
-  // 		var ul: HTMLUListElement = document.createElement('ul') as HTMLUListElement;
-  // 		ul.className = 'subtree';
-
-  // 		this.maps.forEach((item) => {
-  // 			var li = document.createElement('li');
-  // 			li.innerHTML = item.getName();
-  // 			li.onclick = () => {
-  // 				console.warn(item.getThings());
-  // 			};
-  // 			ul.appendChild(li);
-  // 		});
-
-  // 		document.getElementById('treeview').appendChild(ul);
-  // 	}
-  // }
-
-  // class MapDebug {
-  // 	constructor() {
-
-  // 	}
-  // }
 }
+
+export class Map extends Component<MapProps> {
+  private core?: Engine.Core;
+  private canvasRef: RefObject<HTMLCanvasElement>;
+  private containerRef: RefObject<HTMLDivElement>;
+
+  constructor(props: MapProps) {
+    super(props);
+
+    this.canvasRef = createRef();
+    this.containerRef = createRef();
+    this.resize = this.resize.bind(this);
+  }
+
+  private resize() {
+    this.canvasRef.current.width = this.containerRef.current.clientWidth;
+    this.canvasRef.current.height = this.containerRef.current.clientHeight;
+    this.core?.updateCanvas(this.canvasRef.current);
+  }
+
+  private rendering() {
+    this.resize();
+    window.addEventListener("resize", this.resize);
+
+    this.core = new Engine.Core(
+      this.canvasRef.current as HTMLCanvasElement,
+      null,
+      {
+        orbitControl: true,
+        showFps: true,
+      }
+    );
+    // this.core.setCameraPosition({ x: 10, y: 0, z: 0 });
+    this.core.createMap(this.props.map, this.props.wad);
+
+    let things: Wad.Thing[] = this.props.map.getThings().get();
+    things.forEach((thing) => {
+      if (thing.getType() == "player 1 start") {
+        const position: { x: number; y: number } = thing.getPosition();
+        this.core.setCameraPosition({ x: position.x, y: 40, z: position.y });
+      }
+    });
+  }
+
+  componentDidMount() {
+    this.rendering();
+  }
+
+  componentWillUnmount() {
+    window.removeEventListener("resize", this.resize);
+  }
+
+  render() {
+    return (
+      <div
+        ref={this.containerRef}
+        style={{ height: "100vh", overflow: "hidden" }}
+      >
+        <canvas
+          ref={this.canvasRef}
+          style={{ backgroundColor: "transparent" }}
+        />
+      </div>
+    );
+  }
+}
+
+// export class Maps {
+// 	private maps: Wad.Map[];
+
+// 	constructor(maps: Wad.Map[], container: HTMLElement) {
+// 		this.maps = maps;
+// 		var self = this;
+
+// 		var li: HTMLLIElement = document.createElement('li') as HTMLLIElement;
+// 		li.innerHTML = 'MAPS';
+// 		li.onclick = () => {
+// 			self.setMaps();
+// 		};
+
+// 		container.appendChild(li);
+// 	}
+
+// 	private setMaps() {
+// 		var subtree = document.getElementsByClassName('subtree');
+
+// 		if (subtree.length > 0) {
+// 			subtree[0].remove();
+// 		}
+
+// 		var ul: HTMLUListElement = document.createElement('ul') as HTMLUListElement;
+// 		ul.className = 'subtree';
+
+// 		this.maps.forEach((item) => {
+// 			var li = document.createElement('li');
+// 			li.innerHTML = item.getName();
+// 			li.onclick = () => {
+// 				console.warn(item.getThings());
+// 			};
+// 			ul.appendChild(li);
+// 		});
+
+// 		document.getElementById('treeview').appendChild(ul);
+// 	}
+// }
+
+// class MapDebug {
+// 	constructor() {
+
+// 	}
+// }

@@ -6,6 +6,7 @@ import * as ReactDOM from "react-dom";
 
 interface GraphicProps {
   graphic: Wad.Graphic;
+  style?: React.CSSProperties;
 }
 
 interface FlatProps {
@@ -41,13 +42,18 @@ export class Graphic extends React.Component<GraphicProps, {}> {
   }
 
   render() {
+    const { graphic, style } = this.props;
+
     return (
-      <canvas
-        className="debug-container endoom"
-        ref="canvas"
-        width={this.props.graphic.getWidth()}
-        height={this.props.graphic.getHeight()}
-      ></canvas>
+      <div>
+        <canvas
+          className="debug-container endoom"
+          ref="canvas"
+          style={style}
+          width={graphic.getWidth()}
+          height={graphic.getHeight()}
+        ></canvas>
+      </div>
     );
   }
 }
@@ -85,6 +91,7 @@ export class Flat extends React.Component<FlatProps, {}> {
       <canvas
         className="debug-container endoom"
         ref="canvas"
+        style={{ background: "transparent" }}
         width={this.props.flat.getWidth()}
         height={this.props.flat.getHeight()}
       ></canvas>

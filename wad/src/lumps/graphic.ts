@@ -1,6 +1,7 @@
-import { Lump } from './lump';
-import { Playpal } from './playpal';
-import { Pnames } from './pnames';
+import { Textures } from "./textures";
+import { Lump } from "./lump";
+import { Playpal } from "./playpal";
+import { Pnames } from "./pnames";
 
 export class Graphic extends Lump {
   private playpal: Playpal;
@@ -10,20 +11,22 @@ export class Graphic extends Lump {
   private xOffset: number;
   private yOffset: number;
 
-  private buffer: Uint8ClampedArray;
+  private dummyValue: number[][];
+
+  private buffer: Int16Array;
   private imageData: Uint8ClampedArray;
 
   constructor(playpal: Playpal, lump: any, data: any, pnames: Pnames) {
     super(lump, data);
 
-    pnames.setGraphic(this);
-
     this.playpal = playpal;
+
+    pnames.setGraphic(this);
 
     this.width = this.dataView.getUint16(0, true);
     this.height = this.dataView.getUint16(2, true);
-    this.xOffset = this.dataView.getUint16(4, true);
-    this.yOffset = this.dataView.getUint16(6, true);
+    this.xOffset = this.dataView.getInt16(4, true);
+    this.yOffset = this.dataView.getInt16(6, true);
 
     // console.warn(lump.name);
 
@@ -32,7 +35,7 @@ export class Graphic extends Lump {
       columns.push(this.dataView.getUint32(8 + i * 4, true));
     }
 
-    this.buffer = new Uint8ClampedArray(this.width * this.height);
+    this.buffer = new Int16Array(this.width * this.height);
     this.imageData = new Uint8ClampedArray(this.width * this.height * 4);
 
     // if (lump.name === "END0"){
@@ -43,11 +46,11 @@ export class Graphic extends Lump {
       this.buffer[i] = -1;
     }
 
-    var position: number = 0;
+    let position: number = 0;
 
     for (var i = 0; i < this.width; i++) {
       position = columns[i];
-      var rowStart = 0;
+      let rowStart = 0;
 
       while (rowStart != 255) {
         rowStart = this.dataView.getUint8(position);
@@ -57,39 +60,47 @@ export class Graphic extends Lump {
           break;
         }
 
-        var pixelsNumber = this.dataView.getUint8(position);
+        const pixelsNumber = this.dataView.getUint8(position);
         position += 1;
 
-        var dummyValue = this.dataView.getUint8(position); // dummy value
+        // var dummyValue = this.dataView.getUint8(position); // dummy value
         position++;
 
         for (var j = 0; j < pixelsNumber; j++) {
-          this.buffer[(rowStart + j) * this.width + i] = this.dataView.getUint8(
-            position
-          );
+          this.buffer[(rowStart + j) * this.width + i] =
+            this.dataView.getUint8(position);
           position++;
         }
 
-        this.dataView.getUint8(position); // dummy value
+        // this.dataView.getUint8(position); // dummy value
         position++;
       }
     }
 
+    const newPlaypal = this.playpal.getColors()[0];
     for (var i = 0; i < this.buffer.length; i++) {
-      if (this.buffer[i] !== -1) {
-        var color = this.playpal.getColors()[0][this.buffer[i]];
+      if (this.buffer[i] != -1) {
+        var color = newPlaypal[this.buffer[i]];
 
         this.imageData[i * 4 + 0] = color.r;
         this.imageData[i * 4 + 1] = color.g;
         this.imageData[i * 4 + 2] = color.b;
         this.imageData[i * 4 + 3] = 255;
       } else {
-        this.imageData[i * 4 + 0] = 255;
+        this.imageData[i * 4 + 0] = 0;
         this.imageData[i * 4 + 1] = 0;
         this.imageData[i * 4 + 2] = 0;
         this.imageData[i * 4 + 3] = 0;
       }
     }
+  }
+
+  getDummy() {
+    return this.dummyValue;
+  }
+
+  getOffset(): { x: number; y: number } {
+    return { x: this.xOffset, y: this.yOffset };
   }
 
   getImageData(): Uint8ClampedArray {

@@ -21,7 +21,7 @@ export class Camera {
   // ---
 
   constructor(ratio: number, canvas: HTMLCanvasElement, scene: THREE.Scene) {
-    this.camera = new THREE.PerspectiveCamera(60, ratio, 0.1, 3000);
+    this.camera = new THREE.PerspectiveCamera(60, ratio, 0.1, 9000);
 
     this.scene = scene;
 
@@ -41,7 +41,6 @@ export class Camera {
   update() {
     try {
       this.controls.update();
-      this.camera.position.y += 0.001;
     } catch (e) {
       console.warn(e);
     }
@@ -73,6 +72,7 @@ export class Camera {
 
     this.controls = new OrbitControls(this.camera, this.canvas);
     this.controls.listenToKeyEvents(window);
+
     // this.lookAt(new THREE.Vector3(0, 0,0 ));
   }
 
@@ -88,9 +88,17 @@ export class Camera {
     this.raycaster.setFromCamera(mouse3D, this.camera);
     var intersects = this.raycaster.intersectObjects(this.scene.children, true);
 
-    if (intersects.length > 0) {
-      console.info(intersects[0].object.parent);
-    }
+    // if (intersects.length > 0) {
+    //   intersects.forEach((inter) => {
+    //     let current = inter.object;
+    //     while (current) {
+    //       if ((current as any).toDebug) {
+    //         console.info((current as any).toDebug());
+    //       }
+    //       current = current.parent;
+    //     }
+    //   });
+    // }
   }
   // ---
 }
