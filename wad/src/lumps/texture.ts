@@ -279,12 +279,17 @@ export class Texture {
       const oldWidth = graphic.getWidth() * 4;
       const oldHeight = graphic.getHeight();
 
-      for (let i = 0; i < original.length; i++) {
+      for (let i = 0; i < original.length; i += 4) {
         const oldX = Math.floor(i % oldWidth) + x * 4;
         const oldY = Math.floor(i / oldWidth) + y;
         const newI = oldX + this.dataSize.width * 4 * oldY;
 
-        data[newI] = original[i];
+        if (original[i + 3] > 0) {
+          data[newI + 0] = original[i + 0];
+          data[newI + 1] = original[i + 1];
+          data[newI + 2] = original[i + 2];
+          data[newI + 3] = original[i + 3];
+        }
       }
     });
 
