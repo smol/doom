@@ -92,17 +92,17 @@ export class Camera {
     this.raycaster.setFromCamera(mouse3D, this.camera);
     var intersects = this.raycaster.intersectObjects(this.scene.children, true);
 
-    // if (intersects.length > 0) {
-    //   intersects.forEach((inter) => {
-    //     let current = inter.object;
-    //     while (current) {
-    //       if ((current as any).toDebug) {
-    //         console.info((current as any).toDebug());
-    //       }
-    //       current = current.parent;
-    //     }
-    //   });
-    // }
+    if (intersects.length > 0) {
+      intersects.forEach((inter) => {
+        let current = inter.object;
+        while (current) {
+          if ((current as any).toDebug) {
+            console.info((current as any).toDebug());
+          }
+          current = current.parent;
+        }
+      });
+    }
   }
   // ---
 }

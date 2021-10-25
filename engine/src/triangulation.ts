@@ -9,7 +9,7 @@ const compare = (
 };
 
 const find = (array: number[][], item: number[]) => {
-  for (let i = 0; i < array.length; i++) {
+  for (let i = array.length - 1; i >= 0; i--) {
     let isExact = true;
     for (let i2 = 0; i2 < array[i].length; i2++) {
       if (array[i][i2] !== item[i2]) {
@@ -36,15 +36,37 @@ export class Triangulation {
     const vertices = this.reorderLinedefs(sector.getSidedefs());
 
     vertices.forEach(({ start, end }, index) => {
-      this.points.push([start.x, start.y]);
-
-      const indexLoop = find(this.points, [end.x, end.y]);
-      if (indexLoop > -1) {
-        this.edges.push([index, indexLoop]);
-      } else {
-        this.edges.push([index, index + 1]);
+      // this.points.push();
+      if (find(this.points, [start.x, start.y]) === -1) {
+        this.points.push([start.x, start.y]);
       }
+
+      // const indexLoop = find(this.points, [end.x, end.y]);
+      // if (indexLoop > -1) {
+      //   console.info(indexLoop, index, start, end);
+      //   this.edges.push([index, indexLoop]);
+      // } else {
+      //   this.edges.push([index, index + 1 >= vertices.length ? 0 : index + 1]);
+      // }
     });
+
+    vertices.forEach(({ start, end }) => {
+      const startIndex = find(this.points, [start.x, start.y]);
+      const endIndex = find(this.points, [end.x, end.y]);
+      this.edges.push([startIndex, endIndex]);
+    });
+
+    // this.points.push([vertices[0].start.x, vertices[0].start.y]);
+    // this.points.push([this.points.length, 0]);
+
+    // console.info("---- VERTICES");
+    // vertices.forEach(({ start, end }, index) => {
+    //   console.info(index, `${start.x}:${start.y}`, `${end.x}:${end.y}`);
+    // });
+
+    // console.info(this.points, this.edges);
+
+    // console.info(vertices, this.edges);
 
     // this.edges = this.points.map((_, index) => {
     //   if (index + 1 >= this.points.length) {
@@ -95,9 +117,13 @@ export class Triangulation {
   }
 
   public generate(): { points: number[][]; cdt: number[][] } {
-    // const cdt = [];
-    const cdt = cdt2d(this.points, this.edges, { exterior: false });
-    // console.info(this.points, this.edges, cdt);
+    let cdt = [];
+    try {
+      cdt = cdt2d(this.points, this.edges, { exterior: false });
+    } catch (e) {
+      console.warn(e);
+    }
+    // console.info(cdt);
     return { points: this.points, cdt };
   }
 }

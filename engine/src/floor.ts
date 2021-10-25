@@ -32,6 +32,7 @@ export class Floor extends THREE.Group {
     });
 
     this.material.side = invert ? THREE.FrontSide : THREE.BackSide;
+    // this.material.side = THREE.DoubleSide;
 
     this.material.needsUpdate = true;
     this.geometry = new THREE.BufferGeometry();
@@ -88,6 +89,15 @@ export class Floor extends THREE.Group {
 
     this.texture.needsUpdate = true;
 
+    const offset = {
+      x: bbox.min.x / 128,
+      y: bbox.min.y / 128,
+    };
+
+    this.texture.offset.x = offset.x / width;
+    this.texture.offset.y = offset.y / height;
+
+    this.texture.needsUpdate = true;
     (this.mesh.material as THREE.MeshBasicMaterial).map = this.texture;
   }
 

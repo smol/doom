@@ -73,7 +73,7 @@ export class Texture extends Component<TextureProps, { base64: string }> {
       console.info(width, height, data, temp);
       var idata: ImageData = ctx.createImageData(width, height);
       idata.data.set(data);
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
       ctx.scale(1, 1);
       createImageBitmap(idata).then((renderer) => {
         ctx.drawImage(renderer, 0, 0, width, height);
@@ -92,12 +92,19 @@ export class Texture extends Component<TextureProps, { base64: string }> {
     const { base64 } = this.state;
 
     return (
-      <div style={{ padding: 10, color: "white" }}>
+      <div
+        style={{
+          padding: 10,
+          color: "white",
+          width: "100%",
+          boxSizing: "border-box",
+        }}
+      >
         <h4>PATCHES</h4>
         <div style={{ display: "flex", justifyContent: "space-between" }}>
           {texture.getPatches().map(({ pname, x, y }, index) => {
             const graphic = pname.getGraphics();
-            console.info(graphic.getName());
+
             return (
               <div
                 key={`patch-${index}`}

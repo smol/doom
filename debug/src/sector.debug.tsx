@@ -83,11 +83,13 @@ export const Sector = ({ sector, flats }: SectorProps) => {
       const second = sidedef.getLinedef().getSecondVertex();
 
       ctx.moveTo(first.x, first.y);
+      ctx.arc(first.x, first.y, 5, 0, 2 * Math.PI);
+      ctx.moveTo(first.x, first.y);
       ctx.lineTo(second.x, second.y);
     });
 
     ctx.stroke();
-    ctx.closePath();
+    // ctx.closePath();
 
     renderDelaunay();
 
@@ -104,6 +106,20 @@ export const Sector = ({ sector, flats }: SectorProps) => {
     const canvas = canvasRef.current;
     const ctx = canvas.getContext("2d");
 
+    ctx.fillStyle = "red";
+
+    ctx.beginPath();
+    ctx.strokeStyle = "blue";
+
+    ctx.moveTo(points[0][0], points[0][1]);
+    points.forEach((points, index) => {
+      ctx.lineTo(points[0], points[1]);
+      ctx.fillText(`${index}:`, points[0] + (index + 15), points[1] - 5);
+    });
+
+    ctx.stroke();
+    ctx.closePath();
+
     ctx.beginPath();
     ctx.strokeStyle = "green";
 
@@ -111,8 +127,6 @@ export const Sector = ({ sector, flats }: SectorProps) => {
     // points.forEach((points) => {
     //   ctx.lineTo(points[0], points[1]);
     // });
-
-    ctx.fillStyle = "white";
 
     cdt.forEach((cdt) => {
       ctx.moveTo(points[cdt[0]][0], points[cdt[0]][1]);
