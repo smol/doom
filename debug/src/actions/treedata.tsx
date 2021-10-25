@@ -1,16 +1,17 @@
+import { Wad } from "wad";
 import { ColorMap } from "../colormap.debug";
 import { Endoom } from "../endoom.debug";
-import { Playpal } from "../playpal.debug";
-import { TreeData } from "../treeview";
-import { Graphic, Flat } from "../graphic.debug";
-import { Texture } from "../texture.debug";
-import { Music } from "../music.debug";
-import { Map, Things } from "../map.debug";
-import { Vertexes } from "../vertexes.debug";
-import { Subsector } from "../subsector.debug";
-import { Node } from "../nodes.debug";
+import { Flat, Graphic } from "../graphic.debug";
 import { Linedefs } from "../linedefs.debug";
-import { Wad } from "wad";
+import { Map, Things } from "../map.debug";
+import { Music } from "../music.debug";
+import { Node } from "../nodes.debug";
+import { Playpal } from "../playpal.debug";
+import { Sector } from "../sector.debug";
+import { Subsector } from "../subsector.debug";
+import { Texture } from "../texture.debug";
+import { TreeData } from "../treeview";
+import { Vertexes } from "../vertexes.debug";
 
 export default (wad: Wad): TreeData[] => {
   const graphics = wad
@@ -146,6 +147,18 @@ export default (wad: Wad): TreeData[] => {
               label: `SUBSECTOR-${index}`,
               url: `subsector-${index}`,
               Component: () => <Subsector subsector={subsector} />,
+              children: [],
+            })),
+          },
+          {
+            label: "SECTORS",
+            url: "sectors",
+            children: map.getSectors().map((sector, index) => ({
+              label: `SECTOR-${index}`,
+              url: `sector-${index}`,
+              Component: () => (
+                <Sector sector={sector} flats={wad.getFlats()} />
+              ),
               children: [],
             })),
           },

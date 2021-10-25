@@ -4,9 +4,15 @@ import { TreeData } from "./treeview";
 
 const Div = styled.div`
   background: #292929;
-  height: 100vh;
-  overflow: auto;
+  overflow: hidden;
   flex: 1;
+  display: flex;
+  justify-content: stretch;
+  align-items: stretch;
+
+  > * {
+    flex: 1;
+  }
 `;
 
 export const Viewer = ({ items }: { items: TreeData[] }) => {

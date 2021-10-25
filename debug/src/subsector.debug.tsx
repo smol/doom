@@ -70,7 +70,7 @@ export const Subsector = ({ subsector }: SubsectorProps) => {
   }, []);
 
   return (
-    <div style={{ height: "100vh", display: "flex" }}>
+    <div style={{ display: "flex" }}>
       <div style={{ flex: 1 }} ref={containerRef}>
         <canvas style={{ background: "black" }} ref={canvasRef}></canvas>
       </div>

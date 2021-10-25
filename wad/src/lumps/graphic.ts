@@ -87,10 +87,10 @@ export class Graphic extends Lump {
         this.imageData[i * 4 + 2] = color.b;
         this.imageData[i * 4 + 3] = 255;
       } else {
-        this.imageData[i * 4 + 0] = 0;
-        this.imageData[i * 4 + 1] = 0;
-        this.imageData[i * 4 + 2] = 0;
-        this.imageData[i * 4 + 3] = 0;
+        this.imageData[i * 4 + 0] += 0;
+        this.imageData[i * 4 + 1] += 0;
+        this.imageData[i * 4 + 2] += 0;
+        this.imageData[i * 4 + 3] += 0;
       }
     }
   }

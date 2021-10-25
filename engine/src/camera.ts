@@ -39,15 +39,23 @@ export class Camera {
   }
 
   update() {
-    try {
-      this.controls.update();
-    } catch (e) {
-      console.warn(e);
-    }
+    this.controls?.update();
   }
 
   lookAt(target: THREE.Vector3) {
     this.camera.lookAt(target);
+
+    this.controls?.setTarget(target);
+    this.controls?.update();
+  }
+
+  setPosition(position: THREE.Vector3) {
+    this.camera.position.x = position.x;
+    this.camera.position.y = position.y;
+    this.camera.position.z = position.z;
+
+    this.controls?.setPosition(position);
+    this.controls?.update();
   }
 
   rotate(degree: number) {
@@ -63,12 +71,8 @@ export class Camera {
   }
 
   // -- USE FOR DEBUGGING
-  activeOrbitControl(scene: THREE.Scene, position: THREE.Vector3) {
+  activeOrbitControl(scene: THREE.Scene) {
     this.scene = scene;
-
-    this.camera.position.x = position.x;
-    this.camera.position.y = position.y;
-    this.camera.position.z = position.z;
 
     this.controls = new OrbitControls(this.camera, this.canvas);
     this.controls.listenToKeyEvents(window);

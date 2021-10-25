@@ -20,7 +20,7 @@
       "react-dom": ["node_modules/react-dom"]
     },
     "types": ["wad", "engine", "react", "react-dom", "node", "webpack-env"],
-    "lib": ["es5", "dom", "es2015.iterable"]
+    "lib": ["es2016", "dom", "es2015.iterable"]
   },
   "include": ["./**/*"],
   "exclude": ["**/index.d.ts", "**/node_modules/*"]

@@ -79,10 +79,7 @@ export class Map extends Component<MapProps> {
 
   render() {
     return (
-      <div
-        ref={this.containerRef}
-        style={{ height: "100vh", overflow: "hidden" }}
-      >
+      <div ref={this.containerRef} style={{ overflow: "hidden" }}>
         <canvas
           ref={this.canvasRef}
           style={{ backgroundColor: "transparent" }}

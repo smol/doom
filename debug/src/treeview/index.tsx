@@ -25,7 +25,6 @@ const Ul = styled.ul`
 const Container = styled.div`
   background: #616161;
   box-sizing: border-box;
-  height: 100vh;
   overflow: auto;
   width: 150px;
   padding: 0 10px;

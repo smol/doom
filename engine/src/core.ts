@@ -21,7 +21,7 @@ export interface CoreDelegate {
 
 export class Core {
   private config: Config;
-  private scene: THREE.Scene;
+  private _scene: THREE.Scene;
   private camera: Camera;
   private textures: Wad.Textures[];
   private flats: Wad.Flat[];
@@ -31,6 +31,10 @@ export class Core {
   private inputManager: InputManager;
 
   private renderer: THREE.WebGLRenderer;
+
+  public get scene(): THREE.Scene {
+    return this._scene;
+  }
 
   constructor(
     canvas: HTMLCanvasElement,
@@ -44,12 +48,14 @@ export class Core {
     this.renderer = new THREE.WebGLRenderer({ canvas });
     this.renderer.setSize(canvas.width, canvas.height);
 
-    this.camera = new Camera(canvas.width / canvas.height, canvas, this.scene);
+    this.initScene(canvas);
+
+    this.camera = new Camera(canvas.width / canvas.height, canvas, this._scene);
     if (!config.orbitControl) {
       this.inputManager = new InputManager();
+    } else {
+      this.camera.activeOrbitControl(this._scene);
     }
-
-    this.initScene(canvas);
 
     this.render = this.render.bind(this);
 
@@ -100,28 +106,28 @@ export class Core {
     if (this.delegate) this.delegate.update();
 
     this.camera.update();
-    this.renderer.render(this.scene, this.camera.Camera);
+    this.renderer.render(this._scene, this.camera.Camera);
   }
 
   private initScene(canvas: HTMLCanvasElement) {
-    this.scene = new THREE.Scene();
+    this._scene = new THREE.Scene();
 
     let axis = new THREE.AxesHelper(10);
 
-    this.scene.add(axis);
+    this._scene.add(axis);
 
     // add lights
     let light = new THREE.DirectionalLight(0xffffff, 1.0);
 
     light.position.set(100, 100, 100);
 
-    this.scene.add(light);
+    this._scene.add(light);
 
     let light2 = new THREE.DirectionalLight(0xffffff, 1.0);
 
     light2.position.set(-100, 100, -100);
 
-    this.scene.add(light2);
+    this._scene.add(light2);
   }
 
   private node(node: Wad.Node) {
@@ -141,23 +147,21 @@ export class Core {
     if (subsector !== null) {
       let sector = new Subsector(subsector, this.textures, this.flats, bounds);
 
-      this.scene.add(sector);
+      this._scene.add(sector);
     }
   }
 
   setCameraPosition(position: { x: number; y: number; z: number }) {
-    this.camera.Camera.lookAt(
-      new THREE.Vector3(position.x + 100, position.y + 100, position.z + 100)
+    this.camera.setPosition(
+      new THREE.Vector3(position.x, position.y, position.z)
     );
+    // this.camera.Camera.lookAt(
+    //   new THREE.Vector3(position.x + 100, position.y + 100, position.z + 100)
+    // );
+  }
 
-    if (this.config.orbitControl) {
-      this.camera.activeOrbitControl(
-        this.scene,
-        new THREE.Vector3(position.x, position.y, position.z)
-      );
-
-      this.camera.update();
-    }
+  lookAt(target: { x: number; y: number; z: number }) {
+    this.camera.lookAt(new THREE.Vector3(target.x, target.y, target.z));
   }
 
   createWalls(linedefs: Wad.Linedef[]) {
@@ -183,7 +187,7 @@ export class Core {
         linedef
       );
 
-      this.scene.add(wall);
+      this._scene.add(wall);
       // this.walls.push(wall);
     });
   }
@@ -193,12 +197,13 @@ export class Core {
     this.flats = wad.getFlats();
 
     // this.node(map.getNode());
+
     this.createWalls(map.getLinedefs());
 
     map.getSectors().forEach((item) => {
       let sector = new Sector(item, this.flats);
 
-      this.scene.add(sector);
+      this._scene.add(sector);
     });
 
     console.info("MAP CREATED");

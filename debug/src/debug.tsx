@@ -13,6 +13,7 @@ import { Viewer } from "./viewer.debug";
 
 const Container = styled.div`
   display: flex;
+  height: 100vh;
 
   /* > .treeview {
     height: 100vh;

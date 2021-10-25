@@ -9,7 +9,7 @@
     "sourceMap": true,
     "allowSyntheticDefaultImports": true,
     "declarationDir": "../.build/engine/",
-    "types": ["three", "wad", "tone"],
+    "types": ["three", "wad"],
     "paths": {
       "wad": ["../.build/wad"]
     }

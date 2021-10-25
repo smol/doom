@@ -1,37 +1,38 @@
-import * as THREE from 'three';
-import * as Wad from 'wad';
+import * as THREE from "three";
+import * as Wad from "wad";
+import { Triangulation } from "./triangulation";
 
-import { Floor } from './floor';
+import { Floor } from "./floor";
 
 export class Sector extends THREE.Group {
-  private flats: Wad.Flat[];
-  private sidedefs: Wad.Sidedef[];
+  private floor: Floor;
 
   constructor(sector: Wad.Sector, flats: Wad.Flat[]) {
     super();
 
-    this.flats = flats;
-    this.sidedefs = sector.getSidedefs();
+    let triangulation = new Triangulation(sector);
+    const { points, cdt } = triangulation.generate();
 
-    if (this.sidedefs.length == 0) {
-      return;
-    }
+    let floor = new Floor(flats);
+    let lower = new Floor(flats, true);
 
-    let floor = new Floor(this.flats);
-    let lower = new Floor(this.flats, true);
+    floor.setPoints(points, sector.getFloorHeight(), cdt);
+    lower.setPoints(points, sector.getCeilingHeight(), cdt);
 
-    this.sidedefs.forEach(sidedef => {
-      floor.addWall(
-        sidedef.getLinedef(),
-        sector.getFloorHeight(),
-        sector.getFloorTextureName()
-      );
-      lower.addWall(
-        sidedef.getLinedef(),
-        sector.getCeilingHeight(),
-        sector.getCeilingTextureName()
-      );
-    });
+    // sector.getSidedefs().forEach((sidedef) => {
+    //   const linedef = sidedef.getLinedef();
+    //   // floor.addWall(
+    //   //   linedef,
+    //   //   sector.getFloorHeight(),
+    //   //   sector.getFloorTextureName()
+    //   // );
+
+    //   // lower.addWall(
+    //   //   linedef,
+    //   //   sector.getCeilingHeight(),
+    //   //   sector.getCeilingTextureName()
+    //   // );
+    // });
 
     try {
       lower.create();
@@ -40,11 +41,18 @@ export class Sector extends THREE.Group {
     } catch (e) {
       console.info(sector);
     }
-    // floor.setTexture(wall.getFloorTexture());
+    floor.setTexture(sector.getFloorTextureName());
+    lower.setTexture(sector.getCeilingTextureName());
     this.add(floor);
     this.add(lower);
 
+    this.floor = floor;
+
     // this.floors.push(floor);
     // this.floors.push(lower);
+  }
+
+  getFloor() {
+    return this.floor;
   }
 }

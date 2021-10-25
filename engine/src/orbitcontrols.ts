@@ -66,6 +66,8 @@ class OrbitControls extends EventDispatcher {
   private zoom0: number;
   private _domElementKeyEvents: HTMLElement;
 
+  public setPosition: (position: Vector3) => void;
+  public setTarget: (target: Vector3) => void;
   public getPolarAngle: () => void;
   public getAzimuthalAngle: () => void;
 
@@ -170,6 +172,15 @@ class OrbitControls extends EventDispatcher {
     //
     // public methods
     //
+
+    this.setPosition = function (position) {
+      scope.position0 = position.clone();
+    };
+
+    this.setTarget = function (target) {
+      scope.target = target;
+      scope.target0 = target.clone();
+    };
 
     this.getPolarAngle = function () {
       return spherical.phi;

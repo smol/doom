@@ -84,7 +84,7 @@ export const Linedefs = (props: LinedefsProps) => {
   }, []);
 
   return (
-    <div style={{ display: "flex", flexDirection: "column", height: "100vh" }}>
+    <div style={{ display: "flex", flexDirection: "column" }}>
       <div ref={containerRef} style={{ flex: 1 }}>
         <canvas ref={canvasRef} onMouseMove={mouseMove} />
       </div>

@@ -116,7 +116,7 @@ export const Node = ({ node, linedefs, vertexes }: NodesProps) => {
   });
 
   return (
-    <div style={{ height: "100vh", display: "flex", flexDirection: "column" }}>
+    <div style={{ display: "flex", flexDirection: "column" }}>
       <div style={{ flex: 1 }} ref={containerRef}>
         <canvas
           style={{ background: "black" }}

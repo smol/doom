@@ -2,7 +2,7 @@ import * as THREE from "three";
 
 import * as Wad from "wad";
 
-import { PolygonGeneration } from "./polygonGen";
+import { Triangulation } from "./triangulation";
 import { Delaunay } from "./delaunay/delaunay";
 
 export class Floor extends THREE.Group {
@@ -15,23 +15,23 @@ export class Floor extends THREE.Group {
   private y: number = Number.MIN_VALUE;
   seg: Wad.Seg;
 
-  private generator: PolygonGeneration;
+  private generator: Triangulation;
   private indices: number[];
 
   constructor(textures: Wad.Flat[], invert: Boolean = false) {
     super();
 
     this.textures = textures;
-    this.generator = new PolygonGeneration();
+    // this.generator = new PolygonGeneration();
 
     this.material = new THREE.MeshBasicMaterial({
       transparent: true,
+      // wireframe: true,
       // map: this.texture,
-      color: 0xffffff,
+      // color: 0xff0000,
     });
 
-    if (invert) this.material.side = THREE.FrontSide;
-    else this.material.side = THREE.BackSide;
+    this.material.side = invert ? THREE.FrontSide : THREE.BackSide;
 
     this.material.needsUpdate = true;
     this.geometry = new THREE.BufferGeometry();
@@ -39,36 +39,6 @@ export class Floor extends THREE.Group {
     this.mesh = new THREE.Mesh(this.geometry, this.material);
 
     this.add(this.mesh);
-  }
-
-  private createFaces() {
-    // this.geometry.computeBoundingBox();
-    // var max = this.geometry.boundingBox.max,
-    //   min = this.geometry.boundingBox.min;
-    // var offset = new THREE.Vector2(0 - min.x, 0 - min.z);
-    // var range = new THREE.Vector2(max.x - min.x, max.z - min.z);
-    // var faces = this.geometry.faces;
-    // this.geometry.faceVertexUvs[0] = [];
-    // for (var i = 0; i < faces.length; i++) {
-    //   var v1 = this.geometry.vertices[faces[i].a],
-    //     v2 = this.geometry.vertices[faces[i].b],
-    //     v3 = this.geometry.vertices[faces[i].c];
-    //   this.geometry.faceVertexUvs[0].push([
-    //     new THREE.Vector2(
-    //       (v1.x + offset.x) / range.x,
-    //       (v1.z + offset.y) / range.y
-    //     ),
-    //     new THREE.Vector2(
-    //       (v2.x + offset.x) / range.x,
-    //       (v2.z + offset.y) / range.y
-    //     ),
-    //     new THREE.Vector2(
-    //       (v3.x + offset.x) / range.x,
-    //       (v3.z + offset.y) / range.y
-    //     ),
-    //   ]);
-    // }
-    // this.geometry.uvsNeedUpdate = true;
   }
 
   select() {
@@ -79,26 +49,6 @@ export class Floor extends THREE.Group {
         (mesh.material as THREE.MeshBasicMaterial).color.setHex(0xff0000);
       }
     });
-  }
-
-  private repeatedTexture(size: { width: number; height: number }) {
-    // let bounding = this.geometry.boundingBox;
-    // if (!bounding) return;
-    // let scale: number = 1;
-    // let width: number = bounding.max.x - bounding.min.x;
-    // let height: number = bounding.max.z - bounding.min.z;
-    // let offsetX = bounding.min.x / width;
-    // let offsetY = bounding.min.z / height;
-    // width = width / size.width * scale;
-    // height = height / size.height * scale;
-    // let result = {
-    //   x: width,
-    //   y: height,
-    //   offsetX: offsetX,
-    //   offsetY: offsetY
-    // };
-    // // console.info('width', width, 'height', height, 'size', size, 'result', result);
-    // return result;
   }
 
   setTexture(name: string) {
@@ -113,15 +63,6 @@ export class Floor extends THREE.Group {
     var width = texture.getWidth();
     var height = texture.getHeight();
 
-    function isPowerOf2(value) {
-      return (value & (value - 1)) == 0;
-    }
-
-    let wrapping: THREE.Wrapping = THREE.RepeatWrapping;
-
-    // if (isPowerOf2(width) && isPowerOf2(height))
-    // 	wrapping = THREE.RepeatWrapping;
-
     var data: Uint8Array = Uint8Array.from(texture.getImageData());
     this.texture = new THREE.DataTexture(
       data,
@@ -130,32 +71,23 @@ export class Floor extends THREE.Group {
       THREE.RGBAFormat,
       THREE.UnsignedByteType,
       THREE.UVMapping,
-      wrapping,
-      wrapping,
+      THREE.RepeatWrapping,
+      THREE.RepeatWrapping,
       THREE.NearestFilter,
       THREE.LinearFilter,
       16,
       THREE.LinearEncoding
     );
 
-    let repeated: any = this.repeatedTexture({ width: width, height: height });
-    if (repeated) {
-      this.texture.repeat.set(repeated.x, repeated.y);
-      this.texture.offset.set(repeated.offsetX, repeated.offsetY);
-    }
+    var bbox = this.geometry.boundingBox;
+    var dX = Math.abs(bbox.max.x - bbox.min.x);
+    var dY = Math.abs(bbox.max.y - bbox.min.y);
+    var dZ = Math.abs(bbox.max.z - bbox.min.z);
 
-    // this.texture.repeat.set(2, 2);
+    this.texture.repeat.set(Math.max(dX, dY) / width, dZ / height);
+
     this.texture.needsUpdate = true;
 
-    // this.material = new THREE.MeshBasicMaterial({
-    // 	transparent: true,
-    // 	map: this.texture,
-    // 	// color: 0xFF0000
-    // });
-
-    // this.material.side = THREE.DoubleSide;
-
-    // this.material.needsUpdate = true;
     (this.mesh.material as THREE.MeshBasicMaterial).map = this.texture;
   }
 
@@ -169,71 +101,52 @@ export class Floor extends THREE.Group {
     return null;
   }
 
-  addWall(linedef: Wad.Linedef, height: number, texture: string) {
-    this.y = height;
-    this.generator.addLinedef(linedef, 0);
+  create() {}
 
-    this.setTexture(texture);
+  setPoints(points: number[][], y: number, cdt: number[][]) {
+    let vertices = [];
+    let indices = [];
+    let uvs = [];
+
+    points.forEach((point, index) => {
+      vertices.push(point[0], y, point[1]);
+    });
+
+    this.geometry.setAttribute(
+      "position",
+      new THREE.BufferAttribute(new Float32Array(vertices), 3)
+    );
+
+    this.geometry.computeBoundingBox();
+
+    const bbox = this.geometry.boundingBox;
+
+    cdt.forEach((cdt) => {
+      indices.push(cdt[0], cdt[1], cdt[2]);
+    });
+
+    points.forEach((temp) => {
+      uvs.push(
+        (temp[0] - bbox.min.x) / (bbox.max.x - bbox.min.x),
+        (temp[1] - bbox.min.z) / (bbox.max.z - bbox.min.z)
+      );
+    });
+
+    this.geometry.setIndex(indices);
+    this.geometry.setAttribute(
+      "uv",
+      new THREE.BufferAttribute(new Float32Array(uvs), 2)
+    );
   }
 
-  create() {
-    // this.geometry.vertices = [];
-    // var materialCube: THREE.MeshBasicMaterial = new THREE.MeshBasicMaterial({
-    //   color: 0x00ff00
-    // });
-    // try {
-    //   let orderedsegments = this.generator.start();
-    //   let supertriangles: poly2tri.Triangle[][] = this.generator.triangles;
-    //   if (!supertriangles) return;
-    //   supertriangles.forEach(triangles => {
-    //     triangles.forEach(triangle => {
-    //       triangle.getPoints().forEach(point => {
-    //         this.geometry.vertices.push(
-    //           new THREE.Vector3(point.x, this.y, point.y)
-    //         );
-    //       });
-    //       this.geometry.faces.push(
-    //         new THREE.Face3(
-    //           this.geometry.vertices.length - 3,
-    //           this.geometry.vertices.length - 2,
-    //           this.geometry.vertices.length - 1
-    //         )
-    //       );
-    //     });
-    //   });
-    //   this.geometry.computeBoundingBox();
-    //   var max = this.geometry.boundingBox.max,
-    //     min = this.geometry.boundingBox.min;
-    //   var offset = new THREE.Vector2(0 - min.x, 0 - min.z);
-    //   var range = new THREE.Vector2(max.x - min.x, max.z - min.z);
-    //   range.x *= 0.15;
-    //   range.y *= 0.15;
-    //   this.geometry.faceVertexUvs[0] = [];
-    //   for (var i = 0; i < this.geometry.faces.length; i++) {
-    //     var v1 = this.geometry.vertices[this.geometry.faces[i].a],
-    //       v2 = this.geometry.vertices[this.geometry.faces[i].b],
-    //       v3 = this.geometry.vertices[this.geometry.faces[i].c];
-    //     this.geometry.faceVertexUvs[0].push([
-    //       new THREE.Vector2(
-    //         (v1.x + offset.x) / range.x,
-    //         (v1.z + offset.y) / range.y
-    //       ),
-    //       new THREE.Vector2(
-    //         (v2.x + offset.x) / range.x,
-    //         (v2.z + offset.y) / range.y
-    //       ),
-    //       new THREE.Vector2(
-    //         (v3.x + offset.x) / range.x,
-    //         (v3.z + offset.y) / range.y
-    //       )
-    //     ]);
-    //   }
-    //   this.geometry.uvsNeedUpdate = true;
-    //   this.geometry.computeVertexNormals();
-    //   this.geometry.computeFaceNormals();
-    //   this.geometry.computeVertexNormals();
-    // } catch (e) {
-    //   throw {};
-    // }
+  getGeometry(): THREE.BufferGeometry {
+    return this.geometry;
+  }
+
+  getCenter(): { x: number; y: number; z: number } {
+    let target = new THREE.Vector3();
+
+    this.geometry.boundingBox.getCenter(target);
+    return target;
   }
 }

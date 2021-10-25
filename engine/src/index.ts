@@ -1,9 +1,10 @@
-import { Core } from "./core";
 import { Camera } from "./camera";
-import { InputManager, Inputs, Input, InputState } from "./input";
-import { PolygonGeneration } from "./polygonGen";
-import { Wtf, Segment, Point } from "./delaunay/wtf";
+import { Core } from "./core";
+import { Point, Segment, Wtf } from "./delaunay/wtf";
+import { Input, InputManager, Inputs, InputState } from "./input";
 import { MusicPlayer } from "./music";
+import { Triangulation } from "./triangulation";
+import { Sector } from "./sector";
 
 export {
   Core,
@@ -13,8 +14,9 @@ export {
   InputManager,
   Inputs,
   InputState,
-  PolygonGeneration,
+  Triangulation,
   Wtf,
   Segment,
   Point,
+  Sector,
 };
