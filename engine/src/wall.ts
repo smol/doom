@@ -56,12 +56,7 @@ export class WallSector extends THREE.Group {
       new THREE.BufferAttribute(new Float32Array(floatVertices), 3)
     );
 
-    const uvs = [];
-    // if (this.isUpper) {
-    uvs.push(1, 1, 1, 0, 0, 0, 0, 1);
-    // } else {
-    // uvs.push(0, 0, 0, 1, 1, 1, 1, 0);
-    // }
+    const uvs = [0, 0, 0, 1, 1, 1, 1, 0];
 
     this.geometry.setAttribute(
       "uv",
@@ -92,16 +87,7 @@ export class WallSector extends THREE.Group {
       return;
     }
 
-    const { data, width, height } = texture.getImageData();
-
-    function isPowerOf2(value) {
-      return (value & (value - 1)) == 0;
-    }
-
-    let wrapping: THREE.Wrapping = THREE.RepeatWrapping;
-
-    if (isPowerOf2(width) && isPowerOf2(height))
-      wrapping = THREE.RepeatWrapping;
+    const { data, width, height, x, y } = texture.getImageData();
 
     this.texture = new THREE.DataTexture(
       data,
@@ -110,8 +96,8 @@ export class WallSector extends THREE.Group {
       THREE.RGBAFormat,
       THREE.UnsignedByteType,
       THREE.UVMapping,
-      wrapping,
-      wrapping,
+      THREE.RepeatWrapping,
+      THREE.RepeatWrapping,
       THREE.NearestFilter,
       THREE.NearestFilter,
       16,
@@ -123,14 +109,17 @@ export class WallSector extends THREE.Group {
     var dY = Math.abs(bbox.max.y - bbox.min.y);
     var dZ = Math.abs(bbox.max.z - bbox.min.z);
 
-    this.texture.repeat.set(Math.max(dX, dZ) / width, dY / height);
+    const repeatX = Math.max(dX, dZ) / width;
+    const repeatY = -dY / height;
 
-    this.texture.offset.x = offset.x / width;
-    this.texture.offset.y = offset.y / height;
-    if (this.isUpper) {
-      this.texture.offset.y = 0;
-      this.texture.offset.x = 0;
-    }
+    this.texture.repeat.set(repeatX, repeatY);
+
+    // this.texture.offset.x = (offset.x - x) / width;
+    // this.texture.offset.y = (offset.y - y) / height;
+    // if (this.isUpper) {
+    //   this.texture.offset.y = x / width;
+    //   this.texture.offset.x = y / height;
+    // }
 
     this.texture.needsUpdate = true;
     (this.mesh.material as THREE.MeshBasicMaterial).map = this.texture;
@@ -204,10 +193,6 @@ export class Wall extends THREE.Group {
       let upperCeilingHeight = rightSector.getCeilingHeight();
       let lowerFloorHeight = rightSector.getFloorHeight();
       let lowerCeilingHeight = leftSector.getFloorHeight();
-
-      if (linedef.getIndex() == 326) {
-        console.info("WALL", this.toDebug());
-      }
 
       if (rightSidedef.getLower() !== "-") {
         this.lowerSector = new WallSector(

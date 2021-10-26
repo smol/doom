@@ -184,6 +184,7 @@ export class Texture {
   private data: Uint8Array;
   private alphaMapData: Uint8Array;
   private dataSize: { width: number; height: number };
+  private dataOffset: { x: number; y: number };
 
   constructor(playpal: Playpal, data: any) {
     this.dataView = new DataView(data);
@@ -202,32 +203,32 @@ export class Texture {
     this.offset += 2; // always zero
     this.offset += 2; // always zero
 
-    this.width = this.dataView.getUint8(this.offset);
+    this.width = this.dataView.getUint16(this.offset, true);
     this.offset += 2;
 
-    this.height = this.dataView.getUint8(this.offset);
+    this.height = this.dataView.getUint16(this.offset, true);
     this.offset += 2;
 
     this.offset += 2; // always zero
     this.offset += 2; // always zero
 
-    var patchCount: number = this.dataView.getInt8(this.offset);
+    const patchCount = this.dataView.getInt8(this.offset);
     this.offset += 2;
     this.patches = [];
 
-    for (var i = 0; i < patchCount; i++) {
-      var x = this.dataView.getUint8(this.offset);
+    for (let i = 0; i < patchCount; i++) {
+      var x = this.dataView.getInt8(this.offset);
       this.offset += 2;
-      var y = this.dataView.getUint8(this.offset);
-      this.offset += 2;
-
-      var pnameIndex: number = this.dataView.getUint8(this.offset);
+      var y = this.dataView.getInt8(this.offset);
       this.offset += 2;
 
-      var stepdir: number = this.dataView.getUint8(this.offset);
+      const pnameIndex = this.dataView.getUint8(this.offset);
       this.offset += 2;
 
-      var colormap: number = this.dataView.getUint8(this.offset);
+      const stepdir = this.dataView.getUint8(this.offset);
+      this.offset += 2;
+
+      const colormap = this.dataView.getUint8(this.offset);
       this.offset += 2;
 
       this.patches.push({
@@ -255,22 +256,32 @@ export class Texture {
   private updatePatches() {
     this.dataSize = { width: 0, height: 0 };
 
+    let bounds = { left: 0, top: 0, right: 0, bottom: 0 };
+
     this.patches.forEach(({ pname, x, y }) => {
       const graphic = pname.getGraphics();
-      this.dataSize.width = Math.max(
-        this.dataSize.width,
-        graphic.getWidth() + x
-      );
-      this.dataSize.height = Math.max(
-        this.dataSize.height,
-        graphic.getHeight() + y
-      );
+
+      bounds.left = Math.min(bounds.left, x);
+      bounds.top = Math.min(bounds.top, y);
+      bounds.right = Math.max(bounds.right, graphic.getWidth() + x);
+      bounds.bottom = Math.max(bounds.bottom, graphic.getHeight() + y);
     });
 
+    this.dataOffset = {
+      x: bounds.left,
+      y: bounds.top,
+    };
+
+    this.dataSize = {
+      width: this.width,
+      height: this.height,
+    };
+
     let data = new Uint8Array(this.dataSize.width * this.dataSize.height * 4);
-    // for (let i = 0; i < data.length; i++) {
-    //   data[i] = 0;
-    // }
+
+    if (this.name === "COMPTALL") {
+      console.info(bounds, this.dataSize);
+    }
 
     this.patches.forEach(({ pname, x, y }) => {
       const graphic = pname.getGraphics();
@@ -280,8 +291,13 @@ export class Texture {
       const oldHeight = graphic.getHeight();
 
       for (let i = 0; i < original.length; i += 4) {
-        const oldX = Math.floor(i % oldWidth) + x * 4;
-        const oldY = Math.floor(i / oldWidth) + y;
+        let oldX = Math.floor(i % oldWidth) + x * 4;
+        let oldY = Math.floor(i / oldWidth) + y;
+
+        if (oldX < 0) {
+          oldX += this.dataSize.width * 4;
+        }
+
         const newI = oldX + this.dataSize.width * 4 * oldY;
 
         if (original[i + 3] > 0) {
@@ -296,10 +312,19 @@ export class Texture {
     this.data = data;
   }
 
-  getImageData(): { data: Uint8Array; width: number; height: number } {
+  getImageData(): {
+    data: Uint8Array;
+    width: number;
+    height: number;
+    x: number;
+    y: number;
+  } {
+    const { data, dataSize, dataOffset } = this;
+
     return {
-      data: this.data,
-      ...this.dataSize,
+      data,
+      ...dataSize,
+      ...dataOffset,
     };
   }
 

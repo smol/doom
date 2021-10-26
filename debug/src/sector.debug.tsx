@@ -5,9 +5,10 @@ import * as Wad from "wad";
 interface SectorProps {
   sector: Wad.Sector;
   flats: Wad.Flat[];
+  textures: Wad.Textures[];
 }
 
-export const Sector = ({ sector, flats }: SectorProps) => {
+export const Sector = ({ sector, flats, textures }: SectorProps) => {
   const canvas3dRef = useRef<HTMLCanvasElement>();
   const container3dRef = useRef<HTMLDivElement>();
   const canvasRef = useRef<HTMLCanvasElement>();
@@ -164,6 +165,12 @@ export const Sector = ({ sector, flats }: SectorProps) => {
     let sectorObject = new Engine.Sector(sector, flats);
 
     core.scene.add(sectorObject);
+
+    core.setTextures(textures);
+
+    core.createWalls(
+      sector.getSidedefs().map((sidedef) => sidedef.getLinedef())
+    );
 
     const center = sectorObject.getFloor().getCenter();
 

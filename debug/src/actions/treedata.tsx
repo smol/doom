@@ -157,7 +157,11 @@ export default (wad: Wad): TreeData[] => {
               label: `SECTOR-${index}`,
               url: `sector-${index}`,
               Component: () => (
-                <Sector sector={sector} flats={wad.getFlats()} />
+                <Sector
+                  sector={sector}
+                  flats={wad.getFlats()}
+                  textures={wad.getTextures()}
+                />
               ),
               children: [],
             })),

@@ -192,6 +192,10 @@ export class Core {
     });
   }
 
+  setTextures(textures: Wad.Textures[]) {
+    this.textures = textures;
+  }
+
   createMap(map: Wad.Map, wad: Wad.Wad) {
     this.textures = wad.getTextures();
     this.flats = wad.getFlats();

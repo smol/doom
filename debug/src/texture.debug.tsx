@@ -26,6 +26,7 @@ export class Texture extends Component<TextureProps, { base64: string }> {
   componentDidMount() {
     window.addEventListener("resize", this.resize);
 
+    console.info(this.props.texture);
     this.updateCanvas(this.props.texture);
     setTimeout(this.resize);
   }
@@ -60,15 +61,15 @@ export class Texture extends Component<TextureProps, { base64: string }> {
       canvas.height = height;
       const log = [];
 
-      for (let i = 0; i < temp.length; i++) {
-        const oldX = Math.floor(i % oldWidth) + 0 * 4;
-        const oldY = Math.floor(i / oldWidth) + 72 * 4;
-        const newI = oldX + width * 4 * oldY;
+      // for (let i = 0; i < temp.length; i++) {
+      //   const oldX = Math.floor(i % oldWidth) + 0 * 4;
+      //   const oldY = Math.floor(i / oldWidth) + 72 * 4;
+      //   const newI = oldX + width * 4 * oldY;
 
-        log.push(`i: ${i}, oldX: ${oldX}, oldY: ${oldY}, newI: ${newI}`);
-      }
+      //   log.push(`i: ${i}, oldX: ${oldX}, oldY: ${oldY}, newI: ${newI}`);
+      // }
 
-      console.info(log);
+      // console.info(log);
 
       console.info(width, height, data, temp);
       var idata: ImageData = ctx.createImageData(width, height);
@@ -136,7 +137,7 @@ export class Texture extends Component<TextureProps, { base64: string }> {
           <canvas
             ref={this.canvasRef}
             style={{
-              background: "transparent",
+              background: "blue",
               imageRendering: "crisp-edges",
             }}
             width={800}

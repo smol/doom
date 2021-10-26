@@ -90,12 +90,12 @@ export class Floor extends THREE.Group {
     this.texture.needsUpdate = true;
 
     const offset = {
-      x: bbox.min.x / 128,
-      y: bbox.min.y / 128,
+      x: bbox.min.x,
+      y: bbox.min.z,
     };
 
-    this.texture.offset.x = offset.x / width;
-    this.texture.offset.y = offset.y / height;
+    this.texture.offset.x = offset.x / 64;
+    this.texture.offset.y = offset.y / 64;
 
     this.texture.needsUpdate = true;
     (this.mesh.material as THREE.MeshBasicMaterial).map = this.texture;
