@@ -8,20 +8,17 @@ export class WallSector extends THREE.Group {
   private material: THREE.Material;
   private texture: THREE.DataTexture;
   private textureNames: { floor: string; ceiling: string };
-  private sector: Wad.Sector;
   private indices: number[];
   private isUpper: boolean;
 
   constructor(
     vertices: THREE.Vector3[],
     textureNames: { floor: string; ceiling: string },
-    sector: Wad.Sector,
     isUpper: boolean = false
   ) {
     super();
 
     this.isUpper = isUpper;
-    this.sector = sector;
 
     this.textureNames = textureNames;
     this.indices = [];
@@ -56,7 +53,10 @@ export class WallSector extends THREE.Group {
       new THREE.BufferAttribute(new Float32Array(floatVertices), 3)
     );
 
-    const uvs = [0, 0, 0, 1, 1, 1, 1, 0];
+    // const uvs = [0, 0, 0, 1, 1, 1, 1, 0];
+    const uvs = [-1, 1, -1, 0, 0, 0, 0, 1];
+    // const uvs = [1, 1, 1, 0, 0, 0, 0, 1];
+    // uvs.push();
 
     this.geometry.setAttribute(
       "uv",
@@ -87,7 +87,7 @@ export class WallSector extends THREE.Group {
       return;
     }
 
-    const { data, width, height, x, y } = texture.getImageData();
+    const { data, width, height } = texture.getImageData();
 
     this.texture = new THREE.DataTexture(
       data,
@@ -110,16 +110,16 @@ export class WallSector extends THREE.Group {
     var dZ = Math.abs(bbox.max.z - bbox.min.z);
 
     const repeatX = Math.max(dX, dZ) / width;
-    const repeatY = -dY / height;
+    const repeatY = dY / height;
 
     this.texture.repeat.set(repeatX, repeatY);
 
-    // this.texture.offset.x = (offset.x - x) / width;
-    // this.texture.offset.y = (offset.y - y) / height;
-    // if (this.isUpper) {
-    //   this.texture.offset.y = x / width;
-    //   this.texture.offset.x = y / height;
-    // }
+    this.texture.offset.x = offset.x / width + repeatX - 1;
+    this.texture.offset.y = offset.y / height;
+    if (this.isUpper) {
+      this.texture.offset.x = repeatX - 1;
+      this.texture.offset.y = 0;
+    }
 
     this.texture.needsUpdate = true;
     (this.mesh.material as THREE.MeshBasicMaterial).map = this.texture;
@@ -209,8 +209,7 @@ export class Wall extends THREE.Group {
           {
             floor: rightSector.getFloorTextureName(),
             ceiling: leftSector.getCeilingTextureName(),
-          },
-          leftSector
+          }
         );
 
         this.add(this.lowerSector);
@@ -240,7 +239,6 @@ export class Wall extends THREE.Group {
             floor: leftSector.getFloorTextureName(),
             ceiling: rightSector.getCeilingTextureName(),
           },
-          rightSector,
           true
         );
 
@@ -274,8 +272,7 @@ export class Wall extends THREE.Group {
         {
           floor: rightSector.getFloorTextureName(),
           ceiling: rightSector.getCeilingTextureName(),
-        },
-        rightSector
+        }
       );
 
       this.add(this.middleSector);

@@ -73,8 +73,8 @@ export class Flat extends React.Component<FlatProps, {}> {
     canvas.width = flat.getWidth();
 
     setTimeout(function () {
-      var ctx: CanvasRenderingContext2D = canvas.getContext("2d");
-      var idata: ImageData = ctx.createImageData(canvas.width, canvas.height);
+      const ctx: CanvasRenderingContext2D = canvas.getContext("2d");
+      const idata: ImageData = ctx.createImageData(canvas.width, canvas.height);
 
       idata.data.set(flat.getImageData());
 
