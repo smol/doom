@@ -94,7 +94,11 @@ const FUNCS: BuilderFuncs[] = [
     regex: null,
     action: (builder: Builder, lump: any, data: any) => {
       var maps: Map[] = builder.wad.getMaps();
-      maps[maps.length - 1].setSectors(lump, data);
+      maps[maps.length - 1].setSectors(
+        lump,
+        data,
+        maps[maps.length - 1].getThings().get()
+      );
     },
   },
   {

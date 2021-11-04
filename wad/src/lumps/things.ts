@@ -1,117 +1,122 @@
-import { Lump } from './lump';
+import { Vertex } from ".";
+import { Lump } from "./lump";
+import { Sector } from "./sectors";
 
 var DoomThingTable = {
-  3004: 'zombie',
-  9: 'sergeant',
-  65: 'commando',
-  3001: 'imp',
-  3002: 'demon',
-  58: 'spectre',
-  3006: 'lost soul',
-  3005: 'cacodemon',
-  69: 'hell knight',
-  3003: 'baron of hell',
-  66: 'revenant',
-  67: 'mancubus',
-  68: 'arachnotron',
-  71: 'pain elemental',
-  64: 'archvile',
-  16: 'cyberdemon',
-  7: 'spider mastermind',
-  84: 'ss guy',
-  87: 'spawn target',
-  89: 'spawn shooter',
-  88: 'romero head',
-  72: 'commander keen',
-  2001: 'shotgun',
-  82: 'super shotgun',
-  2002: 'chaingun',
-  2003: 'rocket launcher',
-  2004: 'plasma gun',
-  2005: 'chainsaw',
-  2006: 'bfg 9000',
-  2007: 'ammo clip',
-  2048: 'ammo box',
-  2008: 'shells',
-  2049: 'shell box',
-  2010: 'rocket',
-  2046: 'rocket box',
-  2047: 'cell charge',
-  17: 'cell pack',
-  8: 'backpack',
-  2011: 'stimpack',
-  2012: 'medikit',
-  2013: 'supercharge',
-  2014: 'health bonus',
-  2015: 'armor bonus',
-  2018: 'green armor',
-  2019: 'blue armor',
-  2022: 'invulnerability',
-  2023: 'berserk',
-  2024: 'invisibility',
-  2025: 'radiation suit',
-  2026: 'computer map',
-  2045: 'goggles',
-  83: 'megasphere',
-  13: 'red keycard',
-  6: 'yellow keycard',
-  5: 'blue keycard',
-  38: 'red skull key',
-  39: 'yellow skull key',
-  40: 'blue skull key',
-  1: 'player 1 start',
-  2: 'player 2 start',
-  3: 'player 3 start',
-  4: 'player 4 start',
-  11: 'deathmatch start',
-  14: 'teleport destination',
-  10: 'gibs 1',
-  12: 'gibs 2',
-  15: 'dead marine',
-  18: 'dead zombie',
-  19: 'dead sergeant',
-  20: 'dead imp',
-  21: 'dead demon',
-  22: 'dead cacodemon',
-  23: 'dead lost soul',
-  24: 'pool of blood',
-  25: 'impaled human 1',
-  26: 'impaled human 2',
-  27: 'skull on pole',
-  28: 'five skulls',
-  29: 'skull pile',
-  49: 'hangman 1',
-  50: 'hangman 2',
-  51: 'hangman 3',
-  52: 'hangman 4',
-  53: 'hangman 5',
-  59: 'hangman 2 (passable)',
-  60: 'hangman 4 (passable)',
-  61: 'hangman 3 (passable)',
-  62: 'hangman 5 (passable)',
-  63: 'hangman 1 (passable)',
-  30: 'green pillar',
-  31: 'short green pillar',
-  32: 'red pillar',
-  33: 'short red pillar',
-  34: 'candle',
-  35: 'candelabra',
-  36: 'green pillar with heart',
-  37: 'red pillar with skull',
-  41: 'eye',
-  42: 'skull rock',
-  43: 'gray tree',
-  44: 'blue torch',
-  45: 'green torch',
-  46: 'red torch',
-  47: 'scrub',
-  48: 'tech column',
-  54: 'brown tree',
-  55: 'short blue torch',
-  56: 'short green torch',
-  57: 'short red torch',
-  2028: 'floor lamp',
-  2035: 'barrel'
+  3004: { label: "zombie", sprite: "POSS", sequence: "+" },
+  9: { label: "sergeant", sprite: "SPOS", sequence: "+" },
+  84: { label: "ss guy", sprite: "SSWV", sequence: "+" },
+  65: { label: "commando", sprite: "CPOS", sequence: "+" },
+  3001: { label: "imp", sprite: "TROO", sequence: "+" },
+  3002: { label: "demon", sprite: "SARG", sequence: "+" },
+  58: { label: "spectre", sprite: "SARG", sequence: "+" },
+  3006: { label: "lost soul", sprite: "SKUL", sequence: "+" },
+  3005: { label: "cacodemon", sprite: "HEAD", sequence: "+" },
+  69: { label: "hell knight", sprite: "BOS2", sequence: "+" },
+  3003: { label: "baron of hell", sprite: "BOSS", sequence: "+" },
+  68: { label: "arachnotron", sprite: "BSPI", sequence: "+" },
+  71: { label: "pain elemental", sprite: "PAIN", sequence: "+" },
+  66: { label: "revenant", sprite: "SKEL", sequence: "+" },
+  67: { label: "mancubus", sprite: "FATT", sequence: "+" },
+  64: { label: "archvile", sprite: "VILE", sequence: "+" },
+  16: { label: "cyberdemon", sprite: "CYBR", sequence: "+" },
+  7: { label: "spider mastermind", sprite: "SPID", sequence: "+" },
+  88: { label: "romero head", sprite: "BBRN", sequence: "+" },
+
+  87: { label: "spawn target", sprite: "", sequence: "-" },
+  89: { label: "spawn shooter", sprite: "", sequence: "-" },
+  72: { label: "commander keen", sprite: "", sequence: "-" },
+
+  2001: { label: "shotgun", sprite: "SHOT", sequence: "a" },
+  82: { label: "super shotgun", sprite: "SGN2", sequence: "a" },
+  2002: { label: "chaingun", sprite: "MGUN", sequence: "a" },
+  2003: { label: "rocket launcher", sprite: "LAUN", sequence: "a" },
+  2004: { label: "plasma gun", sprite: "PLAS", sequence: "a" },
+  2005: { label: "chainsaw", sprite: "CSAW", sequence: "a" },
+  2006: { label: "bfg 9000", sprite: "BFUG", sequence: "a" },
+  2007: { label: "ammo clip", sprite: "CLIP", sequence: "a" },
+  2048: { label: "ammo box", sprite: "AMMO", sequence: "a" },
+  2008: { label: "shells", sprite: "SHEL", sequence: "a" },
+  2049: { label: "shell box", sprite: "SBOX", sequence: "a" },
+  2010: { label: "rocket", sprite: "ROCK", sequence: "a" },
+  2046: { label: "rocket box", sprite: "BROK", sequence: "a" },
+  2047: { label: "cell charge", sprite: "CELL", sequence: "a" },
+  17: { label: "cell pack", sprite: "CELP", sequence: "a" },
+  8: { label: "backpack", sprite: "BPAK", sequence: "a" },
+
+  2011: { label: "stimpack", sprite: "STIM", sequence: "a" },
+  2012: { label: "medikit", sprite: "MEDI", sequence: "a" },
+  2013: { label: "supercharge", sprite: "SOUL", sequence: "abcdcb" },
+  2014: { label: "health bonus", sprite: "BON1", sequence: "abcdcb" },
+  2015: { label: "armor bonus", sprite: "BON2", sequence: "abcdcb" },
+  2018: { label: "green armor", sprite: "ARM1", sequence: "ab" },
+  2019: { label: "blue armor", sprite: "ARM2", sequence: "ab" },
+  2022: { label: "invulnerability", sprite: "PINV", sequence: "abcd" },
+  2023: { label: "berserk", sprite: "PSTR", sequence: "a" },
+  2024: { label: "invisibility", sprite: "PINS", sequence: "abcd" },
+  2025: { label: "radiation suit", sprite: "SUIT", sequence: "a" },
+  2026: { label: "computer map", sprite: "PMAP", sequence: "abcdcb" },
+  2045: { label: "goggles", sprite: "PVIS", sequence: "ab" },
+  83: { label: "megasphere", sprite: "MEGA", sequence: "abcd" },
+  13: { label: "red keycard", sprite: "", sequence: "-" },
+  6: { label: "yellow keycard", sprite: "", sequence: "-" },
+  5: { label: "blue keycard", sprite: "", sequence: "-" },
+  38: { label: "red skull key", sprite: "", sequence: "-" },
+  39: { label: "yellow skull key", sprite: "", sequence: "-" },
+  40: { label: "blue skull key", sprite: "", sequence: "-" },
+  1: { label: "player 1 start", sprite: "", sequence: "-" },
+  2: { label: "player 2 start", sprite: "", sequence: "-" },
+  3: { label: "player 3 start", sprite: "", sequence: "-" },
+  4: { label: "player 4 start", sprite: "", sequence: "-" },
+  11: { label: "deathmatch start", sprite: "", sequence: "-" },
+  14: { label: "teleport destination", sprite: "", sequence: "-" },
+  10: { label: "gibs 1", sprite: "", sequence: "-" },
+  12: { label: "gibs 2", sprite: "", sequence: "-" },
+  15: { label: "dead marine", sprite: "", sequence: "-" },
+  18: { label: "dead zombie", sprite: "", sequence: "-" },
+  19: { label: "dead sergeant", sprite: "", sequence: "-" },
+  20: { label: "dead imp", sprite: "", sequence: "-" },
+  21: { label: "dead demon", sprite: "", sequence: "-" },
+  22: { label: "dead cacodemon", sprite: "", sequence: "-" },
+  23: { label: "dead lost soul", sprite: "", sequence: "-" },
+  24: { label: "pool of blood", sprite: "", sequence: "-" },
+  25: { label: "impaled human 1", sprite: "", sequence: "-" },
+  26: { label: "impaled human 2", sprite: "", sequence: "-" },
+  27: { label: "skull on pole", sprite: "", sequence: "-" },
+  28: { label: "five skulls", sprite: "", sequence: "-" },
+  29: { label: "skull pile", sprite: "", sequence: "-" },
+  49: { label: "hangman 1", sprite: "", sequence: "-" },
+  50: { label: "hangman 2", sprite: "", sequence: "-" },
+  51: { label: "hangman 3", sprite: "", sequence: "-" },
+  52: { label: "hangman 4", sprite: "", sequence: "-" },
+  53: { label: "hangman 5", sprite: "", sequence: "-" },
+  59: { label: "hangman 2 (passable)", sprite: "", sequence: "-" },
+  60: { label: "hangman 4 (passable)", sprite: "", sequence: "-" },
+  61: { label: "hangman 3 (passable)", sprite: "", sequence: "-" },
+  62: { label: "hangman 5 (passable)", sprite: "", sequence: "-" },
+  63: { label: "hangman 1 (passable)", sprite: "", sequence: "-" },
+  30: { label: "green pillar", sprite: "", sequence: "-" },
+  31: { label: "short green pillar", sprite: "", sequence: "-" },
+  32: { label: "red pillar", sprite: "", sequence: "-" },
+  33: { label: "short red pillar", sprite: "", sequence: "-" },
+  34: { label: "candle", sprite: "", sequence: "-" },
+  35: { label: "candelabra", sprite: "", sequence: "-" },
+  36: { label: "green pillar with heart", sprite: "", sequence: "-" },
+  37: { label: "red pillar with skull", sprite: "", sequence: "-" },
+  41: { label: "eye", sprite: "", sequence: "-" },
+  42: { label: "skull rock", sprite: "", sequence: "-" },
+  43: { label: "gray tree", sprite: "", sequence: "-" },
+  44: { label: "blue torch", sprite: "", sequence: "-" },
+  45: { label: "green torch", sprite: "", sequence: "-" },
+  46: { label: "red torch", sprite: "", sequence: "-" },
+  47: { label: "scrub", sprite: "", sequence: "-" },
+  48: { label: "tech column", sprite: "", sequence: "-" },
+  54: { label: "brown tree", sprite: "", sequence: "-" },
+  55: { label: "short blue torch", sprite: "", sequence: "-" },
+  56: { label: "short green torch", sprite: "", sequence: "-" },
+  57: { label: "short red torch", sprite: "", sequence: "-" },
+  2028: { label: "floor lamp", sprite: "", sequence: "-" },
+  2035: { label: "barrel", sprite: "", sequence: "-" },
 };
 
 // [4-2]: THINGS
@@ -142,6 +147,148 @@ export class Things extends Lump {
     for (var i = 0; i < this.dataView.byteLength; i += 10) {
       this.things.push(new Thing(i, this.dataView));
     }
+  }
+
+  getThingsFromSector(sector: Sector): Thing[] {
+    const vertices = sector.vertices;
+
+    return this.things.filter((thing) => {
+      const { x, z } = thing.getPosition();
+
+      interface Vertex {
+        start: { x: number; y: number };
+        end: { x: number; y: number };
+      }
+
+      const isLeftOrRight = ({ start, end }: Vertex) => {
+        return (
+          (end.y - start.y) * (x - start.x) - (z - start.y) * (end.x - start.x)
+        );
+      };
+
+      let w = 0;
+      for (let i = 0; i < vertices.length; i++) {
+        const { start, end } = vertices[i];
+        if (start.y <= z && end.y > z && isLeftOrRight(vertices[i]) > 0) {
+          w++;
+        } else if (
+          start.y > z &&
+          end.y <= z &&
+          isLeftOrRight(vertices[i]) < 0
+        ) {
+          w--;
+        }
+      }
+
+      return w != 0;
+    });
+
+    // return this.things.filter((thing) => {
+    //   const { x, z } = thing.getPosition();
+
+    //   const cross = (first: Vertex, second: Vertex) => {
+    //     return (first.x - x) * (second.y - z) - (second.x - x) * (first.y - z);
+    //   };
+
+    //   let wn = 0; // winding number
+
+    //   sidedefs.forEach((a, i) => {
+    //     // const b = sidedefs[(i + 1) % sidedefs.length];
+    //     if (a.getLinedef().getFirstVertex().y <= z) {
+    //       if (
+    //         a.getLinedef().getSecondVertex().y > z &&
+    //         cross(
+    //           a.getLinedef().getFirstVertex(),
+    //           a.getLinedef().getSecondVertex()
+    //         ) > 0
+    //       ) {
+    //         wn += 1;
+    //       }
+    //     } else if (
+    //       a.getLinedef().getSecondVertex().y <= z &&
+    //       cross(
+    //         a.getLinedef().getFirstVertex(),
+    //         a.getLinedef().getSecondVertex()
+    //       ) < 0
+    //     ) {
+    //       wn -= 1;
+    //     }
+    //   });
+
+    //   return wn != 0;
+    // });
+
+    // return this.things.filter((thing) => {
+    //   const { x, z } = thing.getPosition();
+    //   let isInside = false;
+
+    //   for (let i = 0, j = sidedefs.length - 1; i < sidedefs.length; j = i++) {
+    //     const xi = sidedefs[i].getLinedef().getFirstVertex().x;
+    //     const yi = sidedefs[i].getLinedef().getFirstVertex().y;
+    //     const xj = sidedefs[j].getLinedef().getFirstVertex().x;
+    //     const yj = sidedefs[j].getLinedef().getFirstVertex().y;
+
+    //     const intersect =
+    //       yi > z != yj > z && x < ((xj - xi) * (z - yi)) / (yj - yi) + xi;
+
+    //     if (intersect) {
+    //       isInside = !isInside;
+    //     }
+    //   }
+
+    //   return isInside;
+    // });
+
+    // return this.things.filter((thing) => {
+    //   const { x, z } = thing.getPosition();
+    //   let q = new Array(vertices.length);
+
+    //   const det = (index: number) => {
+    //     const { start, end } = vertices[index];
+    //     // const { end } = vertices[index + 1];
+    //     return (start.x - x) * (end.y - z) - (end.x - x) * (start.y - z);
+    //   };
+
+    //   for (let i = 0; i < vertices.length; i++) {
+    //     const { start } = vertices[i];
+    //     // const second = sidedefs[i].getLinedef().getSecondVertex();
+
+    //     if (start.x > x && start.y >= z) {
+    //       q[i] = 0;
+    //     } else if (start.x <= x && start.y > z) {
+    //       q[i] = 1;
+    //     } else if (start.x < x && start.y <= z) {
+    //       q[i] = 2;
+    //     } else if (start.x >= x && start.y < z) {
+    //       q[i] = 3;
+    //     }
+    //   }
+
+    //   q[q.length - 1] = q[0];
+
+    //   let w = 0;
+    //   for (let i = 0; i < vertices.length; i++) {
+    //     const temp = q[i + 1] - q[i];
+    //     if (temp === -3) {
+    //       w = w + 1;
+    //     } else if (temp === 3) {
+    //       w = w - 1;
+    //     } else if (temp === -2 && det(i) > 0) {
+    //       w = w + 1;
+    //     } else if (temp === 2 && det(i) < 0) {
+    //       w = w - 1;
+    //     }
+    //     // if (temp === 1 || temp === -3) {
+    //     //   w = w + 1;
+    //     // } else if (temp === -1 || temp === 3) {
+    //     //   w = w - 1;
+    //     // } else if (temp === 2 || temp === -2) {
+    //     //   w = w + 2 * Math.sign(det(i));
+    //     // }
+    //   }
+
+    //   return w != 0;
+    // });
   }
 
   get(): Thing[] {
@@ -175,26 +322,35 @@ export class Things extends Lump {
 export class Thing {
   private x: number;
   private y: number;
+  private z: number;
   private angle: number;
   private options: number;
+  private sectorIndex: number;
   typeId: number;
-  private type: string;
+  private _type: { label: string; sprite: string; sequence: string };
+
+  get type() {
+    return this._type;
+  }
 
   constructor(index: number, dataView: DataView) {
     this.x = dataView.getInt16(index, true);
-    this.y = -dataView.getInt16(index + 2, true);
+    this.y = 0;
+    this.z = -dataView.getInt16(index + 2, true);
     this.angle = dataView.getInt16(index + 4, true);
     this.typeId = dataView.getInt16(index + 6, true);
     this.options = dataView.getInt16(index + 8, true);
-    this.type = DoomThingTable[this.typeId];
+    this._type = DoomThingTable[this.typeId];
   }
 
-  getType(): string {
-    return this.type;
+  getPosition(): { x: number; y: number; z: number } {
+    const { x, y, z } = this;
+    return { x, y, z };
   }
 
-  getPosition(): { x: number; y: number } {
-    return { x: this.x, y: this.y };
+  setSectorIndex(index: number, y: number) {
+    this.sectorIndex = index;
+    this.y = y;
   }
 
   getAngle(): number {
@@ -202,18 +358,9 @@ export class Thing {
   }
 
   toString(): string {
-    return (
-      'type: ' +
-      this.type +
-      ' x: ' +
-      this.x +
-      ' y: ' +
-      this.y +
-      ' angle: ' +
-      this.angle +
-      ' options: ' +
-      this.options
-    );
+    const { type, x, y, z, angle, options } = this;
+
+    return `type: ${type.label} [${type.sprite}] x: ${x} y: ${y} z: ${z} angle: ${angle} options: ${options}`;
   }
 }
 

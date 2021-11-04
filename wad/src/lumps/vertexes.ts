@@ -1,4 +1,4 @@
-import { Lump } from './lump';
+import { Lump } from "./lump";
 
 export class Vertexes extends Lump {
   private vertexes: Vertex[];
@@ -26,5 +26,9 @@ export class Vertex extends Lump {
 
     this.x = this.dataView.getInt16(offset, true);
     this.y = -this.dataView.getInt16(offset + 2, true);
+  }
+
+  equals(vertex: Vertex) {
+    return this.x === vertex.x && this.y === vertex.y;
   }
 }

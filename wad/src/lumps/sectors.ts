@@ -35,9 +35,11 @@
 	  What a shame! The "ammo creator" sounds especially interesting!
 	*/
 
-import { Lump } from './lump';
-import { Sidedef } from './sidedefs';
-import { Linedef } from './linedef';
+import { Lump } from "./lump";
+import { Sidedef } from "./sidedefs";
+import { Linedef } from "./linedef";
+import { Thing } from "./things";
+import { Vertex } from "./vertexes";
 
 export class Sector {
   private floorHeight: number;
@@ -51,13 +53,23 @@ export class Sector {
 
   private sidedefs: Sidedef[];
   private linedefs: Linedef[];
+  private things: Thing[];
+
+  private _vertices: {
+    start: { x: number; y: number };
+    end: { x: number; y: number };
+  }[];
+
+  public get vertices() {
+    return this._vertices;
+  }
 
   constructor(offset: number, dataView: DataView) {
     this.floorHeight = dataView.getInt16(0 + offset, true);
     this.ceilingHeight = dataView.getInt16(2 + offset, true);
 
-    this.floorTexture = '';
-    this.ceilingTexture = '';
+    this.floorTexture = "";
+    this.ceilingTexture = "";
     for (var i = 0; i < 8; i++) {
       let floorCharcode = dataView.getUint8(i + 4 + offset);
       let ceilingCharCode = dataView.getUint8(i + 12 + offset);
@@ -73,6 +85,57 @@ export class Sector {
     this.linedefsTag = dataView.getInt16(24 + offset, true);
     this.sidedefs = [];
     this.linedefs = [];
+  }
+
+  generateVertex() {
+    let vertices: {
+      start: { x: number; y: number };
+      end: { x: number; y: number };
+    }[] = [];
+
+    const compare = (
+      first: { x: number; y: number },
+      second: { x: number; y: number }
+    ) => {
+      return first.x === second.x && first.y === second.y;
+    };
+
+    for (let i = 0; i < this.sidedefs.length; i++) {
+      const first = this.sidedefs[i].getLinedef().getFirstVertex();
+      const second = this.sidedefs[i].getLinedef().getSecondVertex();
+
+      vertices.push({
+        start: { x: first.x, y: first.y },
+        end: { x: second.x, y: second.y },
+      });
+    }
+
+    for (let i = 0; i < vertices.length - 1; i++) {
+      for (let i2 = i + 1; i2 < vertices.length; i2++) {
+        if (compare(vertices[i].end, vertices[i2].start)) {
+          let temp = vertices[i + 1];
+          vertices[i + 1] = vertices[i2];
+          vertices[i2] = temp;
+        } else if (compare(vertices[i].end, vertices[i2].end)) {
+          let temp = {
+            start: vertices[i2].end,
+            end: vertices[i2].start,
+          };
+
+          vertices[i2] = vertices[i + 1];
+          vertices[i + 1] = temp;
+        }
+      }
+    }
+
+    this._vertices = vertices;
+  }
+
+  setThings(things: Thing[]) {
+    things.forEach((thing) => {
+      thing.setSectorIndex(0, this.getFloorHeight());
+    });
+    this.things = things;
   }
 
   getCeilingTextureName(): string {
@@ -115,26 +178,37 @@ export class Sector {
 export class Sectors extends Lump {
   private sectors: Sector[];
 
-  constructor(lump: any, data: any, sidedefs: Sidedef[], linedefs: Linedef[]) {
+  constructor(
+    lump: any,
+    data: any,
+    sidedefs: Sidedef[],
+    linedefs: Linedef[],
+    things: Thing[]
+  ) {
     super(lump, data);
 
     this.sectors = [];
     for (var i = 0; i < this.dataView.byteLength; i += 26) {
       let sector = new Sector(i, this.dataView);
+
       this.sectors.push(sector);
     }
 
-    linedefs.forEach(linedef => {
-      this.sectors.forEach(sector => {
+    linedefs.forEach((linedef) => {
+      this.sectors.forEach((sector) => {
         if (sector.getTag() === linedef.getSectorTag()) {
           sector.setLinedef(linedef);
         }
       });
     });
 
-    sidedefs.forEach(sidedef => {
+    sidedefs.forEach((sidedef) => {
       this.sectors[sidedef.getSectorIndex()].setSidedef(sidedef);
       sidedef.setSector(this.sectors[sidedef.getSectorIndex()]);
+    });
+
+    this.sectors.forEach((sector) => {
+      sector.generateVertex();
     });
   }
 

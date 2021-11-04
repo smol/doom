@@ -13,14 +13,15 @@ interface MapProps {
 
 export class Things extends Component<ThingsProps> {
   render() {
-    var i = 0;
-    var things: JSX.Element[] = this.props.things.get().map((thing) => {
-      return <li key={i++}>{thing.toString()}</li>;
-    });
+    const { things } = this.props;
 
     return (
-      <div id="infos">
-        <ul>{things}</ul>
+      <div id="infos" style={{ overflow: "auto" }}>
+        <ul>
+          {things.get().map((thing, index) => (
+            <li key={index}>{thing.toString()}</li>
+          ))}
+        </ul>
       </div>
     );
   }
@@ -62,7 +63,7 @@ export class Map extends Component<MapProps> {
 
     let things: Wad.Thing[] = this.props.map.getThings().get();
     things.forEach((thing) => {
-      if (thing.getType() == "player 1 start") {
+      if (thing.type.label == "player 1 start") {
         const position: { x: number; y: number } = thing.getPosition();
         this.core.setCameraPosition({ x: position.x, y: 40, z: position.y });
       }

@@ -186,10 +186,13 @@ export class Texture {
   private dataSize: { width: number; height: number };
   private dataOffset: { x: number; y: number };
 
+  private animationIndex: number;
+
   constructor(playpal: Playpal, data: any) {
     this.dataView = new DataView(data);
 
     this.name = "";
+    this.animationIndex = -1;
 
     for (; this.offset < 8; this.offset++) {
       let charcode = this.dataView.getUint8(this.offset);
@@ -310,6 +313,10 @@ export class Texture {
     });
 
     this.data = data;
+  }
+
+  setAnimationIndex(index: number) {
+    this.animationIndex = index;
   }
 
   getImageData(): {

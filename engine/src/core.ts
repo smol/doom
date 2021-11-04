@@ -6,6 +6,7 @@ import { InputManager } from "./input";
 import { Subsector } from "./subsector";
 import { Sector } from "./sector";
 import { Wall } from "./wall";
+import { Thing } from "./thing";
 
 let subsector: Subsector;
 let sector: Sector;
@@ -199,16 +200,26 @@ export class Core {
   createMap(map: Wad.Map, wad: Wad.Wad) {
     this.textures = wad.getTextures();
     this.flats = wad.getFlats();
+    const graphics = wad.getGraphics();
+    const things = map.getThings();
 
     // this.node(map.getNode());
 
     this.createWalls(map.getLinedefs());
 
     map.getSectors().forEach((item) => {
-      let sector = new Sector(item, this.flats);
+      let sector = new Sector(item, this.flats, things, graphics);
 
       this._scene.add(sector);
     });
+
+    // map
+    //   .getThings()
+    //   .get()
+    //   .forEach((thing) => {
+    //     const temp = new Thing(thing, graphics);
+    //     this._scene.add(temp);
+    //   });
 
     console.info("MAP CREATED");
   }

@@ -6,16 +6,24 @@ interface SectorProps {
   sector: Wad.Sector;
   flats: Wad.Flat[];
   textures: Wad.Textures[];
+  things: Wad.Things;
+  graphics: Wad.Graphic[];
 }
 
-export const Sector = ({ sector, flats, textures }: SectorProps) => {
+export const Sector = ({
+  sector,
+  flats,
+  textures,
+  things,
+  graphics,
+}: SectorProps) => {
   const canvas3dRef = useRef<HTMLCanvasElement>();
   const container3dRef = useRef<HTMLDivElement>();
   const canvasRef = useRef<HTMLCanvasElement>();
   const containerRef = useRef<HTMLDivElement>();
   let cdtObject = { points: [], cdt: [] };
 
-  console.info({ sector });
+  console.info({ sector, things: things.getThingsFromSector(sector) });
   let bounds = {
     min: { x: Infinity, y: Infinity },
     max: { x: -Infinity, y: -Infinity },
@@ -38,6 +46,30 @@ export const Sector = ({ sector, flats, textures }: SectorProps) => {
     canvasRef.current.height = containerRef.current.clientHeight;
     canvas3dRef.current.width = container3dRef.current.clientWidth;
     canvas3dRef.current.height = container3dRef.current.clientHeight;
+  };
+
+  const canvas_arrow = (context, fromx, fromy, tox, toy, r = 2) => {
+    var x_center = tox;
+    var y_center = toy;
+
+    const theta = Math.atan2(toy - fromy, tox - fromx);
+    var angle;
+    var x;
+    var y;
+
+    angle = theta + (1 / 3) * (2 * Math.PI);
+    x = r * Math.cos(angle) + x_center;
+    y = r * Math.sin(angle) + y_center;
+
+    context.moveTo(x_center, y_center);
+    context.lineTo(x, y);
+
+    angle = theta - (1 / 3) * (2 * Math.PI);
+    x = r * Math.cos(angle) + x_center;
+    y = r * Math.sin(angle) + y_center;
+
+    context.moveTo(x_center, y_center);
+    context.lineTo(x, y);
   };
 
   const foundMinMax = (vertex: { x: number; y: number }) => {
@@ -84,7 +116,8 @@ export const Sector = ({ sector, flats, textures }: SectorProps) => {
       const second = sidedef.getLinedef().getSecondVertex();
 
       ctx.moveTo(first.x, first.y);
-      ctx.arc(first.x, first.y, 5, 0, 2 * Math.PI);
+      // ctx.arc(first.x, first.y, 5, 0, 2 * Math.PI);
+      canvas_arrow(ctx, first.x, first.y, second.x, second.y, 10);
       ctx.moveTo(first.x, first.y);
       ctx.lineTo(second.x, second.y);
     });
@@ -92,7 +125,7 @@ export const Sector = ({ sector, flats, textures }: SectorProps) => {
     ctx.stroke();
     // ctx.closePath();
 
-    renderDelaunay();
+    // renderDelaunay();
 
     ctx.setTransform(1, 0, 0, 1, 0, 0);
   };
@@ -162,7 +195,7 @@ export const Sector = ({ sector, flats, textures }: SectorProps) => {
       showFps: true,
     });
 
-    let sectorObject = new Engine.Sector(sector, flats);
+    let sectorObject = new Engine.Sector(sector, flats, things, graphics);
 
     core.scene.add(sectorObject);
 

@@ -3,11 +3,17 @@ import * as Wad from "wad";
 import { Triangulation } from "./triangulation";
 
 import { Floor } from "./floor";
+import { Thing } from "./thing";
 
 export class Sector extends THREE.Group {
   private floor: Floor;
 
-  constructor(sector: Wad.Sector, flats: Wad.Flat[]) {
+  constructor(
+    sector: Wad.Sector,
+    flats: Wad.Flat[],
+    things: Wad.Things,
+    graphics: Wad.Graphic[]
+  ) {
     super();
 
     let triangulation = new Triangulation(sector);
@@ -45,6 +51,12 @@ export class Sector extends THREE.Group {
     lower.setTexture(sector.getCeilingTextureName());
     this.add(floor);
     this.add(lower);
+
+    things.getThingsFromSector(sector).forEach((thing) => {
+      thing.setSectorIndex(0, sector.getFloorHeight());
+      const temp = new Thing(thing, graphics);
+      this.add(temp);
+    });
 
     this.floor = floor;
 

@@ -1,13 +1,14 @@
-import { Lump } from './lump';
-import { Things } from './things';
-import { Linedefs, Linedef } from './linedef';
-import { Vertexes, Vertex } from './vertexes';
-import { Sectors, Sector } from './sectors';
-import { Nodes, Node } from './nodes';
-import { Subsectors, Subsector } from './subsector';
-import { Segs } from './segs';
-import { Sidedefs } from './sidedefs';
-import { Rejects } from './reject';
+import { Thing } from "./things";
+import { Linedef, Linedefs } from "./linedef";
+import { Lump } from "./lump";
+import { Node, Nodes } from "./nodes";
+import { Rejects } from "./reject";
+import { Sector, Sectors } from "./sectors";
+import { Segs } from "./segs";
+import { Sidedefs } from "./sidedefs";
+import { Subsector, Subsectors } from "./subsector";
+import { Things } from "./things";
+import { Vertex, Vertexes } from "./vertexes";
 
 export class Map extends Lump {
   private things: Things;
@@ -42,12 +43,13 @@ export class Map extends Lump {
     this.vertexes = new Vertexes(lump, data);
   }
 
-  setSectors(lump: any, data: any) {
+  setSectors(lump: any, data: any, things: Thing[]) {
     this.sectors = new Sectors(
       lump,
       data,
       this.sidedefs.get(),
-      this.linedefs.get()
+      this.linedefs.get(),
+      things
     );
   }
 

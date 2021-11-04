@@ -161,6 +161,8 @@ export default (wad: Wad): TreeData[] => {
                   sector={sector}
                   flats={wad.getFlats()}
                   textures={wad.getTextures()}
+                  things={map.getThings()}
+                  graphics={wad.getGraphics()}
                 />
               ),
               children: [],

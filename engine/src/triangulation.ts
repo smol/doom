@@ -1,12 +1,12 @@
 import cdt2d from "cdt2d";
 import * as Wad from "wad";
 
-const compare = (
-  first: { x: number; y: number },
-  second: { x: number; y: number }
-) => {
-  return first.x === second.x && first.y === second.y;
-};
+// const compare = (
+//   first: { x: number; y: number },
+//   second: { x: number; y: number }
+// ) => {
+//   return first.x === second.x && first.y === second.y;
+// };
 
 const find = (array: number[][], item: number[]) => {
   for (let i = array.length - 1; i >= 0; i--) {
@@ -33,7 +33,7 @@ export class Triangulation {
     this.points = [];
     this.edges = [];
 
-    const vertices = this.reorderLinedefs(sector.getSidedefs());
+    const vertices = sector.vertices;
 
     vertices.forEach(({ start, end }, index) => {
       // this.points.push();
@@ -76,45 +76,45 @@ export class Triangulation {
     // });
   }
 
-  private reorderLinedefs(sidedefs: Wad.Sidedef[]): {
-    start: { x: number; y: number };
-    end: { x: number; y: number };
-  }[] {
-    let vertices: {
-      start: { x: number; y: number };
-      end: { x: number; y: number };
-    }[] = [];
+  // private reorderLinedefs(sidedefs: Wad.Sidedef[]): {
+  //   start: { x: number; y: number };
+  //   end: { x: number; y: number };
+  // }[] {
+  //   let vertices: {
+  //     start: { x: number; y: number };
+  //     end: { x: number; y: number };
+  //   }[] = [];
 
-    for (let i = 0; i < sidedefs.length; i++) {
-      const first = sidedefs[i].getLinedef().getFirstVertex();
-      const second = sidedefs[i].getLinedef().getSecondVertex();
+  //   for (let i = 0; i < sidedefs.length; i++) {
+  //     const first = sidedefs[i].getLinedef().getFirstVertex();
+  //     const second = sidedefs[i].getLinedef().getSecondVertex();
 
-      vertices.push({
-        start: { x: first.x, y: first.y },
-        end: { x: second.x, y: second.y },
-      });
-    }
+  //     vertices.push({
+  //       start: { x: first.x, y: first.y },
+  //       end: { x: second.x, y: second.y },
+  //     });
+  //   }
 
-    for (let i = 0; i < vertices.length - 1; i++) {
-      for (let i2 = i + 1; i2 < vertices.length; i2++) {
-        if (compare(vertices[i].end, vertices[i2].start)) {
-          let temp = vertices[i + 1];
-          vertices[i + 1] = vertices[i2];
-          vertices[i2] = temp;
-        } else if (compare(vertices[i].end, vertices[i2].end)) {
-          let temp = {
-            start: vertices[i2].end,
-            end: vertices[i2].start,
-          };
+  //   for (let i = 0; i < vertices.length - 1; i++) {
+  //     for (let i2 = i + 1; i2 < vertices.length; i2++) {
+  //       if (compare(vertices[i].end, vertices[i2].start)) {
+  //         let temp = vertices[i + 1];
+  //         vertices[i + 1] = vertices[i2];
+  //         vertices[i2] = temp;
+  //       } else if (compare(vertices[i].end, vertices[i2].end)) {
+  //         let temp = {
+  //           start: vertices[i2].end,
+  //           end: vertices[i2].start,
+  //         };
 
-          vertices[i2] = vertices[i + 1];
-          vertices[i + 1] = temp;
-        }
-      }
-    }
+  //         vertices[i2] = vertices[i + 1];
+  //         vertices[i + 1] = temp;
+  //       }
+  //     }
+  //   }
 
-    return vertices;
-  }
+  //   return vertices;
+  // }
 
   public generate(): { points: number[][]; cdt: number[][] } {
     let cdt = [];
